@@ -1,7 +1,7 @@
 import { Draggable } from "react-beautiful-dnd";
 import { connect } from "react-redux";
 
-const Card = ({ cards }) => {
+const Card = ({ cards, listId }) => {
 
     const cardStyle = (draggableStyle) => ({
         padding: "10px",
@@ -11,8 +11,9 @@ const Card = ({ cards }) => {
 
     return (
         <>
-        {Object.keys(cards).map((key, index) => (
-        <Draggable draggableId={cards[key]._id} index={index} key={cards[key]._id}>
+        {Object.keys(cards).map((key, index) => {
+            if (cards[key].listId === listId) {
+        return (<Draggable draggableId={cards[key]._id} index={index} key={cards[key]._id}>
             {(provided) => (
                 <div
                     {...provided.dragHandleProps}
@@ -23,7 +24,8 @@ const Card = ({ cards }) => {
                     {cards[key].title}
                 </div>
             )}
-        </Draggable>))}
+        </Draggable>)}})}
+            
         </>
     );
 };

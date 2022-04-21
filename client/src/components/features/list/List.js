@@ -38,7 +38,7 @@ const List = ({ lists }) => {
                                         <div
                                             style={listStyle(provided.droppableProps.draggableStyle)}
                                         >
-                                            <Card />
+                                            <Card listId={lists[key].id} />
                                             {provided.placeholder}
                                         </div>
                                     </div>)}
