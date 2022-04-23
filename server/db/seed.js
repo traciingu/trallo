@@ -12,15 +12,15 @@ async function seed() {
     //     description: "Why?"
     // }).save();
 
-    // const c2 = await new Card({
-    //     title: "I say",
-    //     description: "I don't know"
-    // }).save();
+    const c2 = await new Card({
+        title: "I say",
+        description: "I don't know"
+    }).save();
 
-    // const c3 = await new Card({
-    //     title: "Hello",
-    //     description: "Goodbye"
-    // }).save();
+    const c3 = await new Card({
+        title: "Hello",
+        description: "Goodbye"
+    }).save();
 
     // await new List({
     //     title: "Todo",
@@ -37,14 +37,14 @@ async function seed() {
     //     cards:[]
     // }).save();
 
-    const allLists = await List.find({});
+    // const allLists = await List.find({});
 
-    console.log(allLists);
-    console.log(await new Board({
-        title: "Dummy",
-        background: "#000000",
-        lists: allLists
-    }).save());
+    // console.log(allLists);
+    // console.log(await new Board({
+    //     title: "Dummy",
+    //     background: "#000000",
+    //     lists: allLists
+    // }).save());
 
     // await b1.save();
 

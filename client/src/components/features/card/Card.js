@@ -1,7 +1,7 @@
 import { Draggable } from "react-beautiful-dnd";
 import { connect } from "react-redux";
 
-const Card = ({ cards, listId }) => {
+const Card = ({ cards, listId, cardsOrdering }) => {
 
     const cardStyle = (draggableStyle) => ({
         padding: "10px",
@@ -11,29 +11,33 @@ const Card = ({ cards, listId }) => {
 
     return (
         <>
-        {Object.keys(cards).map((key, index) => {
-            if (cards[key].listId === listId) {
-        return (<Draggable draggableId={cards[key]._id} index={index} key={cards[key]._id}>
-            {(provided) => (
-                <div
-                    {...provided.dragHandleProps}
-                    {...provided.draggableProps}
-                    ref={provided.innerRef}
-                    style={cardStyle(provided.draggableProps.style)}
-                >
-                    {cards[key].title}
-                </div>
-            )}
-        </Draggable>)}})}
-            
+            {cardsOrdering[listId]?.map((cardId, index) => {
+                return (<Draggable draggableId={cards[cardId]._id} index={index} key={cards[cardId]._id}>
+                    {(provided) => (
+                        <div
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}
+                            ref={provided.innerRef}
+                            style={cardStyle(provided.draggableProps.style)}
+                        >
+                            {cards[cardId].title}
+                        </div>
+                    )}
+                </Draggable>
+                )
+            }
+            )
+            }
+
+
         </>
     );
 };
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
-        cards: state.cards.byId
+        cards: state.cards.byId,
+        cardsOrdering: state.cards.allIds
     }
 };
 

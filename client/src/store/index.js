@@ -44,19 +44,16 @@ export const loadBoard = createAsyncThunk('board/load', async (id) => {
         lists1.push(newList);
     });
 
-    console.log(lists1)
-
-
     return { board: data, lists: lists1, cards: cards1 };
 });
 
 export const updateBoard = createAsyncThunk('board/update', async (info) => {
-    console.log(await api.patch(`/boards/${info.id}`, info))
+    await api.patch(`/boards/${info.id}`, info);
 })
 
-export const loadList = createAsyncThunk('list/load', async (id) => {
-    const { data } = await api(`/lists/${id}`);
-    return data;
+export const updateList = createAsyncThunk('lists/update', async (info) => {
+    const { data } = await api.patch(`/lists/${info.id}`, info);
+    return { lists: data };
 });
 
 const boardSlice = createSlice({
@@ -67,12 +64,7 @@ const boardSlice = createSlice({
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
                 const board = action.payload.board;
-                // console.log(board)
                 state.title = board.title;
-            })
-            .addCase(loadList.fulfilled, (state, action) => {
-                const list = action.payload;
-                // console.log(list);
             })
     }
 });
@@ -85,28 +77,48 @@ const listSlice = createSlice({
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
                 const lists = action.payload.lists;
-                // console.log(lists)
                 lists.forEach(list => {
                     state.byId[list.id] = list;
                     state.allIds.push(list.id);
                 });
-            });
+            })
+            .addCase(updateList.fulfilled, (state, action) => {
+                console.log(action.payload);
+                const lists = action.payload.lists;
+                lists.forEach(list => {
+                    state.byId[list.id] = list;
+                    state.allIds.push(list.id);
+                });
+            })
     }
 });
 
 const cardSlice = createSlice({
     name: 'cards',
-    initialState: { byId: {}, allIds: [] },
+    initialState: { byId: {}, allIds: {} },
     reducers: {},
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
                 const cards = action.payload.cards;
-                console.log(cards)
                 cards.forEach(card => {
                     state.byId[card._id] = card;
-                    state.allIds.push(card._id);
+                    if (!state.allIds[card.listId]) {
+                        state.allIds[card.listId] = [];
+                    }
+                    state.allIds[card.listId].push(card._id);
                 })
+            })
+            .addCase(updateList.fulfilled, (state, action) => {
+                const lists = action.payload.lists;
+                lists.forEach(list => {
+                    list.cards.forEach((cardId) => {
+                        if (!state.allIds[cardId]) {
+                            state.allIds[cardId] = [];
+                        }
+                        state.allIds[cardId].push(cardId);
+                    })
+                });
             })
     }
 })

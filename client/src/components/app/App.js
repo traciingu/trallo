@@ -3,7 +3,7 @@ import List from '../features/list/List';
 import '@atlaskit/css-reset';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useEffect, useState } from 'react';
-import { loadBoard, updateBoard } from '../../store/index';
+import { loadBoard, updateBoard, updateList } from '../../store/index';
 import { connect } from 'react-redux';
 import { dummyItems } from './data';
 
@@ -13,7 +13,7 @@ function App(props) {
   const [columns, setColumns] = useState(dummyItems.columns);
   const [columnOrder, setColumnOrder] = useState(dummyItems.columnOrder);
 
-  const { loadBoard, updateBoard, title, listOrdering } = props;
+  const { loadBoard, updateBoard, title, listOrdering, cardOrdering, updateList } = props;
 
   useEffect(() => {
     loadBoard("625a2e6ea978638034ee3850");
@@ -23,7 +23,6 @@ function App(props) {
     const { destination, source, draggableId, type } = result;
 
     console.log(result)
-    console.log(listOrdering)
 
     // Do nothing if component is dropped outside of DragDropContext
     if (!destination) {
@@ -42,7 +41,7 @@ function App(props) {
       orderingCpy.splice(source.index, 1);
       orderingCpy.splice(destination.index, 0, draggableId);
 
-      updateBoard({id: "625a2e6ea978638034ee3850", lists: orderingCpy});
+      updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
 
 
       // const newListOrder = [...columnOrder];
@@ -56,6 +55,46 @@ function App(props) {
 
     // Reordering logic for cards
     if (type.localeCompare("cards") === 0) {
+      try {
+        if (destination.droppableId !== source.droppableId) {
+          let destCpy = [];
+          let sourceCpy = [];
+
+          if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
+            destCpy = [...cardOrdering[destination.droppableId]];
+            sourceCpy = [...cardOrdering[source.droppableId]];
+          }
+
+          sourceCpy.splice(source.index, 1);
+          destCpy.splice(destination.index, 0, draggableId);
+
+          updateList({ id: destination.droppableId, card: destCpy });
+          updateList({ id: source.droppableId, card: sourceCpy });
+          console.log("Moving outside DESTCOPY: ", destCpy);
+          console.log("Moving outside SOURCECOPY: ", sourceCpy);
+
+        } else {
+          let destCpy = [];
+          let sourceCpy = [];
+
+          if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
+            destCpy = [...cardOrdering[destination.droppableId]];
+          }
+
+          let insertIndex = destination.index;
+          if (source.index < destination.index) {
+            insertIndex--;
+          }
+
+          destCpy.splice(source.index, 1);
+          destCpy.splice(insertIndex, 0, draggableId);
+
+          updateList({ id: destination.droppableId, card: destCpy });
+          console.log("Moving inside list: ", destCpy);
+        }
+      } catch (err) {
+        console.log(err)
+      }
       // const sourceTasks = columns[source.droppableId].taskIds;
 
       // if (source.droppableId.localeCompare(destination.droppableId) === 0) {
@@ -71,25 +110,25 @@ function App(props) {
       //     ...columns,
       //     [source.droppableId]: newColumn
       //   });
-      } else {
-        // const destTasks = columns[destination.droppableId].taskIds;
-        // sourceTasks.splice(source.index, 1);
-        // destTasks.splice(destination.index, 0, draggableId);
+    } else {
+      // const destTasks = columns[destination.droppableId].taskIds;
+      // sourceTasks.splice(source.index, 1);
+      // destTasks.splice(destination.index, 0, draggableId);
 
-        // const sourceColumn = {
-        //   ...columns[source.droppableId],
-        //   taskIds: sourceTasks
-        // };
-        // const destColumn = {
-        //   ...columns[destination.droppableId],
-        //   taskIds: destTasks
-        // };
+      // const sourceColumn = {
+      //   ...columns[source.droppableId],
+      //   taskIds: sourceTasks
+      // };
+      // const destColumn = {
+      //   ...columns[destination.droppableId],
+      //   taskIds: destTasks
+      // };
 
-        // setColumns({
-        //   ...columns,
-        //   [source.droppableId]: sourceColumn,
-        //   [destination.droppableId]: destColumn
-        // });
+      // setColumns({
+      //   ...columns,
+      //   [source.droppableId]: sourceColumn,
+      //   [destination.droppableId]: destColumn
+      // });
       // }
 
     }
@@ -139,18 +178,19 @@ function App(props) {
 
 
 const mapStateToProps = state => {
-  // console.log(Object.keys(state.lists).map((key) => state.lists[key].title))
-  console.log(state.lists)
+  console.log(state);
   return {
     title: state.board.title,
-    listOrdering: state.lists.allIds
+    listOrdering: state.lists.allIds,
+    cardOrdering: state.cards.allIds
   };
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     loadBoard: (id) => { dispatch(loadBoard(id)); },
-    updateBoard: (info) => {dispatch(updateBoard(info))}
+    updateBoard: (info) => { dispatch(updateBoard(info)) },
+    updateList: (info) => { dispatch(updateList(info)) },
   }
 };
 
