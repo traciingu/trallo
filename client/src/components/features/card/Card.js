@@ -12,7 +12,7 @@ const Card = ({ cards, listId, cardsOrdering }) => {
     return (
         <>
             {cardsOrdering[listId]?.map((cardId, index) => {
-                return (<Draggable draggableId={cards[cardId]._id} index={index} key={cards[cardId]._id}>
+                return (<Draggable draggableId={cards[cardId].id} index={index} key={cards[cardId].id}>
                     {(provided) => (
                         <div
                             {...provided.dragHandleProps}
@@ -41,5 +41,4 @@ const mapStateToProps = state => {
     }
 };
 
-// export default Card;
 export default connect(mapStateToProps)(Card);

@@ -9,10 +9,4 @@ const boardSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-// boardSchema.virtual('lists', {
-//     ref: 'lists',
-//     localField: '_id',
-//     foreignField: 'board'
-// })
-
 module.exports = mongoose.model('Board', boardSchema);

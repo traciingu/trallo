@@ -32,14 +32,6 @@ router.patch('/:id', async (req, res, next) => {
             updatedInfo = { ...updatedInfo, title: req.body.title };
         }
 
-        // if (req.body.prev) {
-        //     updatedInfo = { ...updatedInfo, prev: req.body.prev };
-        // }
-
-        // if (req.body.next) {
-        //     updatedInfo = { ...updatedInfo, next: req.body.next };
-        // }
-
         if (req.body.card) {
             updatedInfo = {...updatedInfo, cards: [...req.body.card] };
         }

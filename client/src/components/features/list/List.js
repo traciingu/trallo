@@ -1,18 +1,10 @@
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import Card from "../card/Card";
 import { connect } from "react-redux";
-import { useEffect } from "react";
-
 
 const List = ({ lists }) => {
 
-
-    useEffect(() => {
-        console.log(lists)
-    }, []);
-
     const listStyle = (draggableStyle) => ({
-        // display: "flex",
         ...draggableStyle
     });
 
@@ -51,12 +43,10 @@ const List = ({ lists }) => {
     );
 };
 
-const mapStateToProps = state => {
+const msToProps = state => {
     return {
         lists: state.lists.byId
-        // Object.keys(state.lists).map((key) => state.lists[key].title)
     }
 }
 
-// export default List;
-export default connect(mapStateToProps)(List);
+export default connect(msToProps)(List);
