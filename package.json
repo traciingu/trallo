@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^28.0.1",
+    "jest-puppeteer": "^6.1.0"
+  }
+}

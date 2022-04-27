@@ -2,7 +2,7 @@ import './App.css';
 import '@atlaskit/css-reset';
 import { useEffect, useContext } from 'react';
 import { loadBoard } from '../../store/index';
-import di from './injection_container';
+import di from '../injection_container';
 import { connect } from 'react-redux';
 import Board from '../features/board/Board';
 

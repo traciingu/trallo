@@ -8,7 +8,6 @@ const List = ({ lists }) => {
         ...draggableStyle
     });
 
-
     return (
         <>
             {Object.keys(lists).map((key, index) => (
@@ -17,6 +16,7 @@ const List = ({ lists }) => {
                         <div
                             {...provided.draggableProps}
                             ref={provided.innerRef}
+                            className="list"
                         >
                             <h2
                                 {...provided.dragHandleProps}

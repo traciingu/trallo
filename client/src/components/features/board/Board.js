@@ -3,12 +3,12 @@ import '@atlaskit/css-reset';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useContext } from 'react';
 import { updateBoard, updateList } from '../../../store/index';
-import di from '../../app/injection_container';
+import di from '../../injection_container';
 import { connect } from 'react-redux';
 
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
-  // const { loadBoard } = di;
+  const helpers = useContext(di);
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
@@ -28,9 +28,15 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
 
     // Reordering logic for lists
     if (type.localeCompare("lists") === 0) {
-      const orderingCpy = [...listOrdering];
-      orderingCpy.splice(source.index, 1);
-      orderingCpy.splice(destination.index, 0, draggableId);
+      // const orderingCpy = [...listOrdering];
+      // orderingCpy.splice(source.index, 1);
+      // orderingCpy.splice(destination.index, 0, draggableId);
+
+      const orderingCpy = helpers.reorderLists(listOrdering, {
+        sourceIndex: source.index,
+        destinationIndex: destination.index,
+        id: draggableId
+      });
 
       updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
 
@@ -40,16 +46,18 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
     if (type.localeCompare("cards") === 0) {
       try {
         if (destination.droppableId !== source.droppableId) {
-          let destCpy = [];
-          let sourceCpy = [];
+          // let destCpy = [];
+          // let sourceCpy = [];
 
-          if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
-            destCpy = [...cardOrdering[destination.droppableId]];
-            sourceCpy = [...cardOrdering[source.droppableId]];
-          }
+          // if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
+          //   destCpy = [...cardOrdering[destination.droppableId]];
+          //   sourceCpy = [...cardOrdering[source.droppableId]];
+          // }
 
-          sourceCpy.splice(source.index, 1);
-          destCpy.splice(destination.index, 0, draggableId);
+          // sourceCpy.splice(source.index, 1);
+          // destCpy.splice(destination.index, 0, draggableId);
+
+          const { destCpy, sourceCpy } = helpers.reorderCards(cardOrdering, {destination, source, id: draggableId});
 
           updateList({ id: destination.droppableId, card: destCpy });
           updateList({ id: source.droppableId, card: sourceCpy });
@@ -57,14 +65,17 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
           console.log("Moving outside SOURCECOPY: ", sourceCpy);
 
         } else {
-          let destCpy = [];
+          // let destCpy = [];
 
-          if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
-            destCpy = [...cardOrdering[destination.droppableId]];
-          }
+          // if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
+          //   destCpy = [...cardOrdering[destination.droppableId]];
+          // }
 
-          destCpy.splice(source.index, 1);
-          destCpy.splice(destination.index, 0, draggableId);
+          // destCpy.splice(source.index, 1);
+          // destCpy.splice(destination.index, 0, draggableId);
+
+          const destCpy = helpers.reorderCards(destination, source, cardOrdering, draggableId);
+
 
           updateList({ id: destination.droppableId, card: destCpy });
           console.log("Moving inside list: ", destCpy);
@@ -96,7 +107,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
 
   return (
     <div className="board">
-        <h1>{title}</h1>
+      <h1>{title}</h1>
       <DragDropContext
         onDragEnd={onDragEnd}
       >
@@ -129,7 +140,7 @@ const msToProps = state => {
 const mdToProps = dispatch => {
   // const { loadBoard } = di;
   return {
-    updateBoard: (info) => { dispatch(updateBoard(info)) }  ,
+    updateBoard: (info) => { dispatch(updateBoard(info)) },
     updateList: (info) => { dispatch(updateList(info)) },
   }
 };
