@@ -5,18 +5,11 @@ describe('Google', () => {
         // Page title is Trallo
         await expect(page.title()).resolves.toMatch('Trallo');
         // Has three lists with names 'Todo', 'In progress', 'Done'
-        // const listTitles = 
-        await page.waitForSelector("h2")
-        // const boardHandle = await page.$('.board');
-        // console.log(boardHandle)
+        await page.waitForSelector("h2");
 
         const listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
         expect(listTitles).toEqual([ 'Todo', 'Done', 'In progress' ]);
-        // listTitles.map(title => console.log(title))
-        // const listTitles = listsHandle.eval
-        // expect(
-        //     await boardHandle.$$eval('.list', (nodes) => nodes.map((n) => n.innerText))
-        // ).toEqual(['Todo', 'In progress', 'Done']);
+        
     });
 });
 
