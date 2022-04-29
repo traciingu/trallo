@@ -68,6 +68,6 @@ async function deleteAll() {
 }
 
 // deleteAll().catch(console.dir);
-// populate().catch(console.dir);
+populate().catch(console.dir);
 
 module.exports = { populate, deleteAll };

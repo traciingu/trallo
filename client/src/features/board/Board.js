@@ -2,7 +2,7 @@ import List from '../list/List';
 import '@atlaskit/css-reset';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useContext } from 'react';
-import { updateBoard, updateList } from '../../../store/index';
+import { updateBoard, updateList } from '../../store/index';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
 

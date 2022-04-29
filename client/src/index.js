@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import store from './store/index.js';
+import store from './app/store';
 import { Provider } from 'react-redux';
-import App from './components/app/App';
+import App from './app/App';
 
 ReactDOM.render(
   <React.StrictMode>

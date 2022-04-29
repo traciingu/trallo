@@ -47,7 +47,7 @@ export const updateList = createAsyncThunk('lists/update', async (info) => {
     return { lists: data };
 });
 
-const boardSlice = createSlice({
+export const boardSlice = createSlice({
     name: 'board',
     initialState: {},
     reducers: {},
@@ -64,7 +64,7 @@ const boardSlice = createSlice({
     }
 });
 
-const listSlice = createSlice({
+export const listSlice = createSlice({
     name: 'lists',
     initialState: { byId: {}, allIds: [] },
     reducers: {},
@@ -87,7 +87,7 @@ const listSlice = createSlice({
     }
 });
 
-const cardSlice = createSlice({
+export const cardSlice = createSlice({
     name: 'cards',
     initialState: { byId: {}, allIds: {} },
     reducers: {},
@@ -117,10 +117,10 @@ const cardSlice = createSlice({
     }
 });
 
-export default configureStore({
-    reducer: {
-        board: boardSlice.reducer,
-        lists: listSlice.reducer,
-        cards: cardSlice.reducer
-    }
-});
+// export default configureStore({
+//     reducer: {
+//         board: boardSlice.reducer,
+//         lists: listSlice.reducer,
+//         cards: cardSlice.reducer
+//     }
+// });
