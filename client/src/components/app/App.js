@@ -1,18 +1,24 @@
 import './App.css';
 import '@atlaskit/css-reset';
 import { useEffect, useContext } from 'react';
-import { loadBoard } from '../../store/index';
+import { getBoard, loadBoard } from '../../store/index';
 import di from '../injection_container';
 import { connect } from 'react-redux';
 import Board from '../features/board/Board';
 
 
-function App({loadBoard}) {
+function App({ getBoard, loadBoard, boardId }) {
   // const { loadBoard } = di;
 
   useEffect(() => {
-    loadBoard("625a2e6ea978638034ee3850");
-  }, [loadBoard]);
+    getBoard();
+  }, []);
+
+  useEffect(() => {
+    if (boardId) {
+      loadBoard(boardId);
+    }
+  }, [loadBoard, boardId]);
 
   const styles = (comp, droppableStyle) => {
     switch (comp) {
@@ -38,11 +44,18 @@ function App({loadBoard}) {
   );
 }
 
+const mapStateToProps = state => {
+  return {
+    boardId: state.board.id
+  }
+}
+
 const mdToProps = dispatch => {
   // const { loadBoard } = di;
   return {
+    getBoard: () => { dispatch(getBoard()) },
     loadBoard: (id) => { dispatch(loadBoard(id)); }
   }
 };
 
-export default connect(null, mdToProps)(App);
+export default connect(mapStateToProps, mdToProps)(App);

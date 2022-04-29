@@ -1,0 +1,1 @@
+process.env.MONGO_URI_TEST="mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority"

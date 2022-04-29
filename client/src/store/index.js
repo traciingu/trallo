@@ -7,6 +7,11 @@ const api = axios.create({
 })
 
 
+export const getBoard = createAsyncThunk('board/get', async () => {
+    const { data } = await api('boards');
+    return {board: data};
+});
+
 export const loadBoard = createAsyncThunk('board/load', async (id) => {
     const { data } = await api(`/boards/${id}`);
     const lists = data.lists;
@@ -51,6 +56,10 @@ const boardSlice = createSlice({
             .addCase(loadBoard.fulfilled, (state, action) => {
                 const board = action.payload.board;
                 state.title = board.title;
+            })
+            .addCase(getBoard.fulfilled, (state, action) => {
+                const board = action.payload.board;
+                state.id = board[0].id;
             })
     }
 });

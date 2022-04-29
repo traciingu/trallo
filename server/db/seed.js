@@ -1,26 +1,32 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGO_URI);
 
 const { Board, List, Card } = require('./models');
 
 async function seed() {
+    mongoose.connect(process.env.MONGO_URI);
+
     // const b1 = 
     // const c1 = await new Card({
     //     title: "You say",
     //     description: "Why?"
     // }).save();
 
-    const c2 = await new Card({
-        title: "I say",
-        description: "I don't know"
-    }).save();
+    // const c2 = await new Card({
+    //     title: "I say",
+    //     description: "I don't know"
+    // }).save();
 
-    const c3 = await new Card({
-        title: "Hello",
-        description: "Goodbye"
-    }).save();
+    // const c3 = await new Card({
+    //     title: "Hello",
+    //     description: "Goodbye"
+    // }).save();
+
+    console.log(await new Card({
+            title: "Seed Test",
+            description: "Goodbye"
+        }).save());
 
     // await new List({
     //     title: "Todo",
@@ -83,4 +89,6 @@ async function runSeed() {
     }
 }
 
-runSeed(); 
+// runSeed(); 
+
+module.exports = runSeed;

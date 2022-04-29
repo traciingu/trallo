@@ -19,6 +19,7 @@ const Card = ({ cards, listId, cardsOrdering }) => {
                             {...provided.draggableProps}
                             ref={provided.innerRef}
                             style={cardStyle(provided.draggableProps.style)}
+                            className="card"
                         >
                             {cards[cardId].title}
                         </div>

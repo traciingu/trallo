@@ -16,6 +16,16 @@ router.get('/:id', async (req, res, next) => {
 
 });
 
+router.get('/', async (req, res, next) => {
+    try {
+        
+        res.json(await Board.find());
+    } catch (err) {
+        next(err);
+    }
+
+});
+
 router.post('/', async (req, res, next) => {
     try {
         const title = req.body.title;

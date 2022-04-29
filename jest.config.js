@@ -1,6 +1,7 @@
 const config = async () => {
     return {
-        "preset": "jest-puppeteer"
+        "preset": "jest-puppeteer",
+        setupFiles: ["./test/testEnvVars.js"]
     }
 };
 
