@@ -1,7 +1,4 @@
 const { MongoClient } = require('mongodb');
-const board = require('./models/board');
-
-require('dotenv').config();
 
 const client = new MongoClient("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
 
@@ -10,7 +7,6 @@ async function populate() {
         await client.connect();
 
         const db = client.db('trallo');
-
         const cards = db.collection('cards');
 
         const hello = {
@@ -46,8 +42,6 @@ async function populate() {
         const boards = db.collection('boards');
         const board = await boards.insertOne(dummy);
 
-
-        // console.log(board)
     } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
@@ -59,13 +53,13 @@ async function deleteAll() {
         await client.connect();
         const db = client.db('trallo');
         const cards = db.collection('cards');
-        const card = await cards.deleteMany({});
+        await cards.deleteMany({});
 
         const lists = db.collection('lists');
-        const list = await lists.deleteMany({});
+        await lists.deleteMany({});
 
         const boards = db.collection('boards');
-        const board = await boards.deleteMany({});
+        await boards.deleteMany({});
 
     } finally {
         // Ensures that the client will close when you finish/error
