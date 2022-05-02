@@ -1,6 +1,5 @@
 import List from '../list/List';
 import '@atlaskit/css-reset';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useContext } from 'react';
 import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
@@ -9,7 +8,8 @@ import { connect } from 'react-redux';
 
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
-  const helpers = useContext(di);
+  const {reorderLists, reorderCards, DragDropContext, Droppable} = useContext(di);
+
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
@@ -33,7 +33,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
       // orderingCpy.splice(source.index, 1);
       // orderingCpy.splice(destination.index, 0, draggableId);
 
-      const orderingCpy = helpers.reorderLists(listOrdering, {
+      const orderingCpy = reorderLists(listOrdering, {
         sourceIndex: source.index,
         destinationIndex: destination.index,
         id: draggableId
@@ -58,7 +58,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
           // sourceCpy.splice(source.index, 1);
           // destCpy.splice(destination.index, 0, draggableId);
 
-          const { destCpy, sourceCpy } = helpers.reorderCards(cardOrdering, {destination, source, id: draggableId});
+          const { destCpy, sourceCpy } = reorderCards(cardOrdering, {destination, source, id: draggableId});
 
           updateList({ id: destination.droppableId, card: destCpy });
           updateList({ id: source.droppableId, card: sourceCpy });
@@ -75,7 +75,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
           // destCpy.splice(source.index, 1);
           // destCpy.splice(destination.index, 0, draggableId);
 
-          const destCpy = helpers.reorderCards(destination, source, cardOrdering, draggableId);
+          const destCpy = reorderCards(destination, source, cardOrdering, draggableId);
 
 
           updateList({ id: destination.droppableId, card: destCpy });
@@ -139,7 +139,6 @@ const msToProps = state => {
 }
 
 const mdToProps = dispatch => {
-  // const { loadBoard } = di;
   return {
     updateBoard: (info) => { dispatch(updateBoard(info)) },
     updateList: (info) => { dispatch(updateList(info)) },
