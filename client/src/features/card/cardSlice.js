@@ -9,25 +9,33 @@ export const cardSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
-                const cards = action.payload.cards;
-                cards.forEach(card => {
-                    state.byId[card._id] = card;
-                    if (!state.allIds[card.listId]) {
-                        state.allIds[card.listId] = [];
-                    }
-                    state.allIds[card.listId].push(card.id);
-                })
+                pushCardsToStoreOnLoad(state, action);
             })
             .addCase(updateList.fulfilled, (state, action) => {
-                const lists = action.payload.lists;
-                lists.forEach(list => {
-                    list.cards.forEach((cardId) => {
-                        if (!state.allIds[cardId]) {
-                            state.allIds[cardId] = [];
-                        }
-                        state.allIds[cardId].push(cardId);
-                    })
-                });
+                pushCardsToStoreOnUpdate(state, action);
             })
     }
 });
+
+const pushCardsToStoreOnLoad = (state, action) => {
+    const cards = action.payload.cards;
+    cards.forEach(card => {
+        state.byId[card._id] = card;
+        if (!state.allIds[card.listId]) {
+            state.allIds[card.listId] = [];
+        }
+        state.allIds[card.listId].push(card.id);
+    })
+};
+
+const pushCardsToStoreOnUpdate = (state, action) => {
+    const lists = action.payload.lists;
+    lists.forEach(list => {
+        list.cards.forEach((cardId) => {
+            if (!state.allIds[cardId]) {
+                state.allIds[cardId] = [];
+            }
+            state.allIds[cardId].push(cardId);
+        })
+    });
+};
