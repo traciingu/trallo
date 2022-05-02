@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "test": "jest"
+    "test:functional": "jest --testPathPattern=functional-tests --config=functional-tests/jest.config.js",
+    "test:fe": "jest --testPathPattern=client/src"
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^2.2.2",
