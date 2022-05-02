@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
-  const {reorderLists, reorderCards, DragDropContext, Droppable, List} = useContext(di);
+  const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
 
   const onDragEnd = (result) => {
@@ -27,9 +27,6 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
 
     // Reordering logic for lists
     if (type.localeCompare("lists") === 0) {
-      // const orderingCpy = [...listOrdering];
-      // orderingCpy.splice(source.index, 1);
-      // orderingCpy.splice(destination.index, 0, draggableId);
 
       const orderingCpy = reorderLists(listOrdering, {
         sourceIndex: source.index,
@@ -38,25 +35,14 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
       });
 
       updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
-
     }
 
     // Reordering logic for cards
     if (type.localeCompare("cards") === 0) {
       try {
         if (destination.droppableId !== source.droppableId) {
-          // let destCpy = [];
-          // let sourceCpy = [];
 
-          // if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
-          //   destCpy = [...cardOrdering[destination.droppableId]];
-          //   sourceCpy = [...cardOrdering[source.droppableId]];
-          // }
-
-          // sourceCpy.splice(source.index, 1);
-          // destCpy.splice(destination.index, 0, draggableId);
-
-          const { destCpy, sourceCpy } = reorderCards(cardOrdering, {destination, source, id: draggableId});
+          const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
 
           updateList({ id: destination.droppableId, card: destCpy });
           updateList({ id: source.droppableId, card: sourceCpy });
@@ -64,17 +50,8 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
           console.log("Moving outside SOURCECOPY: ", sourceCpy);
 
         } else {
-          // let destCpy = [];
-
-          // if (cardOrdering[destination.droppableId] && cardOrdering[source.droppableId]) {
-          //   destCpy = [...cardOrdering[destination.droppableId]];
-          // }
-
-          // destCpy.splice(source.index, 1);
-          // destCpy.splice(destination.index, 0, draggableId);
 
           const destCpy = reorderCards(destination, source, cardOrdering, draggableId);
-
 
           updateList({ id: destination.droppableId, card: destCpy });
           console.log("Moving inside list: ", destCpy);
@@ -101,8 +78,6 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
         };
     }
   }
-
-
 
   return (
     <div className="board">
