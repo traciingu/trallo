@@ -9,21 +9,21 @@ export const listSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
-                const lists = action.payload.lists;
-                lists.forEach(list => {
-                    state.byId[list.id] = list;
-                    state.allIds.push(list.id);
-                });
+                pushListToStore(state, action);
             })
             .addCase(updateList.fulfilled, (state, action) => {
-                const lists = action.payload.lists;
-                lists.forEach(list => {
-                    state.byId[list.id] = list;
-                    state.allIds.push(list.id);
-                });
+                pushListToStore(state, action);
             })
     }
 });
+
+const pushListToStore = (state, action) => {
+    const lists = action.payload.lists;
+    lists.forEach(list => {
+        state.byId[list.id] = list;
+        state.allIds.push(list.id);
+    });
+};
 
 export const updateList = createAsyncThunk('lists/update', async (info) => {
     const { data } = await api.patch(`/lists/${info.id}`, info);
