@@ -1,5 +1,3 @@
-import List from '../list/List';
-import '@atlaskit/css-reset';
 import { useContext } from 'react';
 import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
@@ -8,7 +6,7 @@ import { connect } from 'react-redux';
 
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
-  const {reorderLists, reorderCards, DragDropContext, Droppable} = useContext(di);
+  const {reorderLists, reorderCards, DragDropContext, Droppable, List} = useContext(di);
 
 
   const onDragEnd = (result) => {

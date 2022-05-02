@@ -4,11 +4,11 @@ import { useEffect, useContext } from 'react';
 import { getBoard, loadBoard } from '../features/board/boardSlice';
 import di from '../injection_container';
 import { connect } from 'react-redux';
-import Board from '../features/board/Board';
+// import Board from '../features/board/Board';
 
 
 function App({ getBoard, loadBoard, boardId }) {
-  // const { loadBoard } = di;
+  const { Board } = useContext(di);
 
   useEffect(() => {
     getBoard();
@@ -20,23 +20,7 @@ function App({ getBoard, loadBoard, boardId }) {
     }
   }, [loadBoard, boardId]);
 
-  const styles = (comp, droppableStyle) => {
-    switch (comp) {
-      case "list":
-        return {
-          padding: "50px"
-        };
-
-      case "listContainer":
-
-        return {
-          display: "flex",
-          justifyContent: "space-around",
-          ...droppableStyle
-        };
-    }
-  }
-
+  
   return (
     <div className="App">
       <Board />

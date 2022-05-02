@@ -1,8 +1,9 @@
-import { Draggable, Droppable } from "react-beautiful-dnd";
-import Card from "../card/Card";
+import { useContext } from "react";
+import di from '../../injection_container';
 import { connect } from "react-redux";
 
 const List = ({ lists }) => {
+    const { Droppable, Draggable, Card } = useContext(di);
 
     const listStyle = (draggableStyle) => ({
         ...draggableStyle

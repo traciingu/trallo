@@ -1,7 +1,9 @@
-import { Draggable } from "react-beautiful-dnd";
+import { useContext } from "react";
+import di from '../../injection_container';
 import { connect } from "react-redux";
 
 const Card = ({ cards, listId, cardsOrdering }) => {
+    const { Draggable } = useContext(di);
 
     const cardStyle = (draggableStyle) => ({
         padding: "10px",
