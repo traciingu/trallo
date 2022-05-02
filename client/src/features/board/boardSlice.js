@@ -26,14 +26,7 @@ export const getBoard = createAsyncThunk('board/get', async () => {
 export const loadBoard = createAsyncThunk('board/load', async (id) => {
     const { data } = await api(`/boards/${id}`);
     const lists = data.lists;
-    const cards = [];
-
-    for (let i = 0; i < lists.length; i++) {
-        const cardsArr = lists[i].cards;
-        for (let j = 0; j < cardsArr.length; j++) {
-            cards.push({ listId: lists[i].id, ...cardsArr[j] });
-        }
-    }
+    const cards = arrCopy(lists);
 
     const listsCardIdOnly = lists.map(list => {
         return ({
@@ -52,3 +45,16 @@ export const loadBoard = createAsyncThunk('board/load', async (id) => {
 export const updateBoard = createAsyncThunk('board/update', async (info) => {
     await api.patch(`/boards/${info.id}`, info);
 });
+
+const arrCopy = (lists) => {
+    const cards = [];
+
+    for (let i = 0; i < lists.length; i++) {
+        const cardsArr = lists[i].cards;
+        for (let j = 0; j < cardsArr.length; j++) {
+            cards.push({ listId: lists[i].id, ...cardsArr[j] });
+        }
+    }
+
+    return cards;
+};
