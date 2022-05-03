@@ -4,11 +4,17 @@
     "test:fe": "jest --testPathPattern=client/src"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.17.10",
+    "@babel/preset-react": "^7.16.7",
     "@shelf/jest-mongodb": "^2.2.2",
+    "@testing-library/react": "^13.1.1",
     "dotenv": "^16.0.0",
     "jest": "^28.0.1",
+    "jest-environment-jsdom": "^28.0.2",
     "jest-puppeteer": "^6.1.0",
+    "jsdom": "^19.0.0",
     "mongodb": "^4.5.0",
-    "mongoose": "^6.3.1"
+    "mongoose": "^6.3.1",
+    "webpack-dev-server": "^4.8.1"
   }
 }
