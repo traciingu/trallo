@@ -1,5 +1,4 @@
 import './App.css';
-import '@atlaskit/css-reset';
 import { useEffect, useContext } from 'react';
 import { getBoard, loadBoard } from '../features/board/boardSlice';
 import di from '../injection_container';
