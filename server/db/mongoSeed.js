@@ -2,6 +2,8 @@ const { MongoClient } = require('mongodb');
 
 const client = new MongoClient("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
 
+// client.connect();
+
 async function populate() {
     try {
         await client.connect();
@@ -44,7 +46,7 @@ async function populate() {
 
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+        await client.close(() => console.log("Connection closed"));
     }
 }
 
@@ -63,11 +65,12 @@ async function deleteAll() {
 
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+        await client.close(() => console.log("Connection closed"));
     }
 }
 
-// deleteAll().catch(console.dir);
+
 populate().catch(console.dir);
+deleteAll().catch(console.dir);
 
 module.exports = { populate, deleteAll };

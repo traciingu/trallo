@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test:functional": "jest --testPathPattern=functional-tests --config=functional-tests/jest.config.js",
+    "test:functional": "jest --testPathPattern=functional-tests --config=functional-tests/jest.config.js --detectOpenHandles",
     "test:fe": "jest --testPathPattern=client/src"
   },
   "devDependencies": {
