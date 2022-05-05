@@ -1,16 +1,26 @@
 import Board from './Board';
 import React from 'react';
-// import { act } from 'react-dom/test-utils';
 import { render } from 'react-dom';
-import store from '../../app/store';
+//import store from '../../app/store';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { create, act } from 'react-test-renderer';
+import { boardSlice } from './boardSlice';
+import TestRenderer from 'react-test-renderer';
+const { act, create } = TestRenderer;
+
 
 let container;
+let store;
 
 beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
+
+  store = configureStore({reducer: boardSlice.reducer, preloadedState: {
+    board: {title: "Board Test", id: "BoardId123"},
+    lists: {allIds: []},
+    cards: {allIds: []}
+  }});
 });
 
 afterEach(() => {
@@ -20,29 +30,30 @@ afterEach(() => {
 
 
 describe("Smoke test", () => {
-  it("Board", () => {
-    act(() => {
-      render(<Provider store={store}><Board /> </Provider>, container);
-    });
-  });
+  // it("Board", () => {
+  //   act(() => {
+  //     render(<Provider store={store}><Board /> </Provider>, container);
+  //   });
+  // });
 
   it("Board", () => {
-    // act(() => {
-    //     render(<Provider store={store}><Board /> </Provider>, container);
-    //   });
-
     let root;
-    
-    act(() => {
-      root = create(<Provider store={store}><Board title="HELLO" /> </Provider>);
-    });
 
-    console.log(root.toJSON())
+    act(() => {
+      root = create(<Provider store={store}><Board /> </Provider>);
+    });
+    console.log(root.toJSON()[0].children)
 
     expect(root.toJSON()[0].props.className).toEqual("board");
-    // const tr = create(<Provider store={store}><Board title="HELLO" /> </Provider>);
-    // const testInstance = tr.root;
-    
-    // console.log(tr);
   });
+
+  it("gets Board title from Redux store", () => {
+    let root;
+
+    act(() => {
+      root = create(<Provider store={store}><Board /> </Provider>);
+    });
+
+    expect(root.toJSON()[0].children[0].children).toEqual(["Board Test"]);
+  })
 });

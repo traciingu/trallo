@@ -13,7 +13,7 @@ const Card = ({ cards, listId, cardsOrdering }) => {
 
     return (
         <>
-            {cardsOrdering[listId]?.map((cardId, index) => {
+            {cards && cardsOrdering[listId]?.map((cardId, index) => {
                 return (<Draggable draggableId={cards[cardId].id} index={index} key={cards[cardId].id}>
                     {(provided) => (
                         <div

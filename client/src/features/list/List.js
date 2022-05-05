@@ -11,7 +11,7 @@ const List = ({ lists }) => {
 
     return (
         <>
-            {Object.keys(lists).map((key, index) => (
+            {lists && Object.keys(lists).map((key, index) => (
                 <Draggable draggableId={`${lists[key].id}`} index={index} key={lists[key].id}>
                     {provided => (
                         <div
@@ -23,16 +23,16 @@ const List = ({ lists }) => {
                                 {...provided.dragHandleProps}
                             >{lists[key].title}</h2>
                             <Droppable droppableId={`${lists[key].id}`} key={lists[key].id} type="cards">
-                                {provided => (
+                                {(providedDroppable) => (
                                     <div
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
+                                        {...providedDroppable.droppableProps}
+                                        ref={providedDroppable.innerRef}
                                     >
                                         <div
-                                            style={listStyle(provided.droppableProps.draggableStyle)}
+                                            style={listStyle(providedDroppable.droppableProps.draggableStyle)}
                                         >
                                             <Card listId={lists[key].id} />
-                                            {provided.placeholder}
+                                            {providedDroppable.placeholder}
                                         </div>
                                     </div>)}
                             </Droppable>
