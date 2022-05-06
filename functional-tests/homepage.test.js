@@ -1,5 +1,4 @@
 const { installMouseHelper } = require('./helpers/install-mouse-helper');
-// const { populate, deleteAll } = require("../server/db/mongoSeed");
 
 const { MongoClient } = require('mongodb');
 
@@ -8,10 +7,7 @@ describe('Home page', () => {
     let db;
 
     beforeAll(async () => {
-        // await populate();
-
         try {
-
             connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
             db = await connection.db("trallo");
 
@@ -55,8 +51,6 @@ describe('Home page', () => {
     });
 
     afterAll(async () => {
-        // await deleteAll();
-
         try {
             const cards = db.collection('cards');
             await cards.deleteMany({});
@@ -124,71 +118,3 @@ describe('Home page', () => {
 
     });
 });
-
-
-
-
-async function populate() {
-    try {
-        await client.connect();
-
-        const db = client.db('trallo');
-        const cards = db.collection('cards');
-
-        const hello = {
-            title: "Hello",
-            description: "Goodbye"
-        };
-
-        const card = await cards.insertOne(hello);
-
-        const todo = {
-            title: "Todo",
-            cards: [card.insertedId]
-        }
-
-        const inProgress = {
-            title: "In progress",
-            cards: []
-        }
-
-        const done = {
-            title: "Done",
-            cards: []
-        }
-
-        const lists = db.collection('lists');
-        const list = await lists.insertMany([todo, inProgress, done]);
-
-        const dummy = {
-            title: "Dummy",
-            lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
-        }
-
-        const boards = db.collection('boards');
-        const board = await boards.insertOne(dummy);
-
-    } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
-    }
-}
-
-async function deleteAll() {
-    try {
-        // await client.connect();
-        const db = client.db('trallo');
-        const cards = db.collection('cards');
-        await cards.deleteMany({});
-
-        const lists = db.collection('lists');
-        await lists.deleteMany({});
-
-        const boards = db.collection('boards');
-        await boards.deleteMany({});
-
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-    }
-}
