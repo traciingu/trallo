@@ -3,58 +3,54 @@ const { installMouseHelper } = require('./helpers/install-mouse-helper');
 
 const { MongoClient } = require('mongodb');
 
-const client = new MongoClient("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
-
-
 describe('Home page', () => {
+    let connection;
+    let db;
+
     beforeAll(async () => {
         // await populate();
 
         try {
-            await client.connect(() => console.log("Connection opened"));
-    
-            const db = client.db('trallo');
+
+            connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
+            db = await connection.db("trallo");
+
             const cards = db.collection('cards');
-    
+
             const hello = {
                 title: "Hello",
                 description: "Goodbye"
             };
-    
+
             const card = await cards.insertOne(hello);
-    
+
             const todo = {
                 title: "Todo",
                 cards: [card.insertedId]
             }
-    
+
             const inProgress = {
                 title: "In progress",
                 cards: []
             }
-    
+
             const done = {
                 title: "Done",
                 cards: []
             }
-    
+
             const lists = db.collection('lists');
             const list = await lists.insertMany([todo, inProgress, done]);
-    
+
             const dummy = {
                 title: "Dummy",
                 lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
             }
-    
+
             const boards = db.collection('boards');
-            const board = await boards.insertOne(dummy);
-
-
-    
-        } finally {
-            // Ensures that the client will close when you finish/error
-            await client.close(() => console.log("Connection closed"));
-            // done();
+            await boards.insertOne(dummy);
+        } catch (err) {
+            console.log(err);
         }
     });
 
@@ -62,25 +58,22 @@ describe('Home page', () => {
         // await deleteAll();
 
         try {
-            await client.connect(() => console.log("Connection opened"));
-            const db = client.db('trallo');
             const cards = db.collection('cards');
             await cards.deleteMany({});
-    
+
             const lists = db.collection('lists');
             await lists.deleteMany({});
-    
+
             const boards = db.collection('boards');
             await boards.deleteMany({});
-    
+
         } finally {
             // Ensures that the client will close when you finish/error
-            await client.close(() => console.log("Connection closed"));
-            // done();
+            await connection.close();
         }
     });
 
-    it('user can view board and move cards from list to list"', async (done) => {
+    it('user can view board and move cards from list to list"', async () => {
         await installMouseHelper(page);
 
         // User opens board
@@ -128,8 +121,6 @@ describe('Home page', () => {
         listHeader = await parentListElement.$eval('h2', node => node.innerText);
 
         expect(listHeader).toEqual('In progress');
-
-        done();
 
     });
 });
