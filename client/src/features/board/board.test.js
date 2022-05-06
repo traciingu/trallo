@@ -1,49 +1,95 @@
 import Board from './Board';
 import React from 'react';
-import { configureStore } from '@reduxjs/toolkit';
+// import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { boardSlice } from './boardSlice';
-import TestRenderer from 'react-test-renderer';
-const { act, create } = TestRenderer;
+// import { boardSlice } from './boardSlice';
+// import TestRenderer from 'react-test-renderer';
+// const { act, create } = TestRenderer;
+import "@testing-library/jest-dom/extend-expect";
+import { cleanup, fireEvent, render, getNodeText } from "@testing-library/react";
+import configureStore from 'redux-mock-store';
+import { updateBoard } from './boardSlice';
+import { updateList } from '../list/listSlice';
 
-let container;
-let store;
+const mockStore = configureStore([]);
 
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+const renderComponent = (state) => {
+  const store = mockStore(state)
+  return [
+    render(
+      <Provider store={store}>
+        <Board />
+      </Provider>
+    ),
+    store,
+  ]
+}
 
-  store = configureStore({reducer: boardSlice.reducer, preloadedState: {
-    board: {title: "Board Test", id: "BoardId123"},
-    lists: {allIds: []},
-    cards: {allIds: []}
-  }});
-});
+// let container;
+// let store;
 
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
+// beforeEach(() => {
+//   container = document.createElement('div');
+//   document.body.appendChild(container);
+
+//   // store = configureStore({reducer: boardSlice.reducer, preloadedState: {
+//   //   board: {title: "Board Test", id: "BoardId123"},
+//   //   lists: {allIds: []},
+//   //   cards: {allIds: []}
+//   // }});
+// });
+
+// afterEach(() => {
+//   document.body.removeChild(container);
+//   container = null;
+// });
 
 
 describe("Board", () => {
-  it("has a class name of 'board'", () => {
-    let root;
-
-    act(() => {
-      root = create(<Provider store={store}><Board /> </Provider>);
-    });
-
-    expect(root.toJSON()[0].props.className).toEqual("board");
-  });
-
   it("gets Board title from Redux store", () => {
-    let root;
-
-    act(() => {
-      root = create(<Provider store={store}><Board /> </Provider>);
+    const [{ getByText }, store] = renderComponent({
+      board: { title: "Board Test", id: "BoardId123" },
+      lists: { allIds: [] },
+      cards: { allIds: [] }
     });
 
-    expect(root.toJSON()[0].children[0].children).toEqual(["Board Test"]);
+    expect(getByText("Board Test")).toBeTruthy();
+
+
+
+    // store = configureStore({
+    //   reducer: boardSlice.reducer, preloadedState: {
+    //     board: { title: "Board Test", id: "BoardId123" },
+    //     lists: { allIds: [] },
+    //     cards: { allIds: [] }
+    //   }
+    // });
+
+    // let root;
+
+    // act(() => {
+    //   root = create(<Provider store={store}><Board /> </Provider>);
+    // });
+
+    // expect(root.toJSON()[0].children[0].children).toEqual(["Board Test"]);
   })
+
+  it("calls Redux thunk after list is dropped", () => {
+    // store = configureStore({
+    //   reducer: boardSlice.reducer, preloadedState: {
+    //     board: { title: "Board Test", id: "BoardId123" },
+    //     lists: { allIds: [] },
+    //     cards: { allIds: [] }
+    //   }
+    // });
+
+    // let root;
+
+    // act(() => {
+    //   root = create(<Provider store={store}><Board /> </Provider>);
+    // });
+
+    // expect(root.toJSON()[0].children[0].children).toEqual(["Board Test"]);
+  })
+
 });
