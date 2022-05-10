@@ -42,12 +42,14 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
       try {
         if (destination.droppableId !== source.droppableId) {
 
-          const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
+          reorderBetweenLists(cardOrdering, reorderCards, updateList, destination, source, draggableId);
 
-          updateList({ id: destination.droppableId, card: destCpy });
-          updateList({ id: source.droppableId, card: sourceCpy });
-          console.log("Moving outside DESTCOPY: ", destCpy);
-          console.log("Moving outside SOURCECOPY: ", sourceCpy);
+          // const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
+
+          // updateList({ id: destination.droppableId, card: destCpy });
+          // updateList({ id: source.droppableId, card: sourceCpy });
+          // console.log("Moving outside DESTCOPY: ", destCpy);
+          // console.log("Moving outside SOURCECOPY: ", sourceCpy);
 
         } else {
 
@@ -101,6 +103,16 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
     </div>
   );
 }
+
+const reorderBetweenLists = (cardOrdering, reorderCards, updateList, destination, source, draggableId) => {
+  
+  const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
+
+  updateList({ id: destination.droppableId, card: destCpy });
+  updateList({ id: source.droppableId, card: sourceCpy });
+  console.log("Moving outside DESTCOPY: ", destCpy);
+  console.log("Moving outside SOURCECOPY: ", sourceCpy);
+};
 
 
 const msToProps = state => {
