@@ -53,8 +53,10 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
 
         } else {
 
-          const destCpy = reorderCards(destination, source, cardOrdering, draggableId);
+          // const destCpy = reorderCards(destination, source, cardOrdering, draggableId);
 
+          const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
+          
           updateList({ id: destination.droppableId, card: destCpy });
           console.log("Moving inside list: ", destCpy);
         }

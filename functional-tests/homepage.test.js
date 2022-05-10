@@ -6,51 +6,9 @@ describe('Home page', () => {
     let connection;
     let db;
 
-    beforeAll(async () => {
-        try {
-            connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
-            db = await connection.db("trallo");
+    // TODO setup installMouseHelper in beforeEach()
 
-            const cards = db.collection('cards');
-
-            const hello = {
-                title: "Hello",
-                description: "Goodbye"
-            };
-
-            const card = await cards.insertOne(hello);
-
-            const todo = {
-                title: "Todo",
-                cards: [card.insertedId]
-            }
-
-            const inProgress = {
-                title: "In progress",
-                cards: []
-            }
-
-            const done = {
-                title: "Done",
-                cards: []
-            }
-
-            const lists = db.collection('lists');
-            const list = await lists.insertMany([todo, inProgress, done]);
-
-            const dummy = {
-                title: "Dummy",
-                lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
-            }
-
-            const boards = db.collection('boards');
-            await boards.insertOne(dummy);
-        } catch (err) {
-            console.log(err);
-        }
-    });
-
-    afterAll(async () => {
+    afterEach(async () => {
         try {
             const cards = db.collection('cards');
             await cards.deleteMany({});
@@ -68,6 +26,8 @@ describe('Home page', () => {
     });
 
     it('user can view board and move cards from list to list"', async () => {
+        await setupDbWithOneCard();
+
         await installMouseHelper(page);
 
         // User opens board
@@ -117,4 +77,143 @@ describe('Home page', () => {
         expect(listHeader).toEqual('In progress');
 
     });
+
+    it('can reorder cards within the same list', async () => {
+        await setupDbWithTwoCards();
+
+        await installMouseHelper(page);
+
+        await page.goto('http://localhost:3000');
+
+        await page.waitForSelector("h2");
+
+
+        const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
+        const helloBox = await helloCard.boundingBox();
+        const helloX = helloBox.x + helloBox.width / 2;
+        const helloY = helloBox.y + helloBox.height / 2;
+
+        const goodbyeCard = (await page.$x('//div[text()="Goodbye"]'))[0];
+        const goodbyeBox = await goodbyeCard.boundingBox();
+        const goodbyeX = goodbyeBox.x + goodbyeBox.width / 2;
+        const goodbyeY = goodbyeBox.y + goodbyeBox.height / 2;
+
+        // const inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
+        // const inProgressBox = await inProgressList.boundingBox();
+        // const inProgressX = inProgressBox.x + inProgressBox.width;
+        // const inProgressY = inProgressBox.y + inProgressBox.height;
+
+
+        await page.mouse.move(helloX, helloY, { steps: 5 });
+        await page.mouse.down();
+        await page.mouse.move(goodbyeX, goodbyeY, { steps: 5 });
+        await page.mouse.up();
+
+        await page.waitForTimeout(500);
+        await page.reload();
+        await page.waitForSelector("h2");
+
+        let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+        const cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
+        // selectorTest.map(node => console.log(node));
+
+        expect(cardNames).toEqual(['Goodbye', 'Hello']);
+        // [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+        // listHeader = await parentListElement.$eval('h2', node => node.innerText);
+
+    });
+
+    const setupDbWithOneCard = async () => {
+        try {
+            connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
+            db = await connection.db("trallo");
+
+            const cards = db.collection('cards');
+
+            const hello = {
+                title: "Hello",
+                description: "Goodbye"
+            };
+
+            const card = await cards.insertOne(hello);
+
+            const todo = {
+                title: "Todo",
+                cards: [card.insertedId]
+            }
+
+            const inProgress = {
+                title: "In progress",
+                cards: []
+            }
+
+            const done = {
+                title: "Done",
+                cards: []
+            }
+
+            const lists = db.collection('lists');
+            const list = await lists.insertMany([todo, inProgress, done]);
+
+            const dummy = {
+                title: "Dummy",
+                lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
+            }
+
+            const boards = db.collection('boards');
+            await boards.insertOne(dummy);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const setupDbWithTwoCards = async () => {
+        try {
+            connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
+            db = await connection.db("trallo");
+
+            const cards = db.collection('cards');
+
+            const hello = {
+                title: "Hello",
+                description: "Goodbye"
+            };
+
+            const goodbye = {
+                title: "Goodbye",
+                description: "Hello"
+            };
+
+            const card = await cards.insertMany([hello, goodbye]);
+
+            const todo = {
+                title: "Todo",
+                cards: Object.keys(card.insertedIds).map(key => card.insertedIds[key])
+            }
+
+            const inProgress = {
+                title: "In progress",
+                cards: []
+            }
+
+            const done = {
+                title: "Done",
+                cards: []
+            }
+
+            const lists = db.collection('lists');
+            const list = await lists.insertMany([todo, inProgress, done]);
+
+            const dummy = {
+                title: "Dummy",
+                lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
+            }
+
+            const boards = db.collection('boards');
+            await boards.insertOne(dummy);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 });
+
