@@ -11,9 +11,11 @@ export const reorderLists = (listOrdering, draggable) => {
     return orderingCpy;
 };
 
-const reorderElements = (sourceArr, destinationArr, draggable) => {
-    sourceArr.splice(draggable.sourceIndex, 1);
-    destinationArr.splice(draggable.destinationIndex, 0, draggable.id);
+export const reorderElements = (sourceArr, destinationArr, draggable) => {
+    console.log("Source Arr: ", sourceArr);
+    console.log("Draggable: ", draggable);
+    sourceArr.splice(draggable.source.index, 1);
+    destinationArr.splice(draggable.destination.index, 0, draggable.id);
 
     return { sourceArr, destinationArr };
 };
@@ -23,17 +25,22 @@ const copyCollection = (obj, key) => {
 }
 
 export const reorderCards = (cardOrdering, draggable) => {
-    const {source, destination, id } = draggable;
-    const listIsNotEmpty = cardOrdering[destination.droppableId] && cardOrdering[source.droppableId];
+    const { source, destination, id } = draggable;
+    const sourceListIsNotEmpty = cardOrdering[source.droppableId].length > 0;
+    const destListIsNotEmpty = cardOrdering[destination.droppableId].length > 0;
     const listIsNotSame = destination.droppableId !== source.droppableId;
 
     if (listIsNotSame) {
         let destCpy = [];
         let sourceCpy = [];
 
-        if (listIsNotEmpty) {
-            destCpy = copyCollection(cardOrdering, destination.droppableId);
+        if (sourceListIsNotEmpty) {
             sourceCpy = copyCollection(cardOrdering, source.droppableId);
+            console.log(sourceCpy)
+        }
+
+        if(destListIsNotEmpty){
+            destCpy = copyCollection(cardOrdering, destination.droppableId);
         }
 
         reorderElements(sourceCpy, destCpy, { source, destination, id });
@@ -50,5 +57,22 @@ export const reorderCards = (cardOrdering, draggable) => {
 
         return destCpy;
     }
+};
+
+// TODO get rid of boolean parameter
+export function reorderInSameList(listIsNotEmpty, cardOrdering, source, destination, id) {
+    if (!cardOrdering[destination.droppableId].includes(id)) {
+        throw 'Id could not be found in array of ids';
+    }
+
+    let destCpy = [];
+
+    if (listIsNotEmpty) {
+        destCpy = copyCollection(cardOrdering, destination.droppableId);
+    }
+
+    reorderElements(destCpy, destCpy, { source, destination, id });
+
+    return destCpy;
 };
 
