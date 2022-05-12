@@ -1,10 +1,12 @@
 const { reorderInSameList, reorderElements } = require("./helper")
 
+
+// TODO Find better assertions for arrays
 describe('reorderInSameList', () => {
     it('throws error when id does not exist in array of ids', () => {
         // Arrange
         const arrOfIds = { 1: [], 2: [], 3: [] };
-        const source = {};
+        const source = { droppableId: 1, index: 1 };
         const destination = { droppableId: 1, index: 1 };
         const id = 1;
 
@@ -15,7 +17,7 @@ describe('reorderInSameList', () => {
         expect(shouldThrowErr).toThrow(new Error('Id could not be found in array of ids'));
     })
 
-    it('reorders card in same list', () => {
+    it('should error when source is empty', () => {
         // Arrange
         const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
         const source = {};
@@ -23,27 +25,45 @@ describe('reorderInSameList', () => {
         const id = 1;
 
         // Act
-        const result = reorderInSameList(true, arrOfIds, source, destination, id);
+        const shouldThrowErr = (() => reorderInSameList(true, arrOfIds, source, destination, id));
 
         // Assert
-        expect(result).toEqual([2, 1]);
+        // expect(result).toEqual([2, 1]);
+        expect(shouldThrowErr).toThrow(new Error('Source should not be empty'));
     })
 });
 
 describe('reorderElements', () => {
-    it('moves a card from one list to another', () => {
+    it('moves a card within same list', () => {
         // Arrange
         const sourceArr = [1, 2];
 
-        const source = {droppableId: 1, index: 0};
+        const source = { droppableId: 1, index: 0 };
         const destination = { droppableId: 1, index: 1 };
         const id = 1;
 
         // Act
-        const result = reorderElements(sourceArr, sourceArr, {source, destination, id});
+        const result = reorderElements(sourceArr, sourceArr, { source, destination, id });
 
         // Assert
         expect(result[0]).toEqual([2]);
-        
+
+    })
+
+    it('moves a card from one list to another', () => {
+        // Arrange
+        const sourceArr = [1, 2];
+        const destArr = [3, 4];
+
+        const source = { droppableId: 1, index: 0 };
+        const destination = { droppableId: 2, index: 0 };
+        const id = 1;
+
+        // Act
+        const result = reorderElements(sourceArr, destArr, { source, destination, id });
+
+        // Assert
+        expect(result[0]).toEqual([2]);
+        expect(result[1]).toEqual([1, 3, 4]);
     })
 })

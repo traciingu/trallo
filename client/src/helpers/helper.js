@@ -45,7 +45,7 @@ export const reorderCards = (cardOrdering, draggable) => {
             console.log(sourceCpy)
         }
 
-        if(destListIsNotEmpty){
+        if (destListIsNotEmpty) {
             destCpy = copyCollection(cardOrdering, destination.droppableId);
         }
 
@@ -67,6 +67,9 @@ export const reorderCards = (cardOrdering, draggable) => {
 
 // TODO get rid of boolean parameter
 export function reorderInSameList(listIsNotEmpty, cardOrdering, source, destination, id) {
+
+    if (Object.keys(source).length === 0) { throw 'Source should not be empty' }
+
     if (!cardOrdering[destination.droppableId].includes(id)) {
         throw 'Id could not be found in array of ids';
     }
