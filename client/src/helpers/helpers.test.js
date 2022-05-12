@@ -40,10 +40,10 @@ describe('reorderElements', () => {
         const id = 1;
 
         // Act
-        const {sourceArrResult, destArrResult} = reorderElements(sourceArr, sourceArr, {source, destination, id});
+        const result = reorderElements(sourceArr, sourceArr, {source, destination, id});
 
         // Assert
-        expect(sourceArrResult).toEqual([2]);
+        expect(result[0]).toEqual([2]);
         
     })
 })

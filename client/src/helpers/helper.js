@@ -12,12 +12,18 @@ export const reorderLists = (listOrdering, draggable) => {
 };
 
 export const reorderElements = (sourceArr, destinationArr, draggable) => {
-    console.log("Source Arr: ", sourceArr);
-    console.log("Draggable: ", draggable);
-    sourceArr.splice(draggable.source.index, 1);
-    destinationArr.splice(draggable.destination.index, 0, draggable.id);
+    const sourceArrCpy = [...sourceArr];
+    const destArrCpy = [...destinationArr];
+    // console.log("Source Arr: ", sourceArr);
+    // console.log("Draggable source index: ", draggable.source.index);
+    sourceArrCpy.splice(draggable.source.index, 1);
+    destArrCpy.splice(draggable.destination.index, 0, draggable.id);
 
-    return { sourceArr, destinationArr };
+    console.log("Source Arr: ", sourceArr);
+    console.log("Dest arr: ", destinationArr);
+
+
+    return [sourceArrCpy, destArrCpy];
 };
 
 const copyCollection = (obj, key) => {
