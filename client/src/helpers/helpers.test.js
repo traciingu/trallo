@@ -30,6 +30,21 @@ describe('reorderInSameList', () => {
         // Assert
         expect(shouldThrowErr).toThrow(new Error('Source should not be empty'));
     })
+
+    it('moves a card in the same list', () => {
+        // Arrange
+        const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
+        const source = { droppableId: 1, index: 0 };
+        const destination = { droppableId: 1, index: 1 };
+        const id = 1;
+
+        // Act
+        const result = reorderInSameList(arrOfIds, source, destination, id);
+        console.log(result)
+
+        // Assert
+        expect(result[0]).toEqual([2, 1]);
+    })
 });
 
 describe('reorderElements', () => {
@@ -43,9 +58,11 @@ describe('reorderElements', () => {
 
         // Act
         const result = reorderElements(sourceArr, sourceArr, { source, destination, id });
+        console.log(result);
 
         // Assert
-        expect(result[0]).toEqual([2]);
+        expect(result[0]).toEqual([2, 1]);
+        expect(result[1]).toEqual([2, 1]);
 
     })
 

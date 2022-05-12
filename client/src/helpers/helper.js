@@ -1,6 +1,6 @@
 export const reorderLists = (listOrdering, draggable) => {
     const orderingCpy = [...listOrdering];
-    
+
     reorderElements(orderingCpy, orderingCpy, {
         sourceIndex: draggable.sourceIndex,
         destinationIndex: draggable.destinationIndex,
@@ -11,13 +11,23 @@ export const reorderLists = (listOrdering, draggable) => {
 };
 
 export const reorderElements = (sourceArr, destinationArr, draggable) => {
-    const sourceArrCpy = [...sourceArr];
-    const destArrCpy = [...destinationArr];
-   
-    sourceArrCpy.splice(draggable.source.index, 1);
-    destArrCpy.splice(draggable.destination.index, 0, draggable.id);
+    if (sourceArr === destinationArr) {
+        const sourceArrCpy = [...sourceArr];
 
-    return [sourceArrCpy, destArrCpy];
+        sourceArrCpy.splice(draggable.source.index, 1);
+        sourceArrCpy.splice(draggable.destination.index, 0, draggable.id);
+
+        return [sourceArrCpy, sourceArrCpy];
+
+    } else {
+        const sourceArrCpy = [...sourceArr];
+        const destArrCpy = [...destinationArr];
+
+        sourceArrCpy.splice(draggable.source.index, 1);
+        destArrCpy.splice(draggable.destination.index, 0, draggable.id);
+
+        return [sourceArrCpy, destArrCpy];
+    }
 };
 
 const copyCollection = (obj, key) => {
@@ -76,8 +86,8 @@ export function reorderInSameList(cardOrdering, source, destination, id) {
         destCpy = copyCollection(cardOrdering, destination.droppableId);
     }
 
-    reorderElements(destCpy, destCpy, { source, destination, id });
+    const result = reorderElements(destCpy, destCpy, { source, destination, id });
 
-    return destCpy;
+    return result;
 };
 
