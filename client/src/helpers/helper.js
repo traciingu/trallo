@@ -36,8 +36,8 @@ const copyCollection = (obj, key) => {
 
 export const reorderCards = (cardOrdering, draggable) => {
     const { source, destination, id } = draggable;
-    const sourceListIsNotEmpty = cardOrdering[source.droppableId].length > 0;
-    const destListIsNotEmpty = cardOrdering[destination.droppableId].length > 0;
+    const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(source.droppableId);
+    const destListIsNotEmpty = cardOrdering.hasOwnProperty(destination.droppableId);
     const listIsNotSame = destination.droppableId !== source.droppableId;
 
     if (listIsNotSame) {
@@ -46,20 +46,21 @@ export const reorderCards = (cardOrdering, draggable) => {
 
         if (sourceListIsNotEmpty) {
             sourceCpy = copyCollection(cardOrdering, source.droppableId);
-            console.log(sourceCpy)
+            console.log("Copying source list");
         }
 
         if (destListIsNotEmpty) {
             destCpy = copyCollection(cardOrdering, destination.droppableId);
+            console.log("Copying destination list");
         }
 
-        reorderElements(sourceCpy, destCpy, { source, destination, id });
+        const result = reorderElements(sourceCpy, destCpy, { source, destination, id });
 
-        return { destCpy, sourceCpy };
+        return result;
     } else {
         let destCpy = [];
 
-        if (listIsNotEmpty) {
+        if (destListIsNotEmpty) {
             destCpy = copyCollection(cardOrdering, destination.droppableId);
         }
 

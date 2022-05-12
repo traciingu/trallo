@@ -1,4 +1,4 @@
-const { reorderInSameList, reorderElements } = require("./helper")
+const { reorderInSameList, reorderElements, reorderCards } = require("./helper")
 
 
 // TODO Find better assertions for arrays
@@ -81,5 +81,23 @@ describe('reorderElements', () => {
         // Assert
         expect(result[0]).toEqual([2]);
         expect(result[1]).toEqual([1, 3, 4]);
+    })
+});
+
+describe('reorderCards', () => {
+    it('reorder cards between lists', () => {
+         // Arrange
+         const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
+
+         const source = { droppableId: 1, index: 0 };
+         const destination = { droppableId: 2, index: 0 };
+         const id = 1;
+ 
+         // Act
+         const result = reorderCards(arrOfIds, { source, destination, id });
+ 
+         // Assert
+         expect(result[0]).toEqual([2]);
+         expect(result[1]).toEqual([1, 3, 4]);
     })
 })

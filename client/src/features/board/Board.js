@@ -55,10 +55,12 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
 
           // const destCpy = reorderCards(destination, source, cardOrdering, draggableId);
 
-          const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
+          console.log(cardOrdering)
+          const result = reorderCards(cardOrdering, { destination, source, id: draggableId });
+          console.log(result)
           
-          updateList({ id: destination.droppableId, card: destCpy });
-          console.log("Moving inside list: ", destCpy);
+          updateList({ id: destination.droppableId, card: result[1] });
+          
         }
       } catch (err) {
         console.log(err)
@@ -109,10 +111,10 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
 const reorderBetweenLists = (cardOrdering, reorderCards, updateList, draggable) => {
 
   const { destination, source } = draggable;
-  const { destCpy, sourceCpy } = reorderCards(cardOrdering, draggable);
+  const result = reorderCards(cardOrdering, draggable);
 
-  updateList({ id: destination.droppableId, card: destCpy });
-  updateList({ id: source.droppableId, card: sourceCpy });
+  updateList({ id: destination.droppableId, card: result[1] });
+  updateList({ id: source.droppableId, card: result[0] });
 };
 
 
