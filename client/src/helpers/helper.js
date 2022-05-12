@@ -1,7 +1,6 @@
 export const reorderLists = (listOrdering, draggable) => {
     const orderingCpy = [...listOrdering];
-    // orderingCpy.splice(source.index, 1);
-    // orderingCpy.splice(destination.index, 0, draggableId);
+    
     reorderElements(orderingCpy, orderingCpy, {
         sourceIndex: draggable.sourceIndex,
         destinationIndex: draggable.destinationIndex,
@@ -14,14 +13,9 @@ export const reorderLists = (listOrdering, draggable) => {
 export const reorderElements = (sourceArr, destinationArr, draggable) => {
     const sourceArrCpy = [...sourceArr];
     const destArrCpy = [...destinationArr];
-    // console.log("Source Arr: ", sourceArr);
-    // console.log("Draggable source index: ", draggable.source.index);
+   
     sourceArrCpy.splice(draggable.source.index, 1);
     destArrCpy.splice(draggable.destination.index, 0, draggable.id);
-
-    console.log("Source Arr: ", sourceArr);
-    console.log("Dest arr: ", destinationArr);
-
 
     return [sourceArrCpy, destArrCpy];
 };
@@ -66,13 +60,15 @@ export const reorderCards = (cardOrdering, draggable) => {
 };
 
 // TODO get rid of boolean parameter
-export function reorderInSameList(listIsNotEmpty, cardOrdering, source, destination, id) {
+export function reorderInSameList(cardOrdering, source, destination, id) {
 
     if (Object.keys(source).length === 0) { throw 'Source should not be empty' }
 
     if (!cardOrdering[destination.droppableId].includes(id)) {
         throw 'Id could not be found in array of ids';
     }
+
+    const listIsNotEmpty = cardOrdering[destination.droppableId].length > 0;
 
     let destCpy = [];
 

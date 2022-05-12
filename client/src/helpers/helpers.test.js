@@ -11,13 +11,13 @@ describe('reorderInSameList', () => {
         const id = 1;
 
         // Act
-        const shouldThrowErr = (() => reorderInSameList(true, arrOfIds, source, destination, id));
+        const shouldThrowErr = (() => reorderInSameList(arrOfIds, source, destination, id));
 
         // Assert
         expect(shouldThrowErr).toThrow(new Error('Id could not be found in array of ids'));
     })
 
-    it('should error when source is empty', () => {
+    it('should throw error when source is empty', () => {
         // Arrange
         const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
         const source = {};
@@ -25,10 +25,9 @@ describe('reorderInSameList', () => {
         const id = 1;
 
         // Act
-        const shouldThrowErr = (() => reorderInSameList(true, arrOfIds, source, destination, id));
+        const shouldThrowErr = (() => reorderInSameList(arrOfIds, source, destination, id));
 
         // Assert
-        // expect(result).toEqual([2, 1]);
         expect(shouldThrowErr).toThrow(new Error('Source should not be empty'));
     })
 });
