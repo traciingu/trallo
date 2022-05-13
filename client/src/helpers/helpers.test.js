@@ -1,8 +1,8 @@
-const { reorderInSameList, reorderElements, reorderCards } = require("./helper")
+const { moveCardInSameList, reorderElements, reorderCards } = require("./helper")
 
 
 // TODO Find better assertions for arrays
-describe('reorderInSameList', () => {
+describe('moveCardInSameList', () => {
     it('throws error when id does not exist in array of ids', () => {
         // Arrange
         const arrOfIds = { 1: [], 2: [], 3: [] };
@@ -11,7 +11,7 @@ describe('reorderInSameList', () => {
         const id = 1;
 
         // Act
-        const shouldThrowErr = (() => reorderInSameList(arrOfIds, source, destination, id));
+        const shouldThrowErr = (() => moveCardInSameList(arrOfIds, source, destination, id));
 
         // Assert
         expect(shouldThrowErr).toThrow(new Error('Id could not be found in array of ids'));
@@ -25,7 +25,7 @@ describe('reorderInSameList', () => {
         const id = 1;
 
         // Act
-        const shouldThrowErr = (() => reorderInSameList(arrOfIds, source, destination, id));
+        const shouldThrowErr = (() => moveCardInSameList(arrOfIds, source, destination, id));
 
         // Assert
         expect(shouldThrowErr).toThrow(new Error('Source should not be empty'));
@@ -39,7 +39,7 @@ describe('reorderInSameList', () => {
         const id = 1;
 
         // Act
-        const result = reorderInSameList(arrOfIds, source, destination, id);
+        const result = moveCardInSameList(arrOfIds, source, destination, id);
         console.log(result)
 
         // Assert
@@ -52,12 +52,12 @@ describe('reorderElements', () => {
         // Arrange
         const sourceArr = [1, 2];
 
-        const source = { droppableId: 1, index: 0 };
-        const destination = { droppableId: 1, index: 1 };
+        const startLocation = { droppableId: 1, index: 0 };
+        const dropLocation = { droppableId: 1, index: 1 };
         const id = 1;
 
         // Act
-        const result = reorderElements(sourceArr, sourceArr, { source, destination, id });
+        const result = reorderElements(sourceArr, sourceArr, { startLocation, dropLocation, id });
         console.log(result);
 
         // Assert
@@ -71,12 +71,12 @@ describe('reorderElements', () => {
         const sourceArr = [1, 2];
         const destArr = [3, 4];
 
-        const source = { droppableId: 1, index: 0 };
-        const destination = { droppableId: 2, index: 0 };
+        const startLocation = { droppableId: 1, index: 0 };
+        const dropLocation = { droppableId: 2, index: 0 };
         const id = 1;
 
         // Act
-        const result = reorderElements(sourceArr, destArr, { source, destination, id });
+        const result = reorderElements(sourceArr, destArr, { startLocation, dropLocation, id });
 
         // Assert
         expect(result[0]).toEqual([2]);

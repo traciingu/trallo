@@ -14,8 +14,8 @@ export const reorderElements = (sourceArr, destinationArr, draggable) => {
     if (sourceArr === destinationArr) {
         const sourceArrCpy = [...sourceArr];
 
-        sourceArrCpy.splice(draggable.source.index, 1);
-        sourceArrCpy.splice(draggable.destination.index, 0, draggable.id);
+        sourceArrCpy.splice(draggable.startLocation.index, 1);
+        sourceArrCpy.splice(draggable.dropLocation.index, 0, draggable.id);
 
         return [sourceArrCpy, sourceArrCpy];
 
@@ -23,71 +23,72 @@ export const reorderElements = (sourceArr, destinationArr, draggable) => {
         const sourceArrCpy = [...sourceArr];
         const destArrCpy = [...destinationArr];
 
-        sourceArrCpy.splice(draggable.source.index, 1);
-        destArrCpy.splice(draggable.destination.index, 0, draggable.id);
+        sourceArrCpy.splice(draggable.startLocation.index, 1);
+        destArrCpy.splice(draggable.dropLocation.index, 0, draggable.id);
 
         return [sourceArrCpy, destArrCpy];
     }
 };
 
-const copyCollection = (obj, key) => {
+const copyArrayAtObjectKey = (obj, key) => {
     return [...obj[key]];
 }
 
 export const reorderCards = (cardOrdering, draggable) => {
-    const { source, destination, id } = draggable;
-    const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(source.droppableId);
-    const destListIsNotEmpty = cardOrdering.hasOwnProperty(destination.droppableId);
-    const listIsNotSame = destination.droppableId !== source.droppableId;
+    const {  id } = draggable;
+    const startLocation = {...draggable.source};
+    const dropLocation = {...draggable.destination};
+    const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(startLocation.droppableId);
+    const destListIsNotEmpty = cardOrdering.hasOwnProperty(dropLocation.droppableId);
+    const listIsNotSame = dropLocation.droppableId !== startLocation.droppableId;
 
     if (listIsNotSame) {
         let destCpy = [];
         let sourceCpy = [];
 
         if (sourceListIsNotEmpty) {
-            sourceCpy = copyCollection(cardOrdering, source.droppableId);
+            sourceCpy = copyArrayAtObjectKey(cardOrdering, startLocation.droppableId);
             console.log("Copying source list");
         }
 
         if (destListIsNotEmpty) {
-            destCpy = copyCollection(cardOrdering, destination.droppableId);
+            destCpy = copyArrayAtObjectKey(cardOrdering, dropLocation.droppableId);
             console.log("Copying destination list");
         }
 
-        const result = reorderElements(sourceCpy, destCpy, { source, destination, id });
+        const result = reorderElements(sourceCpy, destCpy, { startLocation, dropLocation, id });
 
         return result;
     } else {
         let destCpy = [];
 
         if (destListIsNotEmpty) {
-            destCpy = copyCollection(cardOrdering, destination.droppableId);
+            destCpy = copyArrayAtObjectKey(cardOrdering, dropLocation.droppableId);
         }
 
-        const result = reorderElements(destCpy, destCpy, { source, destination, id });
+        const result = reorderElements(destCpy, destCpy, { startLocation, dropLocation, id });
 
         return result;
     }
 };
 
-// TODO get rid of boolean parameter
-export function reorderInSameList(cardOrdering, source, destination, id) {
+export function moveCardInSameList(cardOrdering, startLocation, dropLocation, cardId) {
 
-    if (Object.keys(source).length === 0) { throw 'Source should not be empty' }
+    if (Object.keys(startLocation).length === 0) { throw 'Source should not be empty' }
 
-    if (!cardOrdering[destination.droppableId].includes(id)) {
+    if (!cardOrdering[dropLocation.droppableId].includes(cardId)) {
         throw 'Id could not be found in array of ids';
     }
 
-    const listIsNotEmpty = cardOrdering[destination.droppableId].length > 0;
+    const listIsNotEmpty = cardOrdering[dropLocation.droppableId].length > 0;
 
     let destCpy = [];
 
     if (listIsNotEmpty) {
-        destCpy = copyCollection(cardOrdering, destination.droppableId);
+        destCpy = copyArrayAtObjectKey(cardOrdering, dropLocation.droppableId);
     }
 
-    const result = reorderElements(destCpy, destCpy, { source, destination, id });
+    const result = reorderElements(destCpy, destCpy, { startLocation, dropLocation, id: cardId });
 
     return result;
 };
