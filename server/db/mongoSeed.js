@@ -16,11 +16,16 @@ async function populate() {
             description: "Goodbye"
         };
 
-        const card = await cards.insertOne(hello);
+        const goodbye = {
+            title: "Goodbye",
+            description: "Hello"
+        };
+
+        const card = await cards.insertMany([hello, goodbye]);
 
         const todo = {
             title: "Todo",
-            cards: [card.insertedId]
+            cards: Object.keys(card.insertedIds).map(key => card.insertedIds[key])
         }
 
         const inProgress = {
@@ -70,7 +75,7 @@ async function deleteAll() {
 }
 
 
-populate().catch(console.dir);
+// populate().catch(console.dir);
 deleteAll().catch(console.dir);
 
 module.exports = { populate, deleteAll };

@@ -64,9 +64,9 @@ export const reorderCards = (cardOrdering, draggable) => {
             destCpy = copyCollection(cardOrdering, destination.droppableId);
         }
 
-        reorderElements(destCpy, destCpy, { source, destination, id });
+        const result = reorderElements(destCpy, destCpy, { source, destination, id });
 
-        return destCpy;
+        return result;
     }
 };
 

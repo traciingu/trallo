@@ -100,4 +100,20 @@ describe('reorderCards', () => {
          expect(result[0]).toEqual([2]);
          expect(result[1]).toEqual([1, 3, 4]);
     })
+
+    it('reorder cards in same list', () => {
+        // Arrange
+        const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
+
+        const source = { droppableId: 1, index: 0 };
+        const destination = { droppableId: 1, index: 1 };
+        const id = 1;
+
+        // Act
+        const result = reorderCards(arrOfIds, { source, destination, id });
+
+        // Assert
+        expect(result[0]).toEqual([2, 1]);
+        expect(result[1]).toEqual([2, 1]);
+   })
 })
