@@ -1,3 +1,5 @@
+import { DraggableInfo } from "../dataClasses";
+
 export const reorderLists = (listOrdering, draggable) => {
     const orderingCpy = [...listOrdering];
 
@@ -34,10 +36,13 @@ const copyArrayAtObjectKey = (obj, key) => {
     return [...obj[key]];
 }
 
+// TODO Call moveCardInSameList
+// TODO Refactor variable names
+// TODO Type check parameters with data class
 export const reorderCards = (cardOrdering, draggable) => {
-    const {  id } = draggable;
-    const startLocation = {...draggable.source};
-    const dropLocation = {...draggable.destination};
+    const { id } = draggable;
+    const startLocation = { ...draggable.source };
+    const dropLocation = { ...draggable.destination };
     const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(startLocation.droppableId);
     const destListIsNotEmpty = cardOrdering.hasOwnProperty(dropLocation.droppableId);
     const listIsNotSame = dropLocation.droppableId !== startLocation.droppableId;
@@ -72,13 +77,16 @@ export const reorderCards = (cardOrdering, draggable) => {
     }
 };
 
-export function moveCardInSameList(cardOrdering, startLocation, dropLocation, cardId) {
+export function moveCardInSameList(cardOrdering, draggableInfo) {
 
-    if (Object.keys(startLocation).length === 0) { throw 'Source should not be empty' }
+    if (!(draggableInfo instanceof DraggableInfo)) { throw `${draggableInfo} is not instance of DraggableInfo` }
 
-    if (!cardOrdering[dropLocation.droppableId].includes(cardId)) {
+    const { startLocation, dropLocation, id } = draggableInfo;
+
+    if (!cardOrdering[dropLocation.droppableId].includes(id)) {
         throw 'Id could not be found in array of ids';
     }
+
 
     const listIsNotEmpty = cardOrdering[dropLocation.droppableId].length > 0;
 
@@ -88,7 +96,7 @@ export function moveCardInSameList(cardOrdering, startLocation, dropLocation, ca
         destCpy = copyArrayAtObjectKey(cardOrdering, dropLocation.droppableId);
     }
 
-    const result = reorderElements(destCpy, destCpy, { startLocation, dropLocation, id: cardId });
+    const result = reorderElements(destCpy, destCpy, { startLocation, dropLocation, id });
 
     return result;
 };

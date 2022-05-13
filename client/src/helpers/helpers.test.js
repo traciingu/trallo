@@ -1,3 +1,4 @@
+const { DraggableInfo, DraggableLocation } = require("../dataClasses");
 const { moveCardInSameList, reorderElements, reorderCards } = require("./helper")
 
 
@@ -5,45 +6,47 @@ const { moveCardInSameList, reorderElements, reorderCards } = require("./helper"
 describe('moveCardInSameList', () => {
     it('throws error when id does not exist in array of ids', () => {
         // Arrange
-        const arrOfIds = { 1: [], 2: [], 3: [] };
-        const source = { droppableId: 1, index: 1 };
-        const destination = { droppableId: 1, index: 1 };
+        const arrOfIds = { '1': [], '2': [], '3': [] };
+        const source = new DraggableLocation( '1', 1 );
+        const destination = new DraggableLocation( '1', 1 );
         const id = 1;
 
+        const dInfo = new DraggableInfo(source, destination, id);
+
         // Act
-        const shouldThrowErr = (() => moveCardInSameList(arrOfIds, source, destination, id));
+        const shouldThrowErr = (() => moveCardInSameList(arrOfIds, dInfo));
 
         // Assert
         expect(shouldThrowErr).toThrow(new Error('Id could not be found in array of ids'));
     })
 
-    it('should throw error when source is empty', () => {
-        // Arrange
-        const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
-        const source = {};
-        const destination = { droppableId: 1, index: 1 };
-        const id = 1;
-
-        // Act
-        const shouldThrowErr = (() => moveCardInSameList(arrOfIds, source, destination, id));
-
-        // Assert
-        expect(shouldThrowErr).toThrow(new Error('Source should not be empty'));
-    })
-
     it('moves a card in the same list', () => {
         // Arrange
-        const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
-        const source = { droppableId: 1, index: 0 };
-        const destination = { droppableId: 1, index: 1 };
+        const arrOfIds = { '1': [1, 2], '2': [3, 4], '3': [5] };
+        const source = new DraggableLocation( '1', 0 );
+        const destination = new DraggableLocation( '1', 1 );
         const id = 1;
 
+        const dInfo = new DraggableInfo(source, destination, id);
+
         // Act
-        const result = moveCardInSameList(arrOfIds, source, destination, id);
+        const result = moveCardInSameList(arrOfIds, dInfo);
         console.log(result)
 
         // Assert
         expect(result[0]).toEqual([2, 1]);
+    })
+
+    it("throws error if second argument isn't DraggableInfo", () => {
+        // Arrange
+        const arrOfIds = { 1: [], 2: [], 3: [] };
+        const invalidArgument = {}
+
+        // Act
+        const shouldThrowErr = (() => moveCardInSameList(arrOfIds, invalidArgument));
+
+        // Assert
+        expect(shouldThrowErr).toThrow(new Error(`${invalidArgument} is not instance of DraggableInfo`));
     })
 });
 
