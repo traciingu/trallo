@@ -88,10 +88,10 @@ describe('reorderElements', () => {
 describe('reorderCards', () => {
     it('reorder cards between lists', () => {
         // Arrange
-        const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
+        const arrOfIds = { '1': [1, 2], '2': [3, 4], '3': [5] };
 
-        const source = { droppableId: 1, index: 0 };
-        const destination = { droppableId: 2, index: 0 };
+        const source = { droppableId: '1', index: 0 };
+        const destination = { droppableId: '2', index: 0 };
         const id = 1;
 
         // Act
