@@ -68,7 +68,7 @@ export const reorderCards = (cardOrdering, draggable, moveCardInSameList) => {
 
         return result;
     } else {
-        moveCardInSameList(cardOrdering, dragInfo);
+       return moveCardInSameList(cardOrdering, dragInfo);
     }
 };
 

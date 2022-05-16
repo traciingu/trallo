@@ -116,9 +116,11 @@ describe('reorderCards', () => {
         const dragInfo = new DraggableInfo(startLocation, dropLocation, id);
 
         // Act
-        reorderCards(arrOfIds, { source, destination, id }, mockMoveCardInSameList);
+        const result = reorderCards(arrOfIds, { source, destination, id }, mockMoveCardInSameList);
+        const expected = moveCardInSameList(arrOfIds, dragInfo);
 
         // Assert
         expect(mockMoveCardInSameList).toBeCalledWith(arrOfIds, dragInfo);
+        expect(result).toEqual(expected);
     });
 })
