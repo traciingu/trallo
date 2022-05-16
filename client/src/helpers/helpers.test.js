@@ -138,7 +138,7 @@ describe('reorderCards', () => {
 
 
         // Assert
-        expect(mockMoveCardInSameList).toHaveBeenCalled();
-        expect(mockMoveCardInSameList.mock.calls).toEqual([arrOfIds, dragInfo]);
+        expect(mockMoveCardInSameList).toBeCalledWith(arrOfIds, dragInfo);
+        // expect(mockMoveCardInSameList.mock.calls).toEqual([arrOfIds, dragInfo]);
     });
 })
