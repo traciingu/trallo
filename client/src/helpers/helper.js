@@ -1,4 +1,4 @@
-import { DraggableInfo } from "../dataClasses";
+import { DraggableInfo, DraggableLocation } from "../dataClasses";
 
 export const reorderLists = (listOrdering, draggable) => {
     const orderingCpy = [...listOrdering];
@@ -39,13 +39,17 @@ const copyArrayAtObjectKey = (obj, key) => {
 // TODO Call moveCardInSameList
 // TODO Refactor variable names
 // TODO Type check parameters with data class
-export const reorderCards = (cardOrdering, draggable) => {
+export const reorderCards = (cardOrdering, draggable, moveCardInSameList) => {
     const { id } = draggable;
     const startLocation = { ...draggable.source };
     const dropLocation = { ...draggable.destination };
     const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(startLocation.droppableId);
     const destListIsNotEmpty = cardOrdering.hasOwnProperty(dropLocation.droppableId);
-    const listIsNotSame = dropLocation.droppableId !== startLocation.droppableId;
+    const listIsNotSame = dropLocation.droppableId.localeCompare(startLocation.droppableId) !== 0;
+
+    const startDragLocation = new DraggableLocation(startLocation.droppableId, startLocation.index);
+    const dropDragLocation = new DraggableLocation(dropLocation.droppableId, dropLocation.index);
+    const dragInfo = new DraggableInfo(startDragLocation, dropDragLocation, id);
 
     if (listIsNotSame) {
         let destCpy = [];
@@ -65,15 +69,7 @@ export const reorderCards = (cardOrdering, draggable) => {
 
         return result;
     } else {
-        let destCpy = [];
-
-        if (destListIsNotEmpty) {
-            destCpy = copyArrayAtObjectKey(cardOrdering, dropLocation.droppableId);
-        }
-
-        const result = reorderElements(destCpy, destCpy, { startLocation, dropLocation, id });
-
-        return result;
+        moveCardInSameList(cardOrdering, dragInfo);
     }
 };
 
