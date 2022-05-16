@@ -1,8 +1,6 @@
 const { DraggableInfo, DraggableLocation } = require("../dataClasses");
 const { moveCardInSameList, reorderElements, reorderCards } = require("./helper")
 
-
-// TODO Find better assertions for arrays
 describe('moveCardInSameList', () => {
     it('throws error when id does not exist in array of ids', () => {
         // Arrange
@@ -104,22 +102,6 @@ describe('reorderCards', () => {
         expect(result[1]).toEqual([1, 3, 4]);
     })
 
-    it('reorder cards in same list', () => {
-        // Arrange
-        const arrOfIds = { 1: [1, 2], 2: [3, 4], 3: [5] };
-
-        const source = { droppableId: 1, index: 0 };
-        const destination = { droppableId: 1, index: 1 };
-        const id = 1;
-
-        // Act
-        const result = reorderCards(arrOfIds, { source, destination, id });
-
-        // Assert
-        expect(result[0]).toEqual([2, 1]);
-        expect(result[1]).toEqual([2, 1]);
-    })
-
     it('calls moveCardInSameList() when the start and drop location are the same', () => {
         // Arrange
         const mockMoveCardInSameList = jest.fn(moveCardInSameList);
@@ -134,11 +116,9 @@ describe('reorderCards', () => {
         const dragInfo = new DraggableInfo(startLocation, dropLocation, id);
 
         // Act
-        const result = reorderCards(arrOfIds, { source, destination, id }, mockMoveCardInSameList);
-
+        reorderCards(arrOfIds, { source, destination, id }, mockMoveCardInSameList);
 
         // Assert
         expect(mockMoveCardInSameList).toBeCalledWith(arrOfIds, dragInfo);
-        // expect(mockMoveCardInSameList.mock.calls).toEqual([arrOfIds, dragInfo]);
     });
 })

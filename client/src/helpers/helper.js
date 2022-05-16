@@ -36,7 +36,6 @@ const copyArrayAtObjectKey = (obj, key) => {
     return [...obj[key]];
 }
 
-// TODO Call moveCardInSameList
 // TODO Refactor variable names
 // TODO Type check parameters with data class
 export const reorderCards = (cardOrdering, draggable, moveCardInSameList) => {
