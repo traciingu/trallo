@@ -2,7 +2,7 @@ export class DraggableInfo {
     constructor(startLocation, dropLocation, id) {
         if (startLocation instanceof DraggableLocation &&
             dropLocation instanceof DraggableLocation &&
-            typeof id === 'number') {
+            typeof id === 'string') {
             this.startLocation = startLocation;
             this.dropLocation = dropLocation;
             this.id = id;
