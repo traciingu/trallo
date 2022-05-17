@@ -50,7 +50,7 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
 
 export const curryMoveCard = (reorderBetweenLists) => {
   return (source, destination) => {
-    if (source.droppableId !== destination.droppableId) { reorderBetweenLists() }
+    if (source.droppableId !== destination.droppableId) { reorderBetweenLists(); }
   };
 };
 

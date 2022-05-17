@@ -191,7 +191,7 @@ describe("moveCard", () => {
     expect(mockReorderBetweenLists).toBeCalled();
   })
 
-  it("?", () => {
+  it("does not call reorderBetweenLists when the source and destination droppableId are the same", () => {
     const destination = {
       "droppableId": "1",
       "index": 1
