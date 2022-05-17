@@ -48,12 +48,14 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
   }
 };
 
-export const curryMoveCard = (reorderBetweenLists, reorderCards) => {
+export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList) => {
   return (source, destination) => {
     if (source.droppableId !== destination.droppableId) { 
       reorderBetweenLists(); 
     } else {
-      reorderCards();
+      const result = reorderCards();
+      console.log(result);
+      updateList(result[1]);
     }
   };
 };

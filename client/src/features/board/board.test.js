@@ -210,7 +210,7 @@ describe("moveCard", () => {
     expect(mockReorderBetweenLists).not.toBeCalled();
   })
 
-  it("", () => {
+  it("calls reorderCards when the source and destination droppableId are the same", () => {
     const destination = {
       "droppableId": "1",
       "index": 1
@@ -222,13 +222,16 @@ describe("moveCard", () => {
     };
 
     const mockReorderBetweenLists = jest.fn(() => {});
-    const mockReorderCards = jest.fn(() => {});
-    // const mockUpdateList = jest.fn(() => {});
+    const mockReorderCards = jest.fn(() => { return ["foo", "bar"]});
+    const mockUpdateList = jest.fn(() => {});
 
-    const moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards);
+    const expected = mockReorderCards()[1];
+
+    const moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList);
     moveCard(source, destination);
 
     expect(mockReorderCards).toBeCalled();
+    expect(mockUpdateList).toBeCalledWith(expected);
   })
 
 })
