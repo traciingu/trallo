@@ -5,7 +5,7 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 
-const dragTest = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList) => (result) => {
+export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList) => (result) => {
   const { destination, source, draggableId, type } = result;
 
   console.log(result)
@@ -64,6 +64,9 @@ const dragTest = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCa
   }
 };
 
+
+// TODO Rename currying variables
+// TODO Test currying function
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
@@ -72,8 +75,8 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
     reorderLists(result.draggableId);
   }*/
 
-  const dragTestTwo = dragTest(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList);
-  const onDragEnd = dragTestTwo;
+  const onDragHandler = curryOnDragHandler(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList);
+  const onDragEnd = onDragHandler;
   
 
   const styles = (comp, droppableStyle) => {

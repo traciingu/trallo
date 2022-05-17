@@ -1,4 +1,4 @@
-import Board from './Board';
+import Board, { curryOnDragHandler } from './Board';
 import React from 'react';
 import { Provider } from 'react-redux';
 import "@testing-library/jest-dom/extend-expect";
@@ -39,3 +39,31 @@ describe("Board", () => {
   })
 
 });
+
+describe("onDragHandler", () => {
+  it("returns undefined if destination is undefined", () => {
+    const onDragHandler = curryOnDragHandler();
+    const result = onDragHandler({
+      "destination": null,
+      "source": null,
+      "draggableId": null,
+      "type": null
+    });
+
+    expect(result).toBe(undefined);
+  })
+
+  it("returns undefined when dropped in same spot", () => {
+    const onDragHandler = curryOnDragHandler();
+    const destination = {};
+
+    const result = onDragHandler({
+      destination,
+      "source": destination,
+      "draggableId": null,
+      "type": null
+    });
+
+    expect(result).toBe(undefined);
+  })
+})
