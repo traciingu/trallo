@@ -40,35 +40,35 @@ const copyArrayAtObjectKey = (obj, key) => {
 // TODO Type check parameters with data class
 export const reorderCards = (cardOrdering, draggable, moveCardInSameList) => {
     const { id } = draggable;
-    const startLocation = { ...draggable.source };
-    const dropLocation = { ...draggable.destination };
-    const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(startLocation.droppableId);
-    const destListIsNotEmpty = cardOrdering.hasOwnProperty(dropLocation.droppableId);
-    const listIsNotSame = dropLocation.droppableId.localeCompare(startLocation.droppableId) !== 0;
+    const source = { ...draggable.source };
+    const destination = { ...draggable.destination };
+    const sourceListIsNotEmpty = cardOrdering.hasOwnProperty(source.droppableId);
+    const destListIsNotEmpty = cardOrdering.hasOwnProperty(destination.droppableId);
+    const listIsSame = destination.droppableId.localeCompare(source.droppableId) === 0;
 
-    const startDragLocation = new DraggableLocation(startLocation.droppableId, startLocation.index);
-    const dropDragLocation = new DraggableLocation(dropLocation.droppableId, dropLocation.index);
-    const dragInfo = new DraggableInfo(startDragLocation, dropDragLocation, id);
+    const startLocation = new DraggableLocation(source.droppableId, source.index);
+    const dropLocation = new DraggableLocation(destination.droppableId, destination.index);
+    const dragInfo = new DraggableInfo(startLocation, dropLocation, id);
 
-    if (listIsNotSame) {
+    if (listIsSame) {
+        return moveCardInSameList(cardOrdering, dragInfo);
+    } else {
         let destCpy = [];
         let sourceCpy = [];
 
         if (sourceListIsNotEmpty) {
-            sourceCpy = copyArrayAtObjectKey(cardOrdering, startLocation.droppableId);
+            sourceCpy = copyArrayAtObjectKey(cardOrdering, source.droppableId);
             console.log("Copying source list");
         }
 
         if (destListIsNotEmpty) {
-            destCpy = copyArrayAtObjectKey(cardOrdering, dropLocation.droppableId);
+            destCpy = copyArrayAtObjectKey(cardOrdering, destination.droppableId);
             console.log("Copying destination list");
         }
 
-        const result = reorderElements(sourceCpy, destCpy, { startLocation, dropLocation, id });
+        const result = reorderElements(sourceCpy, destCpy, dragInfo);
 
         return result;
-    } else {
-       return moveCardInSameList(cardOrdering, dragInfo);
     }
 };
 
