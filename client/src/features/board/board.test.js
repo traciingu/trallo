@@ -209,4 +209,25 @@ describe("moveCard", () => {
     expect(mockReorderBetweenLists).not.toBeCalled();
   })
 
+  it("", () => {
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "1",
+      "index": 2
+    };
+
+    const mockReorderBetweenLists = jest.fn(() => {});
+    const mockReorderCards = jest.fn(() => {});
+    // const mockUpdateList = jest.fn(() => {});
+
+    const moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards);
+    moveCard(source, destination);
+
+    expect(mockReorderCards).toBeCalled();
+  })
+
 })
