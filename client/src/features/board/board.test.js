@@ -96,14 +96,14 @@ describe("onDragHandler", () => {
     };
 
     const onDragHandler = curryOnDragHandler(mockReorderLists, emptyObj, emptyObj, emptyFn, emptyFn, mockUpdateBoard);
-    const result = onDragHandler(onDragInput);
+    onDragHandler(onDragInput);
 
     expect(mockReorderLists).toBeCalled();
     expect(mockUpdateBoard).toBeCalled();
 
   })
 
-  it("calls reorderCards when the droppableId in destination and source are equal", () => {
+  it("calls reorderCards when the droppableId in destination and source are equal and type is equal to cards", () => {
     const mockReorderCards = jest.fn(() => { return [1, 2]});
     const mockUpdateList = jest.fn(() => {});
     const emptyFn = () => {};
@@ -130,13 +130,44 @@ describe("onDragHandler", () => {
       type
     };
 
-    // const elementsOrdering = { '1': ['1', '2', '6'], '2': ['3', '4'], '3': ['5'] };
-
     const onDragHandler = curryOnDragHandler(emptyFn, emptyObj, emptyObj, mockReorderCards, emptyFn, emptyFn, mockUpdateList);
-    const result = onDragHandler(onDragInput);
+    onDragHandler(onDragInput);
 
     expect(mockReorderCards).toBeCalled();
     expect(mockUpdateList).toBeCalled();
 
+  })
+
+  it("calls reorderBetweenLists when the droppableId of source and destination are not equal and type is equal to cards", () => {
+    const mockReorderBetweenLists = jest.fn(() => {});
+
+    const emptyFn = () => {};
+    const emptyObj = {};
+
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "2",
+      "index": 2
+    };
+
+    const draggableId = "1";
+
+    const type = "cards";
+
+    const onDragInput = {
+      destination,
+      source,
+      draggableId,
+      type
+    };
+
+    const onDragHandler = curryOnDragHandler(emptyFn, emptyObj, emptyObj, emptyFn, emptyFn, emptyFn, emptyFn, mockReorderBetweenLists);
+    onDragHandler(onDragInput);
+
+    expect(mockReorderBetweenLists).toBeCalled();
   })
 })

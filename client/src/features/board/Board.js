@@ -5,7 +5,7 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 
-export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList) => (result) => {
+export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists) => (result) => {
   const { destination, source, draggableId, type } = result;
 
   console.log(result)
@@ -75,7 +75,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
     reorderLists(result.draggableId);
   }*/
 
-  const onDragHandler = curryOnDragHandler(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList);
+  const onDragHandler = curryOnDragHandler(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists);
   const onDragEnd = onDragHandler;
   
 
@@ -119,7 +119,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   );
 }
 
-const reorderBetweenLists = (cardOrdering, reorderCards, updateList, draggable) => {
+export const reorderBetweenLists = (cardOrdering, reorderCards, updateList, draggable) => {
 
   const { destination, source } = draggable;
   const result = reorderCards(cardOrdering, draggable);
