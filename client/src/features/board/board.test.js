@@ -1,4 +1,4 @@
-import Board, { curryOnDragHandler } from './Board';
+import Board, { curryMoveCard, curryOnDragHandler, reorderBetweenLists } from './Board';
 import React from 'react';
 import { Provider } from 'react-redux';
 import "@testing-library/jest-dom/extend-expect";
@@ -170,4 +170,25 @@ describe("onDragHandler", () => {
 
     expect(mockReorderBetweenLists).toBeCalled();
   })
+})
+
+describe("moveCard", () => {
+  it("", () => {
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "2",
+      "index": 2
+    };
+
+    const mockReorderBetweenLists = jest.fn(() => {});
+    const moveCard = curryMoveCard(mockReorderBetweenLists);
+    moveCard(source, destination);
+
+    expect(mockReorderBetweenLists).toBeCalled();
+  })
+
 })
