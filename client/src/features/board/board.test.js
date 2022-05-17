@@ -203,7 +203,8 @@ describe("moveCard", () => {
     };
 
     const mockReorderBetweenLists = jest.fn(() => {});
-    const moveCard = curryMoveCard(mockReorderBetweenLists);
+    const mockReorderCards = jest.fn(() => {});
+    const moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards);
     moveCard(source, destination);
 
     expect(mockReorderBetweenLists).not.toBeCalled();
