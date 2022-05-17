@@ -8,8 +8,6 @@ import { moveCardInSameList } from '../../helpers/helper';
 export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists) => (result) => {
   const { destination, source, draggableId, type } = result;
 
-  console.log(result)
-
   // Do nothing if component is dropped outside of DragDropContext
   if (!destination) {
     return;
@@ -36,27 +34,13 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
   // Reordering logic for cards
   if (type.localeCompare("cards") === 0) {
     try {
+      const cardDraggableInfo = { destination, source, id: draggableId };
+
       if (destination.droppableId !== source.droppableId) {
-
-        reorderBetweenLists(cardOrdering, reorderCards, updateList, { destination, source, id: draggableId });
-
-        // const { destCpy, sourceCpy } = reorderCards(cardOrdering, { destination, source, id: draggableId });
-
-        // updateList({ id: destination.droppableId, card: destCpy });
-        // updateList({ id: source.droppableId, card: sourceCpy });
-        // console.log("Moving outside DESTCOPY: ", destCpy);
-        // console.log("Moving outside SOURCECOPY: ", sourceCpy);
-
+        reorderBetweenLists(cardOrdering, reorderCards, updateList, cardDraggableInfo);
       } else {
-
-        // const destCpy = reorderCards(destination, source, cardOrdering, draggableId);
-
-        console.log(cardOrdering)
-        const result = reorderCards(cardOrdering, { destination, source, id: draggableId }, moveCardInSameList);
-        console.log(result)
-        
-        updateList({ id: destination.droppableId, card: result[1] });
-        
+        const result = reorderCards(cardOrdering, cardDraggableInfo, moveCardInSameList);
+        updateList({ id: destination.droppableId, card: result[1] });  
       }
     } catch (err) {
       console.log(err)
@@ -65,19 +49,11 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
 };
 
 
-// TODO Rename currying variables
 // TODO Test currying function
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
-  /* onDragEnd = (result) => {
-    ...edge cases
-    reorderLists(result.draggableId);
-  }*/
-
-  const onDragHandler = curryOnDragHandler(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists);
-  const onDragEnd = onDragHandler;
-  
+  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists);
 
   const styles = (comp, droppableStyle) => {
     switch (comp) {
