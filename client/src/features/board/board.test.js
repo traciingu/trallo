@@ -173,7 +173,7 @@ describe("onDragHandler", () => {
 })
 
 describe("moveCard", () => {
-  it("", () => {
+  it("calls reorderBetweenLists when the source and destination droppableId are different", () => {
     const destination = {
       "droppableId": "1",
       "index": 1
@@ -189,6 +189,24 @@ describe("moveCard", () => {
     moveCard(source, destination);
 
     expect(mockReorderBetweenLists).toBeCalled();
+  })
+
+  it("?", () => {
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "1",
+      "index": 2
+    };
+
+    const mockReorderBetweenLists = jest.fn(() => {});
+    const moveCard = curryMoveCard(mockReorderBetweenLists);
+    moveCard(source, destination);
+
+    expect(mockReorderBetweenLists).not.toBeCalled();
   })
 
 })
