@@ -6,6 +6,7 @@ import { cleanup, fireEvent, render, getNodeText } from "@testing-library/react"
 import configureStore from 'redux-mock-store';
 import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
+import { moveCardInSameList } from '../../helpers/helper';
 
 const mockStore = configureStore([]);
 
@@ -71,23 +72,71 @@ describe("onDragHandler", () => {
     const mockReorderLists = jest.fn(() => {});
     const mockUpdateBoard = jest.fn(() => {});
     const emptyFn = () => {};
+    const emptyObj = {};
 
-    const onDragHandler = curryOnDragHandler(mockReorderLists, {}, {}, emptyFn, emptyFn, mockUpdateBoard);
-    const result = onDragHandler({
-      "destination": {
-        "droppableId": "123",
-        "index": 1
-      },
-      "source": {
-        "droppableId": "456",
-        "index": 2
-      },
-      "draggableId": null,
-      "type": "lists"
-    });
+    const destination = {
+      "droppableId": "123",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "456",
+      "index": 2
+    };
+
+    const draggableId = null;
+
+    const type = "lists";
+
+    const onDragInput = {
+      destination,
+      source,
+      draggableId,
+      type
+    };
+
+    const onDragHandler = curryOnDragHandler(mockReorderLists, emptyObj, emptyObj, emptyFn, emptyFn, mockUpdateBoard);
+    const result = onDragHandler(onDragInput);
 
     expect(mockReorderLists).toBeCalled();
     expect(mockUpdateBoard).toBeCalled();
+
+  })
+
+  it("calls reorderCards when the droppableId in destination and source are equal", () => {
+    const mockReorderCards = jest.fn(() => { return [1, 2]});
+    const mockUpdateList = jest.fn(() => {});
+    const emptyFn = () => {};
+    const emptyObj = {};
+
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "1",
+      "index": 2
+    };
+
+    const draggableId = "1";
+
+    const type = "cards";
+
+    const onDragInput = {
+      destination,
+      source,
+      draggableId,
+      type
+    };
+
+    // const elementsOrdering = { '1': ['1', '2', '6'], '2': ['3', '4'], '3': ['5'] };
+
+    const onDragHandler = curryOnDragHandler(emptyFn, emptyObj, emptyObj, mockReorderCards, emptyFn, emptyFn, mockUpdateList);
+    const result = onDragHandler(onDragInput);
+
+    expect(mockReorderCards).toBeCalled();
+    expect(mockUpdateList).toBeCalled();
 
   })
 })
