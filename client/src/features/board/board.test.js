@@ -66,4 +66,28 @@ describe("onDragHandler", () => {
 
     expect(result).toBe(undefined);
   })
+
+  it("checks reorderLists was called", () => {
+    const mockReorderLists = jest.fn(() => {});
+    const mockUpdateBoard = jest.fn(() => {});
+    const emptyFn = () => {};
+
+    const onDragHandler = curryOnDragHandler(mockReorderLists, {}, {}, emptyFn, emptyFn, mockUpdateBoard);
+    const result = onDragHandler({
+      "destination": {
+        "droppableId": "123",
+        "index": 1
+      },
+      "source": {
+        "droppableId": "456",
+        "index": 2
+      },
+      "draggableId": null,
+      "type": "lists"
+    });
+
+    expect(mockReorderLists).toBeCalled();
+    expect(mockUpdateBoard).toBeCalled();
+
+  })
 })
