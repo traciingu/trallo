@@ -42,8 +42,35 @@ describe("Board", () => {
 });
 
 describe("onDragHandler", () => {
+  let onDragHandler;
+  let mockReorderLists;
+  let mockUpdateBoard;
+  let mockReorderCards;
+  let mockUpdateList;
+  let mockMoveCardInSameList;
+  let mockReorderBetweenLists;
+  let mockMoveCards;
+
+  let listOrdering;
+  let cardOrdering;
+
+  beforeEach(() => {
+    mockReorderLists = jest.fn(() => { });
+    mockUpdateBoard = jest.fn(() => { });
+    mockReorderCards = jest.fn(() => { return [1, 2] });
+    mockUpdateList = jest.fn(() => { });
+    mockMoveCardInSameList = jest.fn(() => { });
+    mockReorderBetweenLists = jest.fn(() => { });
+    mockMoveCards = jest.fn(() => { });
+
+    listOrdering = [];
+    cardOrdering = [];
+
+    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, cardOrdering, mockReorderCards, mockMoveCardInSameList, mockUpdateBoard, mockUpdateList, mockReorderBetweenLists, mockMoveCards);
+
+  })
+
   it("returns undefined if destination is undefined", () => {
-    const onDragHandler = curryOnDragHandler();
     const result = onDragHandler({
       "destination": null,
       "source": null,
@@ -55,7 +82,6 @@ describe("onDragHandler", () => {
   })
 
   it("returns undefined when dropped in same spot", () => {
-    const onDragHandler = curryOnDragHandler();
     const destination = {};
 
     const result = onDragHandler({
@@ -69,11 +95,6 @@ describe("onDragHandler", () => {
   })
 
   it("checks reorderLists was called", () => {
-    const mockReorderLists = jest.fn(() => { });
-    const mockUpdateBoard = jest.fn(() => { });
-    const emptyFn = () => { };
-    const emptyObj = {};
-
     const destination = {
       "droppableId": "123",
       "index": 1
@@ -95,7 +116,6 @@ describe("onDragHandler", () => {
       type
     };
 
-    const onDragHandler = curryOnDragHandler(mockReorderLists, emptyObj, emptyObj, emptyFn, emptyFn, mockUpdateBoard);
     onDragHandler(onDragInput);
 
     expect(mockReorderLists).toBeCalled();
@@ -104,10 +124,7 @@ describe("onDragHandler", () => {
   })
 
   it("calls reorderCards when the droppableId in destination and source are equal and type is equal to cards", () => {
-    const mockReorderCards = jest.fn(() => { return [1, 2] });
-    const mockUpdateList = jest.fn(() => { });
-    const emptyFn = () => { };
-    const emptyObj = {};
+    
 
     const destination = {
       "droppableId": "1",
@@ -130,7 +147,6 @@ describe("onDragHandler", () => {
       type
     };
 
-    const onDragHandler = curryOnDragHandler(emptyFn, emptyObj, emptyObj, mockReorderCards, emptyFn, emptyFn, mockUpdateList);
     onDragHandler(onDragInput);
 
     expect(mockReorderCards).toBeCalled();
@@ -139,11 +155,6 @@ describe("onDragHandler", () => {
   })
 
   it("calls reorderBetweenLists when the droppableId of source and destination are not equal and type is equal to cards", () => {
-    const mockReorderBetweenLists = jest.fn(() => { });
-
-    const emptyFn = () => { };
-    const emptyObj = {};
-
     const destination = {
       "droppableId": "1",
       "index": 1
@@ -165,10 +176,36 @@ describe("onDragHandler", () => {
       type
     };
 
-    const onDragHandler = curryOnDragHandler(emptyFn, emptyObj, emptyObj, emptyFn, emptyFn, emptyFn, emptyFn, mockReorderBetweenLists);
     onDragHandler(onDragInput);
 
     expect(mockReorderBetweenLists).toBeCalled();
+  })
+
+  it("calls moveCard when the draggable type is equal to cards", () => {
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "2",
+      "index": 2
+    };
+
+    const draggableId = "1";
+
+    const type = "cards";
+
+    const onDragInput = {
+      destination,
+      source,
+      draggableId,
+      type
+    };
+
+    onDragHandler(onDragInput);
+
+    expect(mockMoveCards).toBeCalled();
   })
 })
 
