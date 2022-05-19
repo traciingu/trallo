@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import { loadBoard } from '../board/boardSlice';
 import { updateList } from '../list/listSlice';
 
@@ -31,11 +31,17 @@ const pushCardsToStoreOnLoad = (state, action) => {
 const pushCardsToStoreOnUpdate = (state, action) => {
     const lists = action.payload.lists;
     lists.forEach(list => {
-        list.cards.forEach((cardId) => {
-            if (!state.allIds[cardId]) {
-                state.allIds[cardId] = [];
-            }
-            state.allIds[cardId].push(cardId);
-        })
+        let cardOrdering = [];
+        if (list.cards.length === 0) {
+            state.allIds[list.id] = cardOrdering;
+        } else {
+            list.cards.forEach((cardId) => {
+                if (!state.allIds[list.id]) {
+                    state.allIds[list.id] = [];
+                }
+                cardOrdering.push(cardId);
+                state.allIds[list.id] = cardOrdering;
+            })
+        }
     });
 };

@@ -67,7 +67,9 @@ describe('Home page', () => {
         await page.mouse.move(inProgressX, inProgressY, { steps: 5 });
         await page.mouse.up();
 
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(700);
+        [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+        listHeader = await parentListElement.$eval('h2', node => node.innerText);
 
         expect(listHeader).toEqual('In progress');
 
@@ -90,7 +92,6 @@ describe('Home page', () => {
 
         await page.waitForSelector("h2");
 
-
         const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
         const helloBox = await helloCard.boundingBox();
         const helloX = helloBox.x + helloBox.width / 2;
@@ -101,28 +102,25 @@ describe('Home page', () => {
         const goodbyeX = goodbyeBox.x + goodbyeBox.width / 2;
         const goodbyeY = goodbyeBox.y + goodbyeBox.height / 2;
 
-        // const inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
-        // const inProgressBox = await inProgressList.boundingBox();
-        // const inProgressX = inProgressBox.x + inProgressBox.width;
-        // const inProgressY = inProgressBox.y + inProgressBox.height;
-
-
         await page.mouse.move(helloX, helloY, { steps: 5 });
         await page.mouse.down();
         await page.mouse.move(goodbyeX, goodbyeY, { steps: 5 });
         await page.mouse.up();
 
-        await page.waitForTimeout(500);
+        await page.waitForTimeout(550);
+        let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+        let cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
+
+        expect(cardNames).toEqual(['Goodbye', 'Hello']);
+
         await page.reload();
         await page.waitForSelector("h2");
 
-        let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-        const cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
-        // selectorTest.map(node => console.log(node));
+        [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+        cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
 
         expect(cardNames).toEqual(['Goodbye', 'Hello']);
-        // [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-        // listHeader = await parentListElement.$eval('h2', node => node.innerText);
+        
 
     });
 
