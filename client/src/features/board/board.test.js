@@ -69,9 +69,9 @@ describe("onDragHandler", () => {
   })
 
   it("checks reorderLists was called", () => {
-    const mockReorderLists = jest.fn(() => {});
-    const mockUpdateBoard = jest.fn(() => {});
-    const emptyFn = () => {};
+    const mockReorderLists = jest.fn(() => { });
+    const mockUpdateBoard = jest.fn(() => { });
+    const emptyFn = () => { };
     const emptyObj = {};
 
     const destination = {
@@ -104,9 +104,9 @@ describe("onDragHandler", () => {
   })
 
   it("calls reorderCards when the droppableId in destination and source are equal and type is equal to cards", () => {
-    const mockReorderCards = jest.fn(() => { return [1, 2]});
-    const mockUpdateList = jest.fn(() => {});
-    const emptyFn = () => {};
+    const mockReorderCards = jest.fn(() => { return [1, 2] });
+    const mockUpdateList = jest.fn(() => { });
+    const emptyFn = () => { };
     const emptyObj = {};
 
     const destination = {
@@ -139,9 +139,9 @@ describe("onDragHandler", () => {
   })
 
   it("calls reorderBetweenLists when the droppableId of source and destination are not equal and type is equal to cards", () => {
-    const mockReorderBetweenLists = jest.fn(() => {});
+    const mockReorderBetweenLists = jest.fn(() => { });
 
-    const emptyFn = () => {};
+    const emptyFn = () => { };
     const emptyObj = {};
 
     const destination = {
@@ -172,71 +172,72 @@ describe("onDragHandler", () => {
   })
 })
 
-describe("moveCard between two different lists", () => {
+describe("moveCard", () => {
+  let mockReorderBetweenLists;
+  let mockReorderCards;
+  let mockUpdateList;
+  let moveCard;
 
-  it("calls reorderBetweenLists when the source and destination droppableId are different", () => {
-    const destination = {
-      "droppableId": "1",
-      "index": 1
-    };
-
-    const source = {
-      "droppableId": "2",
-      "index": 2
-    };
-
-    const mockReorderBetweenLists = jest.fn(() => {});
-    const moveCard = curryMoveCard(mockReorderBetweenLists);
-    moveCard(source, destination);
-
-    expect(mockReorderBetweenLists).toBeCalled();
-  })
-})
-
-describe("moveCard within the same list", () => {
-  it("does not call reorderBetweenLists when the source and destination droppableId are the same", () => {
-    const destination = {
-      "droppableId": "1",
-      "index": 1
-    };
-
-    const source = {
-      "droppableId": "1",
-      "index": 2
-    };
-
-    const mockReorderBetweenLists = jest.fn(() => {});
-    const mockReorderCards = jest.fn(() => {return ["foo", "bar"]});
-    const mockUpdateList = jest.fn(() => {});
-
-    const moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList);
-    moveCard(source, destination);
-
-    expect(mockReorderBetweenLists).not.toBeCalled();
+  beforeEach(() => {
+    mockReorderBetweenLists = jest.fn(() => { });
+    mockReorderCards = jest.fn(() => { return ["foo", "bar"] });
+    mockUpdateList = jest.fn(() => { });
+    moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList);
   })
 
-  it("calls reorderCards when the source and destination droppableId are the same", () => {
-    const destination = {
-      "droppableId": "1",
-      "index": 1
-    };
+  describe("between two different lists", () => {
+    it("calls reorderBetweenLists when the source and destination droppableId are different", () => {
+      const destination = {
+        "droppableId": "1",
+        "index": 1
+      };
 
-    const source = {
-      "droppableId": "1",
-      "index": 2
-    };
+      const source = {
+        "droppableId": "2",
+        "index": 2
+      };
 
-    const mockReorderBetweenLists = jest.fn(() => {});
-    const mockReorderCards = jest.fn(() => { return ["foo", "bar"]});
-    const mockUpdateList = jest.fn(() => {});
+      moveCard(source, destination);
 
-    const expected = mockReorderCards()[1];
-
-    const moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList);
-    moveCard(source, destination);
-
-    expect(mockReorderCards).toBeCalled();
-    expect(mockUpdateList).toBeCalledWith(expected);
+      expect(mockReorderBetweenLists).toBeCalled();
+    })
   })
 
+  describe("within the same list", () => {
+    it("does not call reorderBetweenLists when the source and destination droppableId are the same", () => {
+      const destination = {
+        "droppableId": "1",
+        "index": 1
+      };
+
+      const source = {
+        "droppableId": "1",
+        "index": 2
+      };
+
+      moveCard(source, destination);
+
+      expect(mockReorderBetweenLists).not.toBeCalled();
+    })
+
+    it("calls reorderCards when the source and destination droppableId are the same", () => {
+      const destination = {
+        "droppableId": "1",
+        "index": 1
+      };
+
+      const source = {
+        "droppableId": "1",
+        "index": 2
+      };
+
+      const expected = mockReorderCards()[1];
+
+      moveCard(source, destination);
+
+      expect(mockReorderCards).toBeCalled();
+      expect(mockUpdateList).toBeCalledWith(expected);
+    })
+
+  })
 })
