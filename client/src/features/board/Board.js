@@ -48,12 +48,12 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
   }
 };
 
-export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList, cardOrdering) => {
+export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering) => {
   return (source, destination, id) => {
     if (source.droppableId !== destination.droppableId) { 
       reorderBetweenLists(cardOrdering, reorderCards, updateList, {destination, source, id}); 
     } else {
-      const result = reorderCards();
+      const result = reorderCards(cardOrdering, {destination, source, id}, moveCardInSameList);
       console.log(result);
       updateList({id: destination.droppableId, card: result[1]});
     }
