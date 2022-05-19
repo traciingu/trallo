@@ -176,6 +176,7 @@ describe("moveCard", () => {
   let mockReorderBetweenLists;
   let mockReorderCards;
   let mockUpdateList;
+  let mockMoveCardInSameList;
   let moveCard;
   let cardOrdering;
 
@@ -186,10 +187,11 @@ describe("moveCard", () => {
     mockReorderBetweenLists = jest.fn(() => { });
     mockReorderCards = jest.fn(() => { return ["foo", "bar"] });
     mockUpdateList = jest.fn(() => { });
+    mockMoveCardInSameList = jest.fn(() => {});
 
     cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5']};
 
-    moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, cardOrdering);
+    moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering);
   })
 
   describe("between two different lists", () => {
@@ -242,13 +244,19 @@ describe("moveCard", () => {
         "index": 2
       };
 
+      const id = '1';
+
+      const cardDraggableInfo = {destination, source, id};
+
+      const reorderCardsArguments = [cardOrdering, cardDraggableInfo, mockMoveCardInSameList];
+
       const mockReorderCardsResult = mockReorderCards();
-      const expected = { id: destination.droppableId, card: mockReorderCardsResult[1] };
+      const updateListArguments = { id: destination.droppableId, card: mockReorderCardsResult[1] };
 
-      moveCard(source, destination);
+      moveCard(source, destination, id);
 
-      expect(mockReorderCards).toBeCalled();
-      expect(mockUpdateList).toBeCalledWith(expected);
+      expect(mockReorderCards).toBeCalledWith(...reorderCardsArguments);
+      expect(mockUpdateList).toBeCalledWith(updateListArguments);
     })
 
   })
