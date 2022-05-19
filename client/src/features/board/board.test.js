@@ -147,7 +147,7 @@ describe("onDragHandler", () => {
 
     onDragHandler(onDragInput);
 
-    expect(mockMoveCards).toBeCalled();
+    expect(mockMoveCards).toBeCalledWith(source, destination, draggableId);
   })
 })
 

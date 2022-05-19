@@ -34,15 +34,7 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
   // Reordering logic for cards
   if (type.localeCompare("cards") === 0) {
     try {
-      moveCards();
-      // const cardDraggableInfo = { destination, source, id: draggableId };
-
-      // if (destination.droppableId !== source.droppableId) {
-      //   reorderBetweenLists(cardOrdering, reorderCards, updateList, cardDraggableInfo);
-      // } else {
-      //   const result = reorderCards(cardOrdering, cardDraggableInfo, moveCardInSameList);
-      //   updateList({ id: destination.droppableId, card: result[1] });
-      // }
+      moveCards(source, destination, draggableId);
     } catch (err) {
       console.log(err)
     }
