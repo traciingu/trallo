@@ -200,9 +200,12 @@ describe("moveCard", () => {
         "index": 2
       };
 
+      const cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5']};
+      const cardDraggableInfo = {destination, source, id: '1'};
+
       moveCard(source, destination);
 
-      expect(mockReorderBetweenLists).toBeCalled();
+      expect(mockReorderBetweenLists).toBeCalledWith(cardOrdering, mockReorderCards, mockUpdateList, cardDraggableInfo);
     })
   })
 
