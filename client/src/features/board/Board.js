@@ -8,18 +8,15 @@ import { moveCardInSameList } from '../../helpers/helper';
 export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, moveCards) => (result) => {
   const { destination, source, draggableId, type } = result;
 
-  // Do nothing if component is dropped outside of DragDropContext
   if (!destination) {
     return;
   }
 
-  // If component is dropped in the same starting position, do nothing
   if (destination.droppableId === source.droppableId &&
     destination.index === source.index) {
     return;
   }
 
-  // Reordering logic for lists
   if (type.localeCompare("lists") === 0) {
 
     const orderingCpy = reorderLists(listOrdering, {
@@ -31,7 +28,6 @@ export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, move
     updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
   }
 
-  // Reordering logic for cards
   if (type.localeCompare("cards") === 0) {
     try {
       moveCards(source, destination, draggableId);
@@ -54,7 +50,6 @@ export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList, mov
 };
 
 
-// TODO Test currying function
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
