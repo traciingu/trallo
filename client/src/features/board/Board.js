@@ -5,7 +5,7 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 
-export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists) => (result) => {
+export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists, moveCards) => (result) => {
   const { destination, source, draggableId, type } = result;
 
   // Do nothing if component is dropped outside of DragDropContext
@@ -34,6 +34,7 @@ export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reo
   // Reordering logic for cards
   if (type.localeCompare("cards") === 0) {
     try {
+      moveCards();
       const cardDraggableInfo = { destination, source, id: draggableId };
 
       if (destination.droppableId !== source.droppableId) {
