@@ -61,12 +61,13 @@ describe("onDragHandler", () => {
     mockUpdateList = jest.fn(() => { });
     mockMoveCardInSameList = jest.fn(() => { });
     mockReorderBetweenLists = jest.fn(() => { });
-    mockMoveCards = jest.fn(curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering));
 
     listOrdering = [];
     cardOrdering = [];
 
-    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, cardOrdering, mockReorderCards, mockMoveCardInSameList, mockUpdateBoard, mockUpdateList, mockReorderBetweenLists, mockMoveCards);
+    mockMoveCards = jest.fn(curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering));
+
+    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, mockUpdateBoard, mockMoveCards);
 
   })
 
