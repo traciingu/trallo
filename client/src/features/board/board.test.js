@@ -177,6 +177,7 @@ describe("moveCard", () => {
   let mockReorderCards;
   let mockUpdateList;
   let moveCard;
+  let cardOrdering;
 
   // TODO Make assertions what args reorderCards should be called with
   // TODO Make mocks return specific values and test reorderCards output against the mock inputs
@@ -185,7 +186,10 @@ describe("moveCard", () => {
     mockReorderBetweenLists = jest.fn(() => { });
     mockReorderCards = jest.fn(() => { return ["foo", "bar"] });
     mockUpdateList = jest.fn(() => { });
-    moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList);
+
+    cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5']};
+
+    moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, cardOrdering);
   })
 
   describe("between two different lists", () => {
@@ -200,10 +204,11 @@ describe("moveCard", () => {
         "index": 2
       };
 
-      const cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5']};
-      const cardDraggableInfo = {destination, source, id: '1'};
+      const id = '1';
 
-      moveCard(source, destination);
+      const cardDraggableInfo = {destination, source, id};
+
+      moveCard(source, destination, id);
 
       expect(mockReorderBetweenLists).toBeCalledWith(cardOrdering, mockReorderCards, mockUpdateList, cardDraggableInfo);
     })
