@@ -172,7 +172,8 @@ describe("onDragHandler", () => {
   })
 })
 
-describe("moveCard", () => {
+describe("moveCard between two different lists", () => {
+
   it("calls reorderBetweenLists when the source and destination droppableId are different", () => {
     const destination = {
       "droppableId": "1",
@@ -190,7 +191,9 @@ describe("moveCard", () => {
 
     expect(mockReorderBetweenLists).toBeCalled();
   })
+})
 
+describe("moveCard within the same list", () => {
   it("does not call reorderBetweenLists when the source and destination droppableId are the same", () => {
     const destination = {
       "droppableId": "1",
