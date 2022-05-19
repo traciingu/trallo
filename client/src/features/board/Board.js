@@ -54,7 +54,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
   const moveCards = curryMoveCard(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
-  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists, moveCards);
+  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, moveCards);
 
   const styles = (comp, droppableStyle) => {
     switch (comp) {
