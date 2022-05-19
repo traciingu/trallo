@@ -5,7 +5,7 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 
-export const curryOnDragHandler = (reorderLists, listOrdering, cardOrdering, reorderCards, moveCardInSameList, updateBoard, updateList, reorderBetweenLists, moveCards) => (result) => {
+export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, moveCards) => (result) => {
   const { destination, source, draggableId, type } = result;
 
   // Do nothing if component is dropped outside of DragDropContext
