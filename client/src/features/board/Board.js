@@ -55,7 +55,7 @@ export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList) => 
     } else {
       const result = reorderCards();
       console.log(result);
-      updateList(result[1]);
+      updateList({id: destination.droppableId, card: result[1]});
     }
   };
 };
