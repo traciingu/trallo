@@ -68,6 +68,9 @@ describe('Home page', () => {
         await page.mouse.up();
 
         await page.waitForTimeout(500);
+
+        expect(listHeader).toEqual('In progress');
+
         await page.reload();
         await page.waitForSelector("h2");
 
