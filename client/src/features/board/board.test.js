@@ -123,64 +123,6 @@ describe("onDragHandler", () => {
 
   })
 
-  it("calls reorderCards when the droppableId in destination and source are equal and type is equal to cards", () => {
-    
-
-    const destination = {
-      "droppableId": "1",
-      "index": 1
-    };
-
-    const source = {
-      "droppableId": "1",
-      "index": 2
-    };
-
-    const draggableId = "1";
-
-    const type = "cards";
-
-    const onDragInput = {
-      destination,
-      source,
-      draggableId,
-      type
-    };
-
-    onDragHandler(onDragInput);
-
-    expect(mockReorderCards).toBeCalled();
-    expect(mockUpdateList).toBeCalled();
-
-  })
-
-  it("calls reorderBetweenLists when the droppableId of source and destination are not equal and type is equal to cards", () => {
-    const destination = {
-      "droppableId": "1",
-      "index": 1
-    };
-
-    const source = {
-      "droppableId": "2",
-      "index": 2
-    };
-
-    const draggableId = "1";
-
-    const type = "cards";
-
-    const onDragInput = {
-      destination,
-      source,
-      draggableId,
-      type
-    };
-
-    onDragHandler(onDragInput);
-
-    expect(mockReorderBetweenLists).toBeCalled();
-  })
-
   it("calls moveCard when the draggable type is equal to cards", () => {
     const destination = {
       "droppableId": "1",
