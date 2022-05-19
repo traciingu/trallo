@@ -178,6 +178,9 @@ describe("moveCard", () => {
   let mockUpdateList;
   let moveCard;
 
+  // TODO Make assertions what args reorderCards should be called with
+  // TODO Make mocks return specific values and test reorderCards output against the mock inputs
+
   beforeEach(() => {
     mockReorderBetweenLists = jest.fn(() => { });
     mockReorderCards = jest.fn(() => { return ["foo", "bar"] });
@@ -231,7 +234,8 @@ describe("moveCard", () => {
         "index": 2
       };
 
-      const expected = mockReorderCards()[1];
+      const mockReorderCardsResult = mockReorderCards();
+      const expected = { id: destination.droppableId, card: mockReorderCardsResult[1] };
 
       moveCard(source, destination);
 
