@@ -3,13 +3,13 @@ import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
-import { moveCardInSameList } from '../../helpers/helper';
+import { reorderAndPersistCardsInSameList } from '../../helpers/helper';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
-  const moveCards = curryMoveCard(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
-  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, moveCards);
+  const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, reorderAndPersistCardsInSameList, cardOrdering);
+  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards);
 
   const styles = (comp, droppableStyle) => {
     switch (comp) {
@@ -60,7 +60,7 @@ export const reorderBetweenLists = (cardOrdering, reorderCards, updateList, drag
   updateList({ id: source.droppableId, card: result[0] });
 };
 
-export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, moveCards, reorderAndPersistLists) => (result) => {
+export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, reorderAndPersistCards, reorderAndPersistLists) => (result) => {
   const { destination, source, draggableId, type } = result;
 
   if (!destination) {
@@ -86,7 +86,7 @@ export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, move
 
   if (type.localeCompare("cards") === 0) {
     try {
-      moveCards(source, destination, draggableId);
+      reorderAndPersistCards(source, destination, draggableId);
     } catch (err) {
       console.log(err)
     }
@@ -94,12 +94,12 @@ export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, move
 };
 
 // TODO Have uniform naming convention
-export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering) => {
+export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, updateList, reorderAndPersistCardsInSameList, cardOrdering) => {
   return (source, destination, id) => {
     if (source.droppableId !== destination.droppableId) { 
       reorderBetweenLists(cardOrdering, reorderCards, updateList, {destination, source, id}); 
     } else {
-      const result = reorderCards(cardOrdering, {destination, source, id}, moveCardInSameList);
+      const result = reorderCards(cardOrdering, {destination, source, id}, reorderAndPersistCardsInSameList);
       console.log(result);
       updateList({id: destination.droppableId, card: result[1]});
     }

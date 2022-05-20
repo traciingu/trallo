@@ -1,4 +1,4 @@
-import Board, { curryMoveCard, curryOnDragHandler, reorderBetweenLists } from './Board';
+import Board, { curryReorderAndPersistCards, curryOnDragHandler, reorderBetweenLists } from './Board';
 import React from 'react';
 import { Provider } from 'react-redux';
 import "@testing-library/jest-dom/extend-expect";
@@ -6,7 +6,7 @@ import { cleanup, fireEvent, render, getNodeText } from "@testing-library/react"
 import configureStore from 'redux-mock-store';
 import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
-import { moveCardInSameList } from '../../helpers/helper';
+import { reorderAndPersistCardsInSameList } from '../../helpers/helper';
 
 const mockStore = configureStore([]);
 
@@ -51,7 +51,7 @@ describe("onDragHandler", () => {
   let mockUpdateList;
   let mockMoveCardInSameList;
   let mockReorderBetweenLists;
-  let mockMoveCards;
+  let mockReorderAndPersistCards;
   let mockReorderAndPersistLists;
 
   let listOrdering;
@@ -69,9 +69,9 @@ describe("onDragHandler", () => {
     listOrdering = [];
     cardOrdering = [];
 
-    mockMoveCards = jest.fn(curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering));
+    mockReorderAndPersistCards = jest.fn(curryReorderAndPersistCards(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering));
 
-    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, mockUpdateBoard, mockMoveCards, mockReorderAndPersistLists);
+    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, mockUpdateBoard, mockReorderAndPersistCards, mockReorderAndPersistLists);
 
   })
 
@@ -128,7 +128,7 @@ describe("onDragHandler", () => {
 
   // })
 
-  it("calls moveCard when the draggable type is equal to cards", () => {
+  it("calls reorderAndPersistCards when the draggable type is equal to cards", () => {
     const destination = {
       "droppableId": "1",
       "index": 1
@@ -152,7 +152,7 @@ describe("onDragHandler", () => {
 
     onDragHandler(onDragInput);
 
-    expect(mockMoveCards).toBeCalledWith(source, destination, draggableId);
+    expect(mockReorderAndPersistCards).toBeCalledWith(source, destination, draggableId);
   })
 
   it("calls reorderAndPersistLists when the type is lists", () => {
@@ -183,12 +183,12 @@ describe("onDragHandler", () => {
   })
 })
 
-describe("moveCard", () => {
+describe("reorderAndPersistCards", () => {
   let mockReorderBetweenLists;
   let mockReorderCards;
   let mockUpdateList;
-  let mockMoveCardInSameList;
-  let moveCard;
+  let mockreorderAndPersistCardsInSameList;
+  let reorderAndPersistCards;
   let cardOrdering;
 
   // TODO Make assertions what args reorderCards should be called with
@@ -198,11 +198,11 @@ describe("moveCard", () => {
     mockReorderBetweenLists = jest.fn(() => { });
     mockReorderCards = jest.fn(() => { return ["foo", "bar"] });
     mockUpdateList = jest.fn(() => { });
-    mockMoveCardInSameList = jest.fn(() => {});
+    mockreorderAndPersistCardsInSameList = jest.fn(() => {});
 
     cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5']};
 
-    moveCard = curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering);
+    reorderAndPersistCards = curryReorderAndPersistCards(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockreorderAndPersistCardsInSameList, cardOrdering);
   })
 
   describe("between two different lists", () => {
@@ -221,7 +221,7 @@ describe("moveCard", () => {
 
       const cardDraggableInfo = {destination, source, id};
 
-      moveCard(source, destination, id);
+      reorderAndPersistCards(source, destination, id);
 
       expect(mockReorderBetweenLists).toBeCalledWith(cardOrdering, mockReorderCards, mockUpdateList, cardDraggableInfo);
     })
@@ -239,7 +239,7 @@ describe("moveCard", () => {
         "index": 2
       };
 
-      moveCard(source, destination);
+      reorderAndPersistCards(source, destination);
 
       expect(mockReorderBetweenLists).not.toBeCalled();
     })
@@ -259,12 +259,12 @@ describe("moveCard", () => {
 
       const cardDraggableInfo = {destination, source, id};
 
-      const reorderCardsArguments = [cardOrdering, cardDraggableInfo, mockMoveCardInSameList];
+      const reorderCardsArguments = [cardOrdering, cardDraggableInfo, mockreorderAndPersistCardsInSameList];
 
       const mockReorderCardsResult = mockReorderCards();
       const updateListArguments = { id: destination.droppableId, card: mockReorderCardsResult[1] };
 
-      moveCard(source, destination, id);
+      reorderAndPersistCards(source, destination, id);
 
       expect(mockReorderCards).toBeCalledWith(...reorderCardsArguments);
       expect(mockUpdateList).toBeCalledWith(updateListArguments);
