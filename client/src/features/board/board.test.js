@@ -241,7 +241,7 @@ describe("reorderAndPersistCards", () => {
 })
 
 describe("reorderAndPersistLists", () => {
-  it("abc", () => {
+  it("calls reorderLists and updateBoard with the correct arguments", () => {
     const destination = {
       "droppableId": "1",
       "index": 1
