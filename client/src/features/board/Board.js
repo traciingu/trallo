@@ -5,11 +5,12 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 
-function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
+function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
   const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
-  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards);
+  const reorderAndPersistLists = curryReorderAndPersistLists(reorderLists, updateBoard, listOrdering);
+  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards, reorderAndPersistLists);
 
   const styles = (comp, droppableStyle) => {
     switch (comp) {
@@ -34,7 +35,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
       <DragDropContext
         onDragEnd={onDragEnd}
       >
-        <Droppable droppableId='list-container' direction="horizontal" type="lists">
+        <Droppable droppableId={`${boardId}`} direction="horizontal" type="lists">
           {provided => (
             <div
               {...provided.droppableProps}
@@ -101,13 +102,15 @@ export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, u
 export const curryReorderAndPersistLists = (reorderLists, updateBoard, listOrdering) => {
   return (destination, source, id) => {
     const result = reorderLists(listOrdering, { destination, source, id });
-    updateBoard(result);
+    updateBoard({id: destination.droppableId, lists: result[1]});
   }
 }
 
 const msToProps = state => {
+  console.log(state);
   return {
     title: state.board.title,
+    boardId: state.board.id,
     listOrdering: state.lists.allIds,
     cardOrdering: state.cards.allIds
   };

@@ -258,13 +258,13 @@ describe("reorderAndPersistLists", () => {
 
     const mockReorderLists = jest.fn(() => { return "TEST 123" });
     const mockUpdateBoard = jest.fn(() => { });
-    
+
     const reorderAndPersistLists = curryReorderAndPersistLists(mockReorderLists, mockUpdateBoard, listOrdering);
     reorderAndPersistLists(destination, source, draggableId);
-    
+
     const reorderListsResult = mockReorderLists();
 
-    expect(mockReorderLists).toBeCalledWith(listOrdering, {destination, source, id: draggableId});
-    expect(mockUpdateBoard).toBeCalledWith(reorderListsResult);
+    expect(mockReorderLists).toBeCalledWith(listOrdering, { destination, source, id: draggableId });
+    expect(mockUpdateBoard).toBeCalledWith({ id: draggableId, lists: reorderListsResult });
   })
 })
