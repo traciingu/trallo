@@ -58,12 +58,10 @@ export const reorderCards = (cardOrdering, draggable, moveCardInSameList) => {
 
         if (sourceListIsNotEmpty) {
             sourceCpy = copyArrayAtObjectKey(cardOrdering, source.droppableId);
-            console.log("Copying source list");
         }
 
         if (destListIsNotEmpty) {
             destCpy = copyArrayAtObjectKey(cardOrdering, destination.droppableId);
-            console.log("Copying destination list");
         }
 
         const result = reorderElements(sourceCpy, destCpy, dragInfo);

@@ -93,7 +93,6 @@ export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, u
       reorderBetweenLists(cardOrdering, reorderCards, updateList, { destination, source, id });
     } else {
       const result = reorderCards(cardOrdering, { destination, source, id }, reorderAndPersistCardsInSameList);
-      console.log(result);
       updateList({ id: destination.droppableId, card: result[1] });
     }
   };

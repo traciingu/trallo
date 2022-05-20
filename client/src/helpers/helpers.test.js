@@ -29,7 +29,6 @@ describe('moveCardInSameList', () => {
 
         // Act
         const result = moveCardInSameList(arrOfIds, dInfo);
-        console.log(result)
 
         // Assert
         expect(result[0]).toEqual(['2', '1']);
@@ -59,7 +58,6 @@ describe('reorderElements', () => {
 
         // Act
         const result = reorderElements(sourceArr, sourceArr, { startLocation, dropLocation, id });
-        console.log(result);
 
         // Assert
         expect(result[0]).toEqual([2, 1]);

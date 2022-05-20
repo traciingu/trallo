@@ -23,15 +23,3 @@ export class DraggableLocation {
         }
     }
 }
-
-// const testfunc = () => {
-//     const d1 = new DraggableLocation('123', 1);
-//     const d2 = new DraggableLocation('456', 2);
-//     const id = 12;
-
-//     const dInfo = new DraggableInfo('foo', 12, '@#$%');
-//     console.log(dInfo);
-
-// }
-
-// testfunc();
