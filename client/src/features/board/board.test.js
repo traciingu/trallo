@@ -275,9 +275,15 @@ describe("reorderAndPersistCards", () => {
 
 describe("reorderAndPersistLists", () => {
   it("abc", () => {
-    const mockReorderLists = jest.fn(() => { });
-    const reorderAndPersistLists = curryReorderAndPersistLists(mockReorderLists);
+    const mockReorderLists = jest.fn(() => { return "TEST 123" });
+    const mockUpdateBoard = jest.fn(() => { });
+    
+    const reorderAndPersistLists = curryReorderAndPersistLists(mockReorderLists, mockUpdateBoard);
     reorderAndPersistLists();
+    
+    const reorderListsResult = mockReorderLists();
+
     expect(mockReorderLists).toBeCalled();
+    expect(mockUpdateBoard).toBeCalledWith(reorderListsResult);
   })
 })

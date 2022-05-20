@@ -106,9 +106,10 @@ export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, u
   };
 };
 
-export const curryReorderAndPersistLists = (reorderLists) => {
+export const curryReorderAndPersistLists = (reorderLists, updateBoard) => {
   return () => {
-    reorderLists();
+    const result = reorderLists();
+    updateBoard(result);
   }
 }
 
