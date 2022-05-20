@@ -242,15 +242,29 @@ describe("reorderAndPersistCards", () => {
 
 describe("reorderAndPersistLists", () => {
   it("abc", () => {
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "2",
+      "index": 2
+    };
+
+    const draggableId = "1";
+
+    const listOrdering = [];
+
     const mockReorderLists = jest.fn(() => { return "TEST 123" });
     const mockUpdateBoard = jest.fn(() => { });
     
-    const reorderAndPersistLists = curryReorderAndPersistLists(mockReorderLists, mockUpdateBoard);
-    reorderAndPersistLists();
+    const reorderAndPersistLists = curryReorderAndPersistLists(mockReorderLists, mockUpdateBoard, listOrdering);
+    reorderAndPersistLists(destination, source, draggableId);
     
     const reorderListsResult = mockReorderLists();
 
-    expect(mockReorderLists).toBeCalled();
+    expect(mockReorderLists).toBeCalledWith(listOrdering, {destination, source, id: draggableId});
     expect(mockUpdateBoard).toBeCalledWith(reorderListsResult);
   })
 })

@@ -75,13 +75,7 @@ export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, reor
   if (type.localeCompare("lists") === 0) {
 
     reorderAndPersistLists();
-    // const orderingCpy = reorderLists(listOrdering, {
-      // sourceIndex: source.index,
-    //   destinationIndex: destination.index,
-    //   id: draggableId
-    // });
 
-    // updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
   }
 
   if (type.localeCompare("cards") === 0) {
@@ -93,22 +87,21 @@ export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, reor
   }
 };
 
-// TODO Have uniform naming convention
 export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, updateList, reorderAndPersistCardsInSameList, cardOrdering) => {
   return (source, destination, id) => {
-    if (source.droppableId !== destination.droppableId) { 
-      reorderBetweenLists(cardOrdering, reorderCards, updateList, {destination, source, id}); 
+    if (source.droppableId !== destination.droppableId) {
+      reorderBetweenLists(cardOrdering, reorderCards, updateList, { destination, source, id });
     } else {
-      const result = reorderCards(cardOrdering, {destination, source, id}, reorderAndPersistCardsInSameList);
+      const result = reorderCards(cardOrdering, { destination, source, id }, reorderAndPersistCardsInSameList);
       console.log(result);
-      updateList({id: destination.droppableId, card: result[1]});
+      updateList({ id: destination.droppableId, card: result[1] });
     }
   };
 };
 
-export const curryReorderAndPersistLists = (reorderLists, updateBoard) => {
-  return () => {
-    const result = reorderLists();
+export const curryReorderAndPersistLists = (reorderLists, updateBoard, listOrdering) => {
+  return (destination, source, id) => {
+    const result = reorderLists(listOrdering, { destination, source, id });
     updateBoard(result);
   }
 }
