@@ -1,4 +1,4 @@
-import Board, { curryReorderAndPersistCards, curryOnDragHandler, reorderBetweenLists } from './Board';
+import Board, { curryReorderAndPersistCards, curryOnDragHandler, reorderBetweenLists, curryReorderAndPersistLists } from './Board';
 import React from 'react';
 import { Provider } from 'react-redux';
 import "@testing-library/jest-dom/extend-expect";
@@ -198,9 +198,9 @@ describe("reorderAndPersistCards", () => {
     mockReorderBetweenLists = jest.fn(() => { });
     mockReorderCards = jest.fn(() => { return ["foo", "bar"] });
     mockUpdateList = jest.fn(() => { });
-    mockreorderAndPersistCardsInSameList = jest.fn(() => {});
+    mockreorderAndPersistCardsInSameList = jest.fn(() => { });
 
-    cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5']};
+    cardOrdering = { '1': ['1', '2'], '2': ['3', '4', '5'] };
 
     reorderAndPersistCards = curryReorderAndPersistCards(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockreorderAndPersistCardsInSameList, cardOrdering);
   })
@@ -219,7 +219,7 @@ describe("reorderAndPersistCards", () => {
 
       const id = '1';
 
-      const cardDraggableInfo = {destination, source, id};
+      const cardDraggableInfo = { destination, source, id };
 
       reorderAndPersistCards(source, destination, id);
 
@@ -257,7 +257,7 @@ describe("reorderAndPersistCards", () => {
 
       const id = '1';
 
-      const cardDraggableInfo = {destination, source, id};
+      const cardDraggableInfo = { destination, source, id };
 
       const reorderCardsArguments = [cardOrdering, cardDraggableInfo, mockreorderAndPersistCardsInSameList];
 
@@ -270,5 +270,14 @@ describe("reorderAndPersistCards", () => {
       expect(mockUpdateList).toBeCalledWith(updateListArguments);
     })
 
+  })
+})
+
+describe("reorderAndPersistLists", () => {
+  it("abc", () => {
+    const mockReorderLists = jest.fn(() => { });
+    const reorderAndPersistLists = curryReorderAndPersistLists(mockReorderLists);
+    reorderAndPersistLists();
+    expect(mockReorderLists).toBeCalled();
   })
 })

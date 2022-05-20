@@ -106,6 +106,12 @@ export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, u
   };
 };
 
+export const curryReorderAndPersistLists = (reorderLists) => {
+  return () => {
+    reorderLists();
+  }
+}
+
 const msToProps = state => {
   return {
     title: state.board.title,
