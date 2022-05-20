@@ -41,6 +41,8 @@ describe("Board", () => {
 
 });
 
+
+// TODO Uniform naming convention
 describe("onDragHandler", () => {
   let onDragHandler;
   let mockReorderLists;
@@ -50,6 +52,7 @@ describe("onDragHandler", () => {
   let mockMoveCardInSameList;
   let mockReorderBetweenLists;
   let mockMoveCards;
+  let mockReorderAndPersistLists;
 
   let listOrdering;
   let cardOrdering;
@@ -61,13 +64,14 @@ describe("onDragHandler", () => {
     mockUpdateList = jest.fn(() => { });
     mockMoveCardInSameList = jest.fn(() => { });
     mockReorderBetweenLists = jest.fn(() => { });
+    mockReorderAndPersistLists = jest.fn(() => { });
 
     listOrdering = [];
     cardOrdering = [];
 
     mockMoveCards = jest.fn(curryMoveCard(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering));
 
-    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, mockUpdateBoard, mockMoveCards);
+    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, mockUpdateBoard, mockMoveCards, mockReorderAndPersistLists);
 
   })
 
@@ -149,6 +153,33 @@ describe("onDragHandler", () => {
     onDragHandler(onDragInput);
 
     expect(mockMoveCards).toBeCalledWith(source, destination, draggableId);
+  })
+
+  it("calls reorderAndPersistLists when the type is lists", () => {
+    const destination = {
+      "droppableId": "1",
+      "index": 1
+    };
+
+    const source = {
+      "droppableId": "2",
+      "index": 2
+    };
+
+    const draggableId = "1";
+
+    const type = "lists";
+
+    const onDragInput = {
+      destination,
+      source,
+      draggableId,
+      type
+    };
+
+    onDragHandler(onDragInput);
+
+    expect(mockReorderAndPersistLists).toBeCalled();
   })
 })
 
