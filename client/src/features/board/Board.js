@@ -3,12 +3,12 @@ import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
-import { reorderAndPersistCardsInSameList } from '../../helpers/helper';
+import { moveCardInSameList } from '../../helpers/helper';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
-  const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, reorderAndPersistCardsInSameList, cardOrdering);
+  const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
   const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards);
 
   const styles = (comp, droppableStyle) => {
@@ -74,7 +74,7 @@ export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, reor
 
   if (type.localeCompare("lists") === 0) {
 
-    reorderAndPersistLists();
+    reorderAndPersistLists(destination, source, draggableId);
 
   }
 

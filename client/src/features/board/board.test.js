@@ -146,7 +146,7 @@ describe("onDragHandler", () => {
 
     onDragHandler(onDragInput);
 
-    expect(mockReorderAndPersistLists).toBeCalled();
+    expect(mockReorderAndPersistLists).toBeCalledWith(destination, source, draggableId);
   })
 })
 
