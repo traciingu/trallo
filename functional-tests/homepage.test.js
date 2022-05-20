@@ -2,6 +2,8 @@ const { installMouseHelper } = require('./helpers/install-mouse-helper');
 
 const { MongoClient } = require('mongodb');
 
+
+// TODO Write FT for reordering lists
 describe('Home page', () => {
     let connection;
     let db;
@@ -25,7 +27,7 @@ describe('Home page', () => {
         }
     });
 
-    it('user can view board and move cards from list to list"', async () => {
+    it('user can view board and move cards from list to list', async () => {
         await setupDbWithOneCard();
 
         await installMouseHelper(page);
@@ -120,6 +122,48 @@ describe('Home page', () => {
         cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
 
         expect(cardNames).toEqual(['Goodbye', 'Hello']);
+
+
+    });
+
+    it('reorders the Todo list to be after the In Progress list', async () => {
+        await setupDbWithOneCard();
+
+        await installMouseHelper(page);
+
+        // User opens board
+        await page.goto('http://localhost:3000');
+        // Has three lists with names 'Todo', 'In progress', 'Done'
+        await page.waitForSelector("h2");
+
+        let listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
+        expect(listTitles).toEqual(['Todo', 'In progress', 'Done']);
+
+        const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
+        const inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
+        const doneList = (await page.$x('//h2[text()="Done"]'))[0];
+
+        const todoBox = await todoList.boundingBox();
+        const inProgressBox = await inProgressList.boundingBox();
+        const doneBox = await doneList.boundingBox();
+
+        const todoX = todoBox.x + (todoBox.width / 2);
+        const todoY = todoBox.y + (todoBox.height / 2);
+        const inProgressX = inProgressBox.x + (inProgressBox.width / 2);
+        const doneX = doneBox.x + (doneBox.width / 2);
+
+        const dropAreaX = (inProgressX + doneX) / 2;
+
+        await page.mouse.move(todoX, todoY);
+        await page.mouse.down();
+        await page.mouse.move(dropAreaX, todoY);
+        await page.mouse.up();
+
+        await page.waitForTimeout(700);
+
+        listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
+        expect(listTitles).toEqual([ 'In progress', 'Todo', 'Done']);
+
         
 
     });
