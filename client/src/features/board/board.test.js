@@ -1,12 +1,9 @@
-import Board, { curryReorderAndPersistCards, curryOnDragHandler, reorderBetweenLists, curryReorderAndPersistLists } from './Board';
+import Board, { curryReorderAndPersistCards, curryOnDragHandler, curryReorderAndPersistLists } from './Board';
 import React from 'react';
 import { Provider } from 'react-redux';
 import "@testing-library/jest-dom/extend-expect";
-import { cleanup, fireEvent, render, getNodeText } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import configureStore from 'redux-mock-store';
-import { updateBoard } from './boardSlice';
-import { updateList } from '../list/listSlice';
-import { reorderAndPersistCardsInSameList } from '../../helpers/helper';
 
 const mockStore = configureStore([]);
 
@@ -42,7 +39,6 @@ describe("Board", () => {
 });
 
 
-// TODO Uniform naming convention
 describe("onDragHandler", () => {
   let onDragHandler;
   let mockReorderLists;
@@ -98,35 +94,6 @@ describe("onDragHandler", () => {
 
     expect(result).toBe(undefined);
   })
-
-  // it("checks reorderLists was called", () => {
-  //   const destination = {
-  //     "droppableId": "123",
-  //     "index": 1
-  //   };
-
-  //   const source = {
-  //     "droppableId": "456",
-  //     "index": 2
-  //   };
-
-  //   const draggableId = null;
-
-  //   const type = "lists";
-
-  //   const onDragInput = {
-  //     destination,
-  //     source,
-  //     draggableId,
-  //     type
-  //   };
-
-  //   onDragHandler(onDragInput);
-
-  //   expect(mockReorderLists).toBeCalled();
-  //   expect(mockUpdateBoard).toBeCalled();
-
-  // })
 
   it("calls reorderAndPersistCards when the draggable type is equal to cards", () => {
     const destination = {
