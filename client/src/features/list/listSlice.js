@@ -12,8 +12,7 @@ export const listSlice = createSlice({
                 pushListToStore(state, action);
             })
             .addCase(updateList.fulfilled, (state, action) => {
-                pushListToStore(state, action);
-
+                //pushListToStore(state, action);
             })
             .addCase(updateBoard.fulfilled, (state, action) => {
                 updateListToStore(state, action);
@@ -31,7 +30,7 @@ const pushListToStore = (state, action) => {
 
 const updateListToStore = (state, action) => {
     const listsOrdering = action.payload.lists;
-    //state.allIds = listsOrdering;
+    state.allIds = listsOrdering;
     console.log(listsOrdering);
 };
 

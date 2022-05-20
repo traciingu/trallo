@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import di from '../../injection_container';
 import { connect } from "react-redux";
 
-const List = ({ lists }) => {
+const List = ({ lists, listsOrdering }) => {
     const { Droppable, Draggable, Card } = useContext(di);
 
     const listStyle = (draggableStyle) => ({
@@ -11,7 +11,7 @@ const List = ({ lists }) => {
 
     return (
         <>
-            {lists && Object.keys(lists).map((key, index) => (
+            {lists && listsOrdering.map((key, index) => (
                 <Draggable draggableId={`${lists[key].id}`} index={index} key={lists[key].id}>
                     {provided => (
                         <div
@@ -46,8 +46,9 @@ const List = ({ lists }) => {
 
 const msToProps = state => {
     return {
-        lists: state.lists.byId
+        lists: state.lists.byId,
+        listsOrdering: state.lists.allIds
     }
-}
+    }
 
 export default connect(msToProps)(List);

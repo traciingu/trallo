@@ -152,7 +152,7 @@ describe('Home page', () => {
         const inProgressX = inProgressBox.x + (inProgressBox.width / 2);
         const doneX = doneBox.x + (doneBox.width / 2);
 
-        const dropAreaX = (inProgressX + doneX) / 2;
+        const dropAreaX = inProgressBox.width + 100;
 
         await page.mouse.move(todoX, todoY);
         await page.mouse.down();
