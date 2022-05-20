@@ -5,51 +5,6 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 
-export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, moveCards) => (result) => {
-  const { destination, source, draggableId, type } = result;
-
-  if (!destination) {
-    return;
-  }
-
-  if (destination.droppableId === source.droppableId &&
-    destination.index === source.index) {
-    return;
-  }
-
-  if (type.localeCompare("lists") === 0) {
-
-    const orderingCpy = reorderLists(listOrdering, {
-      sourceIndex: source.index,
-      destinationIndex: destination.index,
-      id: draggableId
-    });
-
-    updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
-  }
-
-  if (type.localeCompare("cards") === 0) {
-    try {
-      moveCards(source, destination, draggableId);
-    } catch (err) {
-      console.log(err)
-    }
-  }
-};
-
-export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering) => {
-  return (source, destination, id) => {
-    if (source.droppableId !== destination.droppableId) { 
-      reorderBetweenLists(cardOrdering, reorderCards, updateList, {destination, source, id}); 
-    } else {
-      const result = reorderCards(cardOrdering, {destination, source, id}, moveCardInSameList);
-      console.log(result);
-      updateList({id: destination.droppableId, card: result[1]});
-    }
-  };
-};
-
-
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
 
@@ -105,6 +60,51 @@ export const reorderBetweenLists = (cardOrdering, reorderCards, updateList, drag
   updateList({ id: source.droppableId, card: result[0] });
 };
 
+export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, moveCards, reorderAndPersistLists) => (result) => {
+  const { destination, source, draggableId, type } = result;
+
+  if (!destination) {
+    return;
+  }
+
+  if (destination.droppableId === source.droppableId &&
+    destination.index === source.index) {
+    return;
+  }
+
+  if (type.localeCompare("lists") === 0) {
+
+    reorderAndPersistLists();
+    // const orderingCpy = reorderLists(listOrdering, {
+      // sourceIndex: source.index,
+    //   destinationIndex: destination.index,
+    //   id: draggableId
+    // });
+
+    // updateBoard({ id: "625a2e6ea978638034ee3850", lists: orderingCpy });
+  }
+
+  if (type.localeCompare("cards") === 0) {
+    try {
+      moveCards(source, destination, draggableId);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+};
+
+// TODO Have uniform naming convention
+export const curryMoveCard = (reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering) => {
+  return (source, destination, id) => {
+    if (source.droppableId !== destination.droppableId) { 
+      reorderBetweenLists(cardOrdering, reorderCards, updateList, {destination, source, id}); 
+    } else {
+      const result = reorderCards(cardOrdering, {destination, source, id}, moveCardInSameList);
+      console.log(result);
+      updateList({id: destination.droppableId, card: result[1]});
+    }
+  };
+};
 
 const msToProps = state => {
   return {

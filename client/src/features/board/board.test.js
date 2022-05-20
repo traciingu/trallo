@@ -99,34 +99,34 @@ describe("onDragHandler", () => {
     expect(result).toBe(undefined);
   })
 
-  it("checks reorderLists was called", () => {
-    const destination = {
-      "droppableId": "123",
-      "index": 1
-    };
+  // it("checks reorderLists was called", () => {
+  //   const destination = {
+  //     "droppableId": "123",
+  //     "index": 1
+  //   };
 
-    const source = {
-      "droppableId": "456",
-      "index": 2
-    };
+  //   const source = {
+  //     "droppableId": "456",
+  //     "index": 2
+  //   };
 
-    const draggableId = null;
+  //   const draggableId = null;
 
-    const type = "lists";
+  //   const type = "lists";
 
-    const onDragInput = {
-      destination,
-      source,
-      draggableId,
-      type
-    };
+  //   const onDragInput = {
+  //     destination,
+  //     source,
+  //     draggableId,
+  //     type
+  //   };
 
-    onDragHandler(onDragInput);
+  //   onDragHandler(onDragInput);
 
-    expect(mockReorderLists).toBeCalled();
-    expect(mockUpdateBoard).toBeCalled();
+  //   expect(mockReorderLists).toBeCalled();
+  //   expect(mockUpdateBoard).toBeCalled();
 
-  })
+  // })
 
   it("calls moveCard when the draggable type is equal to cards", () => {
     const destination = {
