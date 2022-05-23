@@ -48,6 +48,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
           )}
         </Droppable>
       </DragDropContext>
+      <input type="button" data-add-button="list" value="Add list"/>
     </div>
   );
 }

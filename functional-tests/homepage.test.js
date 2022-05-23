@@ -84,8 +84,8 @@ describe('Home page', () => {
             await page.waitForSelector("h2");
 
             let expectedLists = [
-                { title: "Todo", cards: ["Hello"] }, 
-                { title: "In progress", cards: [] }, 
+                { title: "Todo", cards: ["Hello"] },
+                { title: "In progress", cards: [] },
                 { title: "Done", cards: [] }
             ];
 
@@ -113,8 +113,8 @@ describe('Home page', () => {
             await page.waitForSelector("h2");
 
             expectedLists = [
-                { title: "Todo", cards: [] }, 
-                { title: "In progress", cards: ["Hello"] }, 
+                { title: "Todo", cards: [] },
+                { title: "In progress", cards: ["Hello"] },
                 { title: "Done", cards: [] }
             ];
 
@@ -130,8 +130,8 @@ describe('Home page', () => {
             await page.waitForSelector("h2");
 
             let expectedLists = [
-                { title: "Todo", cards: ["Hello"] }, 
-                { title: "In progress", cards: [] }, 
+                { title: "Todo", cards: ["Hello"] },
+                { title: "In progress", cards: [] },
                 { title: "Done", cards: [] }
             ];
 
@@ -154,7 +154,7 @@ describe('Home page', () => {
 
             expectedLists = [
                 { title: "In progress", cards: [] },
-                { title: "Todo", cards: ["Hello"] },  
+                { title: "Todo", cards: ["Hello"] },
                 { title: "Done", cards: [] }
             ];
 
@@ -240,10 +240,10 @@ describe('Home page', () => {
             await dragAndDrop({ x: helloX, y: helloY }, { x: goodbyeX, y: goodbyeY });
 
             await page.waitForTimeout(1000);
-           
+
             let expectedLists = [
-                { title: "Todo", cards: ["Goodbye", "Hello"] }, 
-                { title: "In progress", cards: [] }, 
+                { title: "Todo", cards: ["Goodbye", "Hello"] },
+                { title: "In progress", cards: [] },
                 { title: "Done", cards: [] }
             ];
 
@@ -252,10 +252,10 @@ describe('Home page', () => {
             await page.reload();
             await page.waitForSelector("h2");
             await page.waitForTimeout(1000);
-            
+
             expectedLists = [
-                { title: "Todo", cards: ["Goodbye", "Hello"] }, 
-                { title: "In progress", cards: [] }, 
+                { title: "Todo", cards: ["Goodbye", "Hello"] },
+                { title: "In progress", cards: [] },
                 { title: "Done", cards: [] }
             ];
 
@@ -269,8 +269,8 @@ describe('Home page', () => {
             await page.waitForSelector("h2");
 
             let expectedLists = [
-                { title: "Todo", cards: ["Hello", "Goodbye"] }, 
-                { title: "In progress", cards: [] }, 
+                { title: "Todo", cards: ["Hello", "Goodbye"] },
+                { title: "In progress", cards: [] },
                 { title: "Done", cards: [] }
             ];
 
@@ -290,10 +290,10 @@ describe('Home page', () => {
             await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
 
             await page.waitForTimeout(700);
-            
+
             expectedLists = [
-                { title: "Todo", cards: ["Goodbye"] }, 
-                { title: "In progress", cards: ["Hello"] }, 
+                { title: "Todo", cards: ["Goodbye"] },
+                { title: "In progress", cards: ["Hello"] },
                 { title: "Done", cards: [] }
             ];
 
@@ -315,8 +315,8 @@ describe('Home page', () => {
             await page.waitForTimeout(700);
 
             expectedLists = [
-                { title: "In progress", cards: ["Hello"] }, 
-                { title: "Todo", cards: ["Goodbye"] }, 
+                { title: "In progress", cards: ["Hello"] },
+                { title: "Todo", cards: ["Goodbye"] },
                 { title: "Done", cards: [] }
             ];
 
@@ -330,6 +330,42 @@ describe('Home page', () => {
         })
     });
 
+    describe("Starting with empty board", () => {
+        beforeEach(async () => {
+            try {
+
+                connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
+                db = await connection.db("trallo");
+
+                const dummy = {
+                    title: "Dummy",
+                    lists: []
+                }
+
+                const boards = db.collection('boards');
+                await boards.insertOne(dummy);
+
+            } catch (err) {
+                console.log(err);
+            }
+        })
+
+        it("creates a list", async () => {
+            await installMouseHelper(page);
+            await page.goto('http://localhost:3000');
+            await page.waitForSelector("h1");
+
+            let expectedLists = [];
+            await checkBoard(expectedLists);
+
+            const board = await page.$('.board');
+            const listCreateButton = await board.$('[data-add-button*="list"]');
+            const listButtonText = await listCreateButton.evaluate(btn => btn.value);
+
+            expect(listButtonText).toEqual("Add list");
+        })
+    });
+
     const dragAndDrop = async (start, end) => {
         await page.mouse.move(start.x, start.y, { steps: 5 });
         await page.mouse.down();
@@ -340,17 +376,17 @@ describe('Home page', () => {
     const checkBoard = async (expectedLists) => {
         const actualLists = [];
         const lists = await page.$$('.list');
-        
-        for(let i = 0; i < lists.length; i++) {
+
+        for (let i = 0; i < lists.length; i++) {
             const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
             const cards = await lists[i].$$('.card');
             const newCards = [];
-            for(let j = 0; j < cards.length; j++) {
+            for (let j = 0; j < cards.length; j++) {
                 const cardText = await cards[j].evaluate((card) => card.textContent);
                 newCards.push(cardText);
             }
-            
-            actualLists.push({ title, cards: newCards});
+
+            actualLists.push({ title, cards: newCards });
         }
 
         expect(expectedLists).toEqual(actualLists);
