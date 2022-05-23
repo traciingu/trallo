@@ -89,7 +89,7 @@ describe('Home page', () => {
                 { title: "Done", cards: [] }
             ];
 
-            checkBoard(expectedLists);
+            await checkBoard(expectedLists);
 
             // Click and drag 'Hello' card from 'Todo' to 'In Progress'
             // Refresh the browser
@@ -109,8 +109,6 @@ describe('Home page', () => {
             await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
 
             await page.waitForTimeout(700);
-
-
             await page.reload();
             await page.waitForSelector("h2");
 
@@ -120,7 +118,7 @@ describe('Home page', () => {
                 { title: "Done", cards: [] }
             ];
 
-            checkBoard(expectedLists);
+            await checkBoard(expectedLists);
 
         });
 
@@ -128,17 +126,19 @@ describe('Home page', () => {
 
             await installMouseHelper(page);
 
-            // User opens board
             await page.goto('http://localhost:3000');
-            // Has three lists with names 'Todo', 'In progress', 'Done'
             await page.waitForSelector("h2");
 
-            let listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
-            expect(listTitles).toEqual(['Todo', 'In progress', 'Done']);
+            let expectedLists = [
+                { title: "Todo", cards: ["Hello"] }, 
+                { title: "In progress", cards: [] }, 
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
 
             const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
             const inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
-            const doneList = (await page.$x('//h2[text()="Done"]'))[0];
 
             const todoBox = await todoList.boundingBox();
             const inProgressBox = await inProgressList.boundingBox();
@@ -152,8 +152,19 @@ describe('Home page', () => {
 
             await page.waitForTimeout(700);
 
-            listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
-            expect(listTitles).toEqual(['In progress', 'Todo', 'Done']);
+            expectedLists = [
+                { title: "In progress", cards: [] },
+                { title: "Todo", cards: ["Hello"] },  
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
+
+            await page.reload();
+            await page.waitForSelector("h2");
+
+            await checkBoard(expectedLists);
+
 
         });
     });
@@ -228,21 +239,27 @@ describe('Home page', () => {
 
             await dragAndDrop({ x: helloX, y: helloY }, { x: goodbyeX, y: goodbyeY });
 
-            await page.waitForTimeout(550);
-            let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-            let cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
+            await page.waitForTimeout(1000);
+           
+            let expectedLists = [
+                { title: "Todo", cards: ["Goodbye", "Hello"] }, 
+                { title: "In progress", cards: [] }, 
+                { title: "Done", cards: [] }
+            ];
 
-            expect(cardNames).toEqual(['Goodbye', 'Hello']);
+            await checkBoard(expectedLists);
 
             await page.reload();
             await page.waitForSelector("h2");
+            await page.waitForTimeout(1000);
+            
+            expectedLists = [
+                { title: "Todo", cards: ["Goodbye", "Hello"] }, 
+                { title: "In progress", cards: [] }, 
+                { title: "Done", cards: [] }
+            ];
 
-            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-            cardNames = await parentListElement.$$eval('.card', nodes => nodes.map(n => n.innerText));
-
-            expect(cardNames).toEqual(['Goodbye', 'Hello']);
-
-
+            await checkBoard(expectedLists);
         });
 
         it('moves one card to a different list then reorder a list containing a card', async () => {
@@ -251,13 +268,13 @@ describe('Home page', () => {
             await page.goto('http://localhost:3000');
             await page.waitForSelector("h2");
 
-            let listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
-            expect(listTitles).toEqual(['Todo', 'In progress', 'Done']);
+            let expectedLists = [
+                { title: "Todo", cards: ["Hello", "Goodbye"] }, 
+                { title: "In progress", cards: [] }, 
+                { title: "Done", cards: [] }
+            ];
 
-            let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]')
-            let listHeader = await parentListElement.$eval('h2', node => node.innerText);
-
-            expect(listHeader).toEqual('Todo');
+            await checkBoard(expectedLists);
 
             const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
             let inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
@@ -273,15 +290,14 @@ describe('Home page', () => {
             await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
 
             await page.waitForTimeout(700);
-            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-            listHeader = await parentListElement.$eval('h2', node => node.innerText);
+            
+            expectedLists = [
+                { title: "Todo", cards: ["Goodbye"] }, 
+                { title: "In progress", cards: ["Hello"] }, 
+                { title: "Done", cards: [] }
+            ];
 
-            expect(listHeader).toEqual('In progress');
-
-            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-            listHeader = await parentListElement.$eval('h2', node => node.innerText);
-
-            expect(listHeader).toEqual('In progress');
+            await checkBoard(expectedLists);
 
             const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
             inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
@@ -298,26 +314,18 @@ describe('Home page', () => {
 
             await page.waitForTimeout(700);
 
-            listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
-            expect(listTitles).toEqual(['In progress', 'Todo', 'Done']);
-
-            await page.reload();
-            await page.waitForSelector("h2");
-        })
-
-        it("test", async () => {
-            await installMouseHelper(page);
-
-            await page.goto('http://localhost:3000');
-            await page.waitForSelector("h2");
-
-            const expectedLists = [
-                { title: "Todo", cards: ["Hello", "Goodbye"] }, 
-                { title: "In progress", cards: [] }, 
+            expectedLists = [
+                { title: "In progress", cards: ["Hello"] }, 
+                { title: "Todo", cards: ["Goodbye"] }, 
                 { title: "Done", cards: [] }
             ];
 
-            checkBoard(expectedLists);
+            await checkBoard(expectedLists);
+
+            await page.reload();
+            await page.waitForSelector("h2");
+
+            await checkBoard(expectedLists);
 
         })
     });
@@ -333,7 +341,6 @@ describe('Home page', () => {
         const actualLists = [];
         const lists = await page.$$('.list');
         
-
         for(let i = 0; i < lists.length; i++) {
             const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
             const cards = await lists[i].$$('.card');
