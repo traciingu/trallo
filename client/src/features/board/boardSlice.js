@@ -33,16 +33,6 @@ export const loadBoard = createAsyncThunk('board/load', async (id) => {
     return { board: data, lists: listsCardIdOnly, cards: cards };
 });
 
-
-// TODO test this
-/* 
- export const updateBoard = createAsyncThunk('board/update', async (info) => {
--    await api.patch(`/boards/${info.id}`, info);
-+    const result = await api.patch(`/boards/${info.id}`, info);
-+    console.log(result);
-+    return result.data;
- });
-*/
 export const updateBoard = createAsyncThunk('board/update', async (info) => {
     const result = await api.patch(`/boards/${info.id}`, info);
     console.log(result);

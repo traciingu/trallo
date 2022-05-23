@@ -158,9 +158,6 @@ describe("reorderAndPersistCards", () => {
   let reorderAndPersistCards;
   let cardOrdering;
 
-  // TODO Make assertions what args reorderCards should be called with
-  // TODO Make mocks return specific values and test reorderCards output against the mock inputs
-
   beforeEach(() => {
     mockReorderBetweenLists = jest.fn(() => { });
     mockReorderCards = jest.fn(() => { return ["foo", "bar"] });

@@ -1,25 +1,5 @@
 import { DraggableInfo, DraggableLocation } from "../dataClasses";
 
-// TODO test this
-/*
- export const reorderLists = (listOrdering, draggable) => {
-     const orderingCpy = [...listOrdering];
-+    const {source, destination, id} = draggable;
-+    const startLocation = new DraggableLocation(source.droppableId, source.index);
-+    const dropLocation = new DraggableLocation(destination.droppableId, destination.index);
-+    const draggableInfo = new DraggableInfo(startLocation, dropLocation, id);
-+    const results = reorderElements(orderingCpy, orderingCpy, draggableInfo);
-
--    reorderElements(orderingCpy, orderingCpy, {
--        sourceIndex: draggable.sourceIndex,
--        destinationIndex: draggable.destinationIndex,
--        id: draggable.id
--    });
--
--    return orderingCpy;
-+    return results;
- };
-*/
 export const reorderLists = (listOrdering, draggable) => {
     const orderingCpy = [...listOrdering];
     const {source, destination, id} = draggable;
@@ -55,8 +35,6 @@ const copyArrayAtObjectKey = (obj, key) => {
     return [...obj[key]];
 }
 
-// TODO Refactor variable names
-// TODO Type check parameters with data class
 export const reorderCards = (cardOrdering, draggable, moveCardInSameList) => {
     const { id } = draggable;
     const source = { ...draggable.source };
