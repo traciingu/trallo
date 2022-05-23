@@ -83,14 +83,13 @@ describe('Home page', () => {
             // Has three lists with names 'Todo', 'In progress', 'Done'
             await page.waitForSelector("h2");
 
-            const listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
-            expect(listTitles).toEqual(['Todo', 'In progress', 'Done']);
+            let expectedLists = [
+                { title: "Todo", cards: ["Hello"] }, 
+                { title: "In progress", cards: [] }, 
+                { title: "Done", cards: [] }
+            ];
 
-            // Inside 'Todo' it contains a card named 'Hello'
-            let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]')
-            let listHeader = await parentListElement.$eval('h2', node => node.innerText);
-
-            expect(listHeader).toEqual('Todo');
+            checkBoard(expectedLists);
 
             // Click and drag 'Hello' card from 'Todo' to 'In Progress'
             // Refresh the browser
@@ -110,18 +109,18 @@ describe('Home page', () => {
             await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
 
             await page.waitForTimeout(700);
-            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-            listHeader = await parentListElement.$eval('h2', node => node.innerText);
 
-            expect(listHeader).toEqual('In progress');
 
             await page.reload();
             await page.waitForSelector("h2");
 
-            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
-            listHeader = await parentListElement.$eval('h2', node => node.innerText);
+            expectedLists = [
+                { title: "Todo", cards: [] }, 
+                { title: "In progress", cards: ["Hello"] }, 
+                { title: "Done", cards: [] }
+            ];
 
-            expect(listHeader).toEqual('In progress');
+            checkBoard(expectedLists);
 
         });
 
