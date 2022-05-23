@@ -145,26 +145,23 @@ describe('Home page', () => {
 
         const todoBox = await todoList.boundingBox();
         const inProgressBox = await inProgressList.boundingBox();
-        const doneBox = await doneList.boundingBox();
 
         const todoX = todoBox.x + (todoBox.width / 2);
         const todoY = todoBox.y + (todoBox.height / 2);
-        const inProgressX = inProgressBox.x + (inProgressBox.width / 2);
-        const doneX = doneBox.x + (doneBox.width / 2);
 
-        const dropAreaX = inProgressBox.width + 100;
+        const dropAreaX = inProgressBox.width + 500;
 
-        await page.mouse.move(todoX, todoY);
+        await page.mouse.move(todoX, todoY, { steps: 5 });
         await page.mouse.down();
-        await page.mouse.move(dropAreaX, todoY);
+        await page.mouse.move(dropAreaX, todoY, { steps: 5 });
         await page.mouse.up();
 
         await page.waitForTimeout(700);
 
         listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
-        expect(listTitles).toEqual([ 'In progress', 'Todo', 'Done']);
+        expect(listTitles).toEqual(['In progress', 'Todo', 'Done']);
 
-        
+
 
     });
 
