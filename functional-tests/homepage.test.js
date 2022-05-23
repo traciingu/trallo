@@ -156,8 +156,6 @@ describe('Home page', () => {
             listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
             expect(listTitles).toEqual(['In progress', 'Todo', 'Done']);
 
-
-
         });
     });
 
@@ -247,6 +245,82 @@ describe('Home page', () => {
 
 
         });
+
+        it('moves one card to a different list then reorder a list containing a card', async () => {
+            await installMouseHelper(page);
+
+            await page.goto('http://localhost:3000');
+            await page.waitForSelector("h2");
+
+            let listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
+            expect(listTitles).toEqual(['Todo', 'In progress', 'Done']);
+
+            let [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]')
+            let listHeader = await parentListElement.$eval('h2', node => node.innerText);
+
+            expect(listHeader).toEqual('Todo');
+
+            const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
+            let inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
+
+            const helloBox = await helloCard.boundingBox();
+            let inProgressBox = await inProgressList.boundingBox();
+
+            const helloX = helloBox.x + helloBox.width / 2;
+            const helloY = helloBox.y + helloBox.height / 2;
+            const inProgressX = inProgressBox.x + inProgressBox.width;
+            const inProgressY = inProgressBox.y + inProgressBox.height;
+
+            await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
+
+            await page.waitForTimeout(700);
+            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+            listHeader = await parentListElement.$eval('h2', node => node.innerText);
+
+            expect(listHeader).toEqual('In progress');
+
+            [parentListElement] = await page.$x('//div[text()="Hello"]/ancestor::div[@class="list"]');
+            listHeader = await parentListElement.$eval('h2', node => node.innerText);
+
+            expect(listHeader).toEqual('In progress');
+
+            const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
+            inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
+
+            const todoBox = await todoList.boundingBox();
+            inProgressBox = await inProgressList.boundingBox();
+
+            const todoX = todoBox.x + (todoBox.width / 2);
+            const todoY = todoBox.y + (todoBox.height / 2);
+
+            const dropAreaX = inProgressBox.width + 500;
+
+            await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
+
+            await page.waitForTimeout(700);
+
+            listTitles = await page.$$eval('h2', nodes => nodes.map(n => n.innerText));
+            expect(listTitles).toEqual(['In progress', 'Todo', 'Done']);
+
+            await page.reload();
+            await page.waitForSelector("h2");
+        })
+
+        it("test", async () => {
+            await installMouseHelper(page);
+
+            await page.goto('http://localhost:3000');
+            await page.waitForSelector("h2");
+
+            const expectedLists = [
+                { title: "Todo", cards: ["Hello", "Goodbye"] }, 
+                { title: "In progress", cards: [] }, 
+                { title: "Done", cards: [] }
+            ];
+
+            checkBoard(expectedLists);
+
+        })
     });
 
     const dragAndDrop = async (start, end) => {
@@ -254,6 +328,27 @@ describe('Home page', () => {
         await page.mouse.down();
         await page.mouse.move(end.x, end.y, { steps: 5 });
         await page.mouse.up();
+    };
+
+    const checkBoard = async (expectedLists) => {
+        const actualLists = [];
+        const lists = await page.$$('.list');
+        
+
+        for(let i = 0; i < lists.length; i++) {
+            const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
+            const cards = await lists[i].$$('.card');
+            const newCards = [];
+            for(let j = 0; j < cards.length; j++) {
+                const cardText = await cards[j].evaluate((card) => card.textContent);
+                newCards.push(cardText);
+            }
+            
+            actualLists.push({ title, cards: newCards});
+        }
+
+        expect(expectedLists).toEqual(actualLists);
+
     };
 
 });
