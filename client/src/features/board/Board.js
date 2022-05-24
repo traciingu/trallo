@@ -54,6 +54,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
                 <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
                 <div data-create-item-container="list" className={!canEdit && "hide"}>
                   <input type="text" data-create-item-input="list" />
+                  <input type="button" data-create-item-confirm="list" value="Add List" />
                   <input type="button" data-create-item-cancel="list" value="Cancel" onClick={handleCancelForm}/>
                 </div>
               </ListContainer>
