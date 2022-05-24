@@ -412,6 +412,14 @@ describe('Home page', () => {
             const createButtonText = await createButton.evaluate(element => element.value);
             expect(createButtonText).toEqual('Add List');
             
+            await page.click('[data-create-item-confirm="list"');
+            await page.waitForTimeout(700);
+
+            const expectedList = [
+                {title: "Test List", cards: []},
+            ];
+
+            await checkBoard(expectedList);
         });
     });
 
