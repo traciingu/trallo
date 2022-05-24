@@ -48,7 +48,10 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
                 <List />
                 {provided.placeholder}
                 <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
-                <div data-create-item-container="list" className={!canEdit && "hide"}><input type="text" data-create-item-input="list" /></div>
+                <div data-create-item-container="list" className={!canEdit && "hide"}>
+                  <input type="text" data-create-item-input="list" />
+                  <input type="button" data-create-item-cancel="list" value="Cancel" />
+                </div>
               </ListContainer>
             </div>
           )}

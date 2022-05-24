@@ -384,7 +384,10 @@ describe('Home page', () => {
 
             const cancelButton = await createListContainer.$('[data-create-item-cancel="list"]');
             const cancelButtonType = await cancelButton.evaluate(element => element.type);
+            const cancelButtonText = await cancelButton.evaluate(element => element.value);
             expect(cancelButtonType).toEqual('button');
+            expect(cancelButtonText).toEqual('Cancel');
+            
         })
     });
 
