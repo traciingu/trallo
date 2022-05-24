@@ -5,7 +5,6 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 import { ListContainer } from './BoardStyles';
-import './style.css';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
@@ -49,7 +48,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
                 <List />
                 {provided.placeholder}
                 <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
-                <div data-create-item-container="list" className={!canEdit && "hide"}></div>
+                <div data-create-item-container="list" className={!canEdit && "hide"}>Hiya</div>
               </ListContainer>
             </div>
           )}

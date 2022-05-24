@@ -289,7 +289,7 @@ describe('Home page', () => {
 
             await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
 
-            await page.waitForTimeout(700);
+            await page.waitForTimeout(1000);
 
             expectedLists = [
                 { title: "Todo", cards: ["Goodbye"] },
