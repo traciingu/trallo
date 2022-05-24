@@ -378,6 +378,10 @@ describe('Home page', () => {
             expect(listCreateButtonVisibility).toEqual("none");
             expect(createListContainerVisibility).not.toEqual("none");
 
+            const createInputField = await createListContainer.$("input");
+            const createInputFieldType = await createInputField.evaluate(element => element.type);
+            expect(createInputFieldType).toEqual('text');
+
         })
     });
 
