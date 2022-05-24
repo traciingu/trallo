@@ -394,7 +394,25 @@ describe('Home page', () => {
             createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(createListContainerVisibility).toEqual('none');
             expect(listCreateButtonVisibility).not.toEqual('none');
-        })
+        });
+
+        it('creates a new list', async () => {
+            await installMouseHelper(page);
+            await page.goto('http://localhost:3000');
+            await page.waitForSelector("h1");
+
+            const board = await page.$('.board');
+            let listCreateButton = await board.$('[data-add-button="list"]');
+            
+            await page.click('[data-add-button="list"]');
+            const createInputField = await board.$('[data-create-item-input="list"]');
+            await createInputField.type('Test List');
+            
+            const createButton = await board.$('[data-create-item-confirm="list"]');
+            const createButtonText = await createButton.evaluate(element => element.value);
+            expect(createButtonText).toEqual('Add List');
+            
+        });
     });
 
     const dragAndDrop = async (start, end) => {
