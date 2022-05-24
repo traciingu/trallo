@@ -21,7 +21,9 @@ const pushListToStore = (state, action) => {
     const lists = action.payload.lists;
     lists.forEach(list => {
         state.byId[list.id] = list;
-        state.allIds.push(list.id);
+        if (!state.allIds.includes(list.id)) {
+            state.allIds.push(list.id);
+        }
     });
 };
 

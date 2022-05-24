@@ -24,7 +24,10 @@ const pushCardsToStoreOnLoad = (state, action) => {
         if (!state.allIds[card.listId]) {
             state.allIds[card.listId] = [];
         }
-        state.allIds[card.listId].push(card.id);
+
+        if (!state.allIds[card.listId].includes(card.id)) {
+            state.allIds[card.listId].push(card.id);
+        }
     })
 };
 
