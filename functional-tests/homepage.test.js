@@ -350,7 +350,7 @@ describe('Home page', () => {
             }
         })
 
-        it("creates a list", async () => {
+        it("can open and close create list form", async () => {
             await installMouseHelper(page);
             await page.goto('http://localhost:3000');
             await page.waitForSelector("h1");
@@ -372,7 +372,7 @@ describe('Home page', () => {
             await page.click('[data-add-button="list"]');
             await page.waitForTimeout(700);
 
-            const listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            let listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             
             expect(listCreateButtonVisibility).toEqual("none");
@@ -387,7 +387,13 @@ describe('Home page', () => {
             const cancelButtonText = await cancelButton.evaluate(element => element.value);
             expect(cancelButtonType).toEqual('button');
             expect(cancelButtonText).toEqual('Cancel');
-            
+
+            await page.click('[data-create-item-cancel="list"]');
+            await page.waitForTimeout(700);
+            listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(createListContainerVisibility).toEqual('none');
+            expect(listCreateButtonVisibility).not.toEqual('none');
         })
     });
 
