@@ -1,13 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
+import { ListContainer } from './BoardStyles';
+import './style.css';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
-
+  const [canEdit, setCanEdit ] = useState(false);
   const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
   const reorderAndPersistLists = curryReorderAndPersistLists(reorderLists, updateBoard, listOrdering);
   const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards, reorderAndPersistLists);
@@ -20,14 +22,15 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
         };
 
       case "listContainer":
-
         return {
-          display: "flex",
-          justifyContent: "space-around",
-          ...droppableStyle
+          // ...droppableStyle
         };
     }
   }
+  
+  const handleClick = (e) => {
+    setCanEdit(!canEdit);
+  };
 
   return (
     <div className="board">
@@ -42,13 +45,16 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
               ref={provided.innerRef}
               style={styles("listContainer", provided.droppableProps.style)}
             >
-              <List />
-              {provided.placeholder}
+              <ListContainer>
+                <List />
+                {provided.placeholder}
+                <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
+                <div data-create-item-container="list" className={!canEdit && "hide"}></div>
+              </ListContainer>
             </div>
           )}
         </Droppable>
       </DragDropContext>
-      <input type="button" data-add-button="list" value="Add list"/>
     </div>
   );
 }
@@ -103,7 +109,7 @@ export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, u
 export const curryReorderAndPersistLists = (reorderLists, updateBoard, listOrdering) => {
   return (destination, source, id) => {
     const result = reorderLists(listOrdering, { destination, source, id });
-    updateBoard({id: destination.droppableId, lists: result[1]});
+    updateBoard({ id: destination.droppableId, lists: result[1] });
   }
 }
 

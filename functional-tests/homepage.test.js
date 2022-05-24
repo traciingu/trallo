@@ -146,7 +146,7 @@ describe('Home page', () => {
             const todoX = todoBox.x + (todoBox.width / 2);
             const todoY = todoBox.y + (todoBox.height / 2);
 
-            const dropAreaX = inProgressBox.width + 500;
+            const dropAreaX = inProgressBox.x + (inProgressBox.width/1.25);
 
             await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
 
@@ -308,7 +308,7 @@ describe('Home page', () => {
             const todoX = todoBox.x + (todoBox.width / 2);
             const todoY = todoBox.y + (todoBox.height / 2);
 
-            const dropAreaX = inProgressBox.width + 500;
+            const dropAreaX = inProgressBox.x + (inProgressBox.width/1.25);
 
             await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
 
@@ -359,10 +359,25 @@ describe('Home page', () => {
             await checkBoard(expectedLists);
 
             const board = await page.$('.board');
-            const listCreateButton = await board.$('[data-add-button*="list"]');
+            let listCreateButton = await board.$('[data-add-button="list"]');
             const listButtonText = await listCreateButton.evaluate(btn => btn.value);
 
             expect(listButtonText).toEqual("Add list");
+
+            const createListContainer = await board.$('[data-create-item-container="list"]');
+            let createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+
+            expect(createListContainerVisibility).toEqual("none");
+
+            await page.click('[data-add-button="list"]');
+            await page.waitForTimeout(700);
+
+            const listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            
+            expect(listCreateButtonVisibility).toEqual("none");
+            expect(createListContainerVisibility).not.toEqual("none");
+
         })
     });
 
