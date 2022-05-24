@@ -378,10 +378,13 @@ describe('Home page', () => {
             expect(listCreateButtonVisibility).toEqual("none");
             expect(createListContainerVisibility).not.toEqual("none");
 
-            const createInputField = await createListContainer.$("input");
+            const createInputField = await createListContainer.$('[data-create-item-input="list"]');
             const createInputFieldType = await createInputField.evaluate(element => element.type);
             expect(createInputFieldType).toEqual('text');
 
+            const cancelButton = await createListContainer.$('[data-create-item-cancel="list"]');
+            const cancelButtonType = await cancelButton.evaluate(element => element.type);
+            expect(cancelButtonType).toEqual('button');
         })
     });
 
