@@ -441,6 +441,63 @@ describe('Home page', () => {
         });
     });
 
+    describe("Starting with one empty list", () => {
+        beforeEach(async () => {
+            try {
+                const todo = {
+                    title: "Todo",
+                    cards: []
+                }
+
+                const lists = db.collection('lists');
+                const list = await lists.insertMany([todo]);
+
+                const dummy = {
+                    title: "Dummy",
+                    lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
+                }
+
+                const boards = db.collection('boards');
+                await boards.insertOne(dummy);
+            } catch (err) {
+                console.log(err);
+            }
+        })
+
+        it("can open and close the create card form", async () => {
+            // TODO Helper function
+            await installMouseHelper(page);
+            await page.goto('http://localhost:3000');
+            await page.waitForSelector('[data-item-type="list"]');
+
+            const firstList = await page.$('[data-item-type="list"]');
+            const addCardButton = await firstList.$('[data-add-button="card"]');
+
+            const addCardButtonType = await addCardButton.evaluate(btn => btn.type);
+            const addCardButtonText = await addCardButton.evaluate(btn => btn.value);
+
+            expect(addCardButtonType).toEqual("button");
+            expect(addCardButtonText).toEqual("Add card");
+
+            const addCardContainer = await firstList.$('[data-create-item-container="card"]');
+            let addCardContainerVisibility = await addCardContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+
+            expect(addCardContainerVisibility).toEqual("none");
+
+            await page.click('[data-add-button="card"]');
+            await page.waitForTimeout(700);
+
+            let addCardButtonVisibility = await addCardButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            addCardContainerVisibility = await addCardContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            
+            expect(addCardButtonVisibility).toEqual("none");
+            expect(addCardContainerVisibility).not.toEqual("none");
+
+
+
+        })
+    })
+
     const dragAndDrop = async (start, end) => {
         await page.mouse.move(start.x, start.y, { steps: 5 });
         await page.mouse.down();

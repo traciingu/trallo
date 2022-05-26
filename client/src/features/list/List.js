@@ -1,13 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import di from '../../injection_container';
 import { connect } from "react-redux";
+import { CreateCardForm, CreateCardContainer } from "./listStyles";
 
 const List = ({ lists, listsOrdering }) => {
     const { Droppable, Draggable, Card } = useContext(di);
+    const [canEdit, setCanEdit] = useState(false);
 
     const listStyle = (draggableStyle) => ({
         ...draggableStyle
     });
+
+    const handleClick = (e) => {
+        setCanEdit(!canEdit);
+    }
 
     return (
         <>
@@ -18,6 +24,7 @@ const List = ({ lists, listsOrdering }) => {
                             {...provided.draggableProps}
                             ref={provided.innerRef}
                             className="list"
+                            data-item-type="list"
                         >
                             <h2
                                 {...provided.dragHandleProps}
@@ -36,6 +43,10 @@ const List = ({ lists, listsOrdering }) => {
                                         </div>
                                     </div>)}
                             </Droppable>
+                            <CreateCardContainer>
+                                <input type="button" data-add-button="card" value="Add card" onClick={handleClick} className={canEdit ? "hide" : ""} />
+                                <CreateCardForm data-create-item-container="card" className={canEdit ? "" : "hide"}> </ CreateCardForm>
+                            </CreateCardContainer>
                         </div>
                     )}
                 </Draggable>
@@ -49,6 +60,6 @@ const msToProps = state => {
         lists: state.lists.byId,
         listsOrdering: state.lists.allIds
     }
-    }
+}
 
 export default connect(msToProps)(List);
