@@ -26,8 +26,6 @@ const pushNewListToStore = (state, action) => {
     if (!state.allIds.includes(list.id)) {
         state.allIds.push(list.id);
     }
-
-    console.log(action.payload);
 };
 
 const pushListToStore = (state, action) => {
@@ -43,17 +41,14 @@ const pushListToStore = (state, action) => {
 const updateListToStore = (state, action) => {
     const listsOrdering = action.payload.lists;
     state.allIds = listsOrdering;
-    console.log(listsOrdering);
 };
 
 export const updateList = createAsyncThunk('lists/update', async (info) => {
-    console.log(info);
     const { data } = await api.patch(`/lists/${info.id}`, info);
     return { lists: data };
 });
 
 export const createList = createAsyncThunk('lists/create', async (info) => {
     const { data } = await api.post(`/lists/`, info);
-    console.log(data);
     return data;
 });

@@ -5,7 +5,6 @@ import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 import { ListContainer } from './BoardStyles';
-import Test from './TestCSS';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId, createList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
