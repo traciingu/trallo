@@ -15,9 +15,7 @@ router.post('/', async (req, res, next) => {
     try {
         res.json(await new List({
             title: req.body.title,
-            board: req.body.board,
-            prev: req.body.prev || null,
-            next: req.body.next || null
+            // board: req.body.board,
         }).save());
     } catch (err) {
         next(err);

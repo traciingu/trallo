@@ -14,8 +14,21 @@ export const listSlice = createSlice({
             .addCase(updateBoard.fulfilled, (state, action) => {
                 updateListToStore(state, action);
             })
+            .addCase(createList.fulfilled, (state, action) => {
+                pushNewListToStore(state, action)
+            })
     }
 });
+
+const pushNewListToStore = (state, action) => {
+    const list = action.payload;
+    state.byId[list.id] = list;
+    if (!state.allIds.includes(list.id)) {
+        state.allIds.push(list.id);
+    }
+
+    console.log(action.payload);
+};
 
 const pushListToStore = (state, action) => {
     const lists = action.payload.lists;
@@ -37,4 +50,10 @@ export const updateList = createAsyncThunk('lists/update', async (info) => {
     console.log(info);
     const { data } = await api.patch(`/lists/${info.id}`, info);
     return { lists: data };
+});
+
+export const createList = createAsyncThunk('lists/create', async (info) => {
+    const { data } = await api.post(`/lists/`, info);
+    console.log(data);
+    return data;
 });

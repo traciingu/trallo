@@ -1,14 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { updateBoard } from './boardSlice';
-import { updateList } from '../list/listSlice';
+import { updateList, createList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
 import { ListContainer } from './BoardStyles';
+import Test from './TestCSS';
 
-function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId }) {
+function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId, createList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
-  const [canEdit, setCanEdit ] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
   const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
   const reorderAndPersistLists = curryReorderAndPersistLists(reorderLists, updateBoard, listOrdering);
   const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards, reorderAndPersistLists);
@@ -26,13 +27,18 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
         };
     }
   }
-  
+
   const handleClick = (e) => {
     setCanEdit(!canEdit);
   };
 
   const handleCancelForm = (e) => {
     setCanEdit(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createList({ title: e.target[0].value });
   };
 
   return (
@@ -52,11 +58,11 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
                 <List />
                 {provided.placeholder}
                 <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
-                <div data-create-item-container="list" className={!canEdit && "hide"}>
+                <form data-create-item-container="list" className={!canEdit ? "hide" : ""} onSubmit={handleSubmit}>
                   <input type="text" data-create-item-input="list" />
-                  <input type="button" data-create-item-confirm="list" value="Add List" />
-                  <input type="button" data-create-item-cancel="list" value="Cancel" onClick={handleCancelForm}/>
-                </div>
+                  <input type="submit" data-create-item-confirm="list" value="Add List" />
+                  <input type="button" data-create-item-cancel="list" value="Cancel" onClick={handleCancelForm} />
+                </form>
               </ListContainer>
             </div>
           )}
@@ -134,6 +140,7 @@ const mdToProps = dispatch => {
   return {
     updateBoard: (info) => { dispatch(updateBoard(info)) },
     updateList: (info) => { dispatch(updateList(info)) },
+    createList: (info) => { dispatch(createList(info)) },
   }
 };
 
