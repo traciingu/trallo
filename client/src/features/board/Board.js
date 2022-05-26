@@ -37,7 +37,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createList({ title: e.target[0].value });
+    createList({ title: e.target[0].value, boardId });
   };
 
   return (

@@ -10,6 +10,29 @@ describe('Home page', () => {
 
     // TODO setup installMouseHelper in beforeEach()
 
+    beforeAll(async () => {
+        try {
+            connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
+            db = await connection.db("trallo");
+
+            const cards = db.collection('cards');
+            await cards.deleteMany({});
+
+            const lists = db.collection('lists');
+            await lists.deleteMany({});
+
+            const boards = db.collection('boards');
+            await boards.deleteMany({});
+
+        } catch(err){
+            console.log(err);
+        }
+    });
+
+    afterAll(async () => {
+        await connection.close();
+    })
+
     afterEach(async () => {
         try {
             const cards = db.collection('cards');
@@ -22,17 +45,13 @@ describe('Home page', () => {
             await boards.deleteMany({});
 
         } finally {
-            // Ensures that the client will close when you finish/error
-            await connection.close();
+            
         }
     });
 
     describe("Starting Db with one card", () => {
         beforeEach(async () => {
             try {
-                connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
-                db = await connection.db("trallo");
-
                 const cards = db.collection('cards');
 
                 const hello = {
@@ -172,9 +191,6 @@ describe('Home page', () => {
     describe("Starting Db with two cards", () => {
         beforeEach(async () => {
             try {
-                connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
-                db = await connection.db("trallo");
-
                 const cards = db.collection('cards');
 
                 const hello = {
@@ -333,10 +349,6 @@ describe('Home page', () => {
     describe("Starting with empty board", () => {
         beforeEach(async () => {
             try {
-
-                connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
-                db = await connection.db("trallo");
-
                 const dummy = {
                     title: "Dummy",
                     lists: []
@@ -420,6 +432,12 @@ describe('Home page', () => {
             ];
 
             await checkBoard(expectedList);
+
+            await page.reload();
+            await page.waitForSelector("h2");
+
+            await checkBoard(expectedList);
+
         });
     });
 
