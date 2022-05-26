@@ -13,12 +13,12 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        const list = await new List({
+        const newList = await new List({
             title: req.body.title,
         }).save();
-        console.log(req.body.boardId);
-        await Board.findByIdAndUpdate(req.body.boardId, { $push: {lists: [list.id]} });
-        res.json(list);
+
+        await Board.findByIdAndUpdate(req.body.boardId, { $push: {lists: [newList.id]} });
+        res.json(newList);
     } catch (err) {
         next(err);
     }
