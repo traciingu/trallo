@@ -493,7 +493,23 @@ describe('Home page', () => {
             expect(addCardButtonVisibility).toEqual("none");
             expect(addCardContainerVisibility).not.toEqual("none");
 
+            const createInputField = await addCardContainer.$('[data-create-item-input="card"]');
+            const createInputFieldType = await createInputField.evaluate(element => element.type);
+            expect(createInputFieldType).toEqual('text');
 
+            const cancelButton = await addCardContainer.$('[data-create-item-cancel="card"]');
+            const cancelButtonType = await cancelButton.evaluate(element => element.type);
+            const cancelButtonText = await cancelButton.evaluate(element => element.value);
+            expect(cancelButtonType).toEqual('button');
+            expect(cancelButtonText).toEqual('Cancel');
+
+            await page.click('[data-create-item-cancel="card"]');
+            await page.waitForTimeout(700);
+
+            addCardButtonVisibility = await addCardButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            addCardContainerVisibility = await addCardContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(addCardContainerVisibility).toEqual('none');
+            expect(addCardButtonVisibility).not.toEqual('none');
 
         })
     })

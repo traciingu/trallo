@@ -45,7 +45,10 @@ const List = ({ lists, listsOrdering }) => {
                             </Droppable>
                             <CreateCardContainer>
                                 <input type="button" data-add-button="card" value="Add card" onClick={handleClick} className={canEdit ? "hide" : ""} />
-                                <CreateCardForm data-create-item-container="card" className={canEdit ? "" : "hide"}> </ CreateCardForm>
+                                <CreateCardForm data-create-item-container="card" className={canEdit ? "" : "hide"}> 
+                                    <input type="text" data-create-item-input="card" />
+                                    <input type="button" data-create-item-cancel="card" value="Cancel" onClick={handleClick} />
+                                </ CreateCardForm>
                             </CreateCardContainer>
                         </div>
                     )}
