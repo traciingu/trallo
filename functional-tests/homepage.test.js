@@ -12,6 +12,8 @@ describe('Home page', () => {
 
     beforeAll(async () => {
         try {
+            await installMouseHelper(page);
+
             connection = await MongoClient.connect("mongodb+srv://tracy:1234@cluster0.7rbuc.mongodb.net/trallo?retryWrites=true&w=majority");
             db = await connection.db("trallo");
 
@@ -44,8 +46,8 @@ describe('Home page', () => {
             const boards = db.collection('boards');
             await boards.deleteMany({});
 
-        } finally {
-            
+        } catch(err) {
+            console.log(err);
         }
     });
 
@@ -93,14 +95,9 @@ describe('Home page', () => {
 
         it('user can view board and move cards from list to list', async () => {
 
-            await installMouseHelper(page);
+            await navigateToBoard("h2");
 
-            // User opens board
-            await page.goto('http://localhost:3000');
-            // Page title is Trallo
             await expect(page.title()).resolves.toMatch('Trallo');
-            // Has three lists with names 'Todo', 'In progress', 'Done'
-            await page.waitForSelector("h2");
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello"] },
@@ -143,10 +140,7 @@ describe('Home page', () => {
 
         it('reorders the Todo list to be after the In Progress list', async () => {
 
-            await installMouseHelper(page);
-
-            await page.goto('http://localhost:3000');
-            await page.waitForSelector("h2");
+            await navigateToBoard("h2");
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello"] },
@@ -237,11 +231,7 @@ describe('Home page', () => {
 
         it('can reorder cards within the same list', async () => {
 
-            await installMouseHelper(page);
-
-            await page.goto('http://localhost:3000');
-
-            await page.waitForSelector("h2");
+            await navigateToBoard("h2");
 
             const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
             const helloBox = await helloCard.boundingBox();
@@ -279,10 +269,7 @@ describe('Home page', () => {
         });
 
         it('moves one card to a different list then reorder a list containing a card', async () => {
-            await installMouseHelper(page);
-
-            await page.goto('http://localhost:3000');
-            await page.waitForSelector("h2");
+            await navigateToBoard("h2");
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello", "Goodbye"] },
@@ -363,9 +350,7 @@ describe('Home page', () => {
         })
 
         it("can open and close create list form", async () => {
-            await installMouseHelper(page);
-            await page.goto('http://localhost:3000');
-            await page.waitForSelector("h1");
+            await navigateToBoard("h1");
 
             let expectedLists = [];
             await checkBoard(expectedLists);
@@ -409,12 +394,9 @@ describe('Home page', () => {
         });
 
         it('creates a new list', async () => {
-            await installMouseHelper(page);
-            await page.goto('http://localhost:3000');
-            await page.waitForSelector("h1");
+            await navigateToBoard("h1");
 
             const board = await page.$('.board');
-            let listCreateButton = await board.$('[data-add-button="list"]');
             
             await page.click('[data-add-button="list"]');
             const createInputField = await board.$('[data-create-item-input="list"]');
@@ -462,13 +444,10 @@ describe('Home page', () => {
             } catch (err) {
                 console.log(err);
             }
-        })
+        });
 
         it("can open and close the create card form", async () => {
-            // TODO Helper function
-            await installMouseHelper(page);
-            await page.goto('http://localhost:3000');
-            await page.waitForSelector('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]');
 
             const firstList = await page.$('[data-item-type="list"]');
             const addCardButton = await firstList.$('[data-add-button="card"]');
@@ -511,8 +490,17 @@ describe('Home page', () => {
             expect(addCardContainerVisibility).toEqual('none');
             expect(addCardButtonVisibility).not.toEqual('none');
 
-        })
+        });
+
+        it("create and persist a new card", async () => {
+
+        });
     })
+
+    const navigateToBoard = async (selector) => {
+        await page.goto('http://localhost:3000');
+        await page.waitForSelector(selector);
+    }
 
     const dragAndDrop = async (start, end) => {
         await page.mouse.move(start.x, start.y, { steps: 5 });
