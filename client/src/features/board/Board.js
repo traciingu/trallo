@@ -4,10 +4,9 @@ import { updateList, createList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
-import { ListContainer } from './BoardStyles';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId, createList }) {
-  const { reorderLists, reorderCards, DragDropContext, Droppable, List } = useContext(di);
+  const { reorderLists, reorderCards, DragDropContext, Droppable, ListContainer } = useContext(di);
   const [canEdit, setCanEdit] = useState(false);
   const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
   const reorderAndPersistLists = curryReorderAndPersistLists(reorderLists, updateBoard, listOrdering);
@@ -53,16 +52,14 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
               ref={provided.innerRef}
               style={styles("listContainer", provided.droppableProps.style)}
             >
-              <ListContainer>
-                <List />
+                <ListContainer />
                 {provided.placeholder}
                 <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
                 <form data-create-item-container="list" className={!canEdit ? "hide" : ""} onSubmit={handleSubmit}>
                   <input type="text" data-create-item-input="list" />
                   <input type="submit" data-create-item-confirm="list" value="Add List" />
                   <input type="button" data-create-item-cancel="list" value="Cancel" onClick={handleCancelForm} />
-                </form>
-              </ListContainer>
+                </form>            
             </div>
           )}
         </Droppable>

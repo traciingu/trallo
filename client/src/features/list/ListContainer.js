@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { CreateCardForm, CreateCardContainer } from "./listStyles";
 import { createCard } from '../card/cardSlice';
 
-const List = ({ lists, listsOrdering, createCard }) => {
+const ListContainer = ({ lists, listsOrdering, createCard }) => {
     const { Droppable, Draggable, Card } = useContext(di);
     const [canEdit, setCanEdit] = useState(false);
 
@@ -18,7 +18,10 @@ const List = ({ lists, listsOrdering, createCard }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(e);
+        createCard({
+            listId: e.target.dataset.listId,
+            title: e.target[0].value,
+        });
     }
 
     return (
@@ -51,7 +54,7 @@ const List = ({ lists, listsOrdering, createCard }) => {
                             </Droppable>
                             <CreateCardContainer>
                                 <input type="button" data-add-button="card" value="Add card" onClick={handleClick} className={canEdit ? "hide" : ""} />
-                                <CreateCardForm data-create-item-container="card" className={canEdit ? "" : "hide"} onSubmit={(e, lists) => {e.preventDefault(); handleSubmit(e, lists[key].id)}} > 
+                                <CreateCardForm data-create-item-container="card" className={canEdit ? "" : "hide"} data-list-id={lists[key].id} onSubmit={handleSubmit} > 
                                     <input type="text" data-create-item-input="card" />
                                     <input type="button" data-create-item-cancel="card" value="Cancel" onClick={handleClick} />
                                     <input type="submit" data-create-item-confirm="card" value="Add Card" />
@@ -75,8 +78,8 @@ const msToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createCards: (info) => { dispatch(createCard(info)); }
+        createCard: (info) => { dispatch(createCard(info)); }
     }
 }
 
-export default connect(msToProps, mapDispatchToProps)(List);
+export default connect(msToProps, mapDispatchToProps)(ListContainer);

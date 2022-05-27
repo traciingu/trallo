@@ -16,8 +16,9 @@ router.post('/', async (req, res, next) => {
             title: req.body.title,
             description: req.body.description || null,
         }).save();
+        const leanCard = await Card.findById(newCard.id).lean();
         await List.findByIdAndUpdate(req.body.listId, {$push: {cards: [newCard.id]}})
-        res.json(newCard);
+        res.json({...leanCard, listId: req.body.listId});
     } catch (err) {
         next(err);
     }
