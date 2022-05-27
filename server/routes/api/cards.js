@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Card } = require('../../db/models');
+const { Card, List } = require('../../db/models');
 
 router.get('/:id', async (req, res, next) => {
     try {
@@ -10,14 +10,14 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
+    
     try {
-        res.json(await new Card({
+        const newCard = await new Card({
             title: req.body.title,
             description: req.body.description || null,
-            list: req.body.list,
-            prev: req.body.prev || null,
-            next: req.body.next || null
-        }));
+        }).save();
+        await List.findByIdAndUpdate(req.body.listId, {$push: {cards: [newCard.id]}})
+        res.json(newCard);
     } catch (err) {
         next(err);
     }

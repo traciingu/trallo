@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { loadBoard } from '../board/boardSlice';
 import { updateList } from '../list/listSlice';
+import { api } from '../../api';
 
 export const cardSlice = createSlice({
     name: 'cards',
@@ -48,3 +49,8 @@ const pushCardsToStoreOnUpdate = (state, action) => {
         }
     });
 };
+
+export const createCard = createAsyncThunk("cards/create", async (info) => {
+    const { data } = await api.post("/cards", info);
+    return data;
+});

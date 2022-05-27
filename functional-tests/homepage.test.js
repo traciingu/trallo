@@ -493,7 +493,26 @@ describe('Home page', () => {
         });
 
         it("create and persist a new card", async () => {
+            await navigateToBoard("h2");
 
+            const firstList = await page.$('[data-item-type="list"]');
+            
+            await page.click('[data-add-button="card"]');
+            const createInputField = await firstList.$('[data-create-item-input="card"]');
+            await createInputField.type('Test Card');
+            
+            const createButton = await firstList.$('[data-create-item-confirm="card"]');
+            const createButtonText = await createButton.evaluate(element => element.value);
+            expect(createButtonText).toEqual('Add Card');
+
+            await page.click('[data-create-item-confirm="card"');
+            await page.waitForTimeout(700);
+
+            const expectedList = [
+                {title: "Todo", cards: ["Test Card"]},
+            ];
+
+            await checkBoard(expectedList);
         });
     })
 
