@@ -54,12 +54,12 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
             >
                 <ListContainer />
                 {provided.placeholder}
-                <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
+                {/* <input className={canEdit ? "hide" : ""} type="button" data-add-button="list" value="Add list" onClick={handleClick} />
                 <form data-create-item-container="list" className={!canEdit ? "hide" : ""} onSubmit={handleSubmit}>
                   <input type="text" data-create-item-input="list" />
                   <input type="submit" data-create-item-confirm="list" value="Add List" />
                   <input type="button" data-create-item-cancel="list" value="Cancel" onClick={handleCancelForm} />
-                </form>            
+                </form>             */}
             </div>
           )}
         </Droppable>
