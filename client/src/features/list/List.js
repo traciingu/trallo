@@ -3,16 +3,33 @@ import di from '../../injection_container';
 import { connect } from "react-redux";
 import { createCard } from "../card/cardSlice";
 import { CreateCardForm, CreateCardContainer } from "./listStyles";
+import { updateList } from "./listSlice";
 
 
-const List = ({createCard, id, index, title}) => {
+const List = ({ createCard, id, index, title, updateList }) => {
     const { Droppable, Draggable, Card } = useContext(di);
     const [canEdit, setCanEdit] = useState(false);
-    
+    const [canEditList, setCanEditList] = useState(false);
+    const [listTitleInputText, setListTitleInputText] = useState(title);
+
+    const handleListEditSubmit = (e) => {
+        e.preventDefault();
+        updateList({id, title: e.target[0].value});
+        setCanEditList(!canEditList);
+    };
+
+    const handleChange = (e) => {
+        setListTitleInputText(e.target.value);
+    };
+
     const handleClick = (e) => {
         setCanEdit(!canEdit);
+    };
+
+    const handleEditListButtonClick = (e) => {
+        setCanEditList(!canEditList);
     }
-    
+
     const handleSubmit = (e) => {
         e.preventDefault();
         createCard({
@@ -29,9 +46,17 @@ const List = ({createCard, id, index, title}) => {
                 className="list"
                 data-item-type="list"
             >
-                <h2
+                <form className={canEditList ? "" : "hide"} onSubmit={handleListEditSubmit}>
+                    <input type="text" data-edit-item-input="list"  onChange={handleChange} value={listTitleInputText} />
+                </form>
+                <h2 className={canEditList ? "hide" : ""}
+                data-list-title={title}   
                     {...provided.dragHandleProps}
-                >{title}</h2>
+                >
+                    {title}
+                </h2>
+
+                <input type="button" data-edit-item-button="list" value="Edit" onClick={handleEditListButtonClick} />
 
                 <Droppable droppableId={`${id}`} key={id} type="cards">
                     {(providedDroppable) => (
@@ -60,7 +85,8 @@ const List = ({createCard, id, index, title}) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createCard: (info) => { dispatch(createCard(info)); }
+        createCard: (info) => { dispatch(createCard(info)); },
+        updateList: (info) => { dispatch(updateList(info)); }
     }
 }
 

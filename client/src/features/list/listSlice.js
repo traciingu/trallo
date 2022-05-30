@@ -17,6 +17,12 @@ export const listSlice = createSlice({
             .addCase(createList.fulfilled, (state, action) => {
                 pushNewListToStore(state, action)
             })
+            .addCase(updateList.fulfilled, (state, action) => {
+                const lists = action.payload.lists;
+                lists.forEach(list => {
+                    state.byId[list.id].title = list.title;
+                });           
+            })
     }
 });
 

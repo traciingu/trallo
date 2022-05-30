@@ -463,6 +463,15 @@ describe('Home page', () => {
             await listEditInput.type("TEST");
             listEditInputText = await listEditInput.evaluate(element => element.value);
             expect(listEditInputText).toEqual("TEST");
+
+            await page.keyboard.press('Enter');
+            await page.waitForSelector('[data-list-title="TEST"]');
+
+            const expectedLists = [
+                {title: "TEST", cards: []}
+            ];
+
+            await checkBoard(expectedLists);
         });
     })
 
