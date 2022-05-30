@@ -551,19 +551,44 @@ describe('Home page', () => {
             await navigateToBoard('h2');
 
             await checkBoard(boardState);
-        });
+        })
+
+        it("takes boardState with single list populated with one card", async () => {
+            const boardState = [
+                { title: "Test", cards: ["Test card"] },
+            ];
+
+            await populate(db, boardState);
+            await navigateToBoard('h2');
+
+            await checkBoard(boardState);
+        })
     })
 
 
     const populate = async (db, boardState) => {
         try {
-
+            const cardsCollection = db.collection('cards');
             const listsCollection = db.collection('lists');
             let lists = { insertedIds: {} };
             if (boardState.length > 0) {
-                const boardStateCopy = boardState.map(list => { return {...list}});
-                console.log(boardStateCopy)
-                lists = await listsCollection.insertMany(boardStateCopy);
+                for (let i = 0; i < boardState.length; i += 1) {
+                    let cards = { insertedIds: {} };
+                    if (boardState[i].cards.length > 0) {
+                        const cardsJson = boardState[i].cards.map(card => {
+                            return {title: card, description: null};
+                        });
+                        cards = await cardsCollection.insertMany(cardsJson);
+                    }
+                    
+                    const listStateCopy = boardState.map(list => { return {
+                        ...list,
+                         cards: Object.keys(cards.insertedIds).map(key => cards.insertedIds[key]
+                        )
+                    }});
+
+                    lists = await listsCollection.insertMany(listStateCopy);
+                }
             }
             const state = {
                 title: "Dummy",
