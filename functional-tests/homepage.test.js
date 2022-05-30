@@ -1,6 +1,7 @@
 const { installMouseHelper } = require('./helpers/install-mouse-helper');
 
 const { MongoClient } = require('mongodb');
+const board = require('../server/db/models/board');
 
 
 // TODO Write FT for reordering lists
@@ -26,7 +27,7 @@ describe('Home page', () => {
             const boards = db.collection('boards');
             await boards.deleteMany({});
 
-        } catch(err){
+        } catch (err) {
             console.log(err);
         }
     });
@@ -46,7 +47,7 @@ describe('Home page', () => {
             const boards = db.collection('boards');
             await boards.deleteMany({});
 
-        } catch(err) {
+        } catch (err) {
             console.log(err);
         }
     });
@@ -159,7 +160,7 @@ describe('Home page', () => {
             const todoX = todoBox.x + (todoBox.width / 2);
             const todoY = todoBox.y + (todoBox.height / 2);
 
-            const dropAreaX = inProgressBox.x + (inProgressBox.width/1.25);
+            const dropAreaX = inProgressBox.x + (inProgressBox.width / 1.25);
 
             await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
 
@@ -311,7 +312,7 @@ describe('Home page', () => {
             const todoX = todoBox.x + (todoBox.width / 2);
             const todoY = todoBox.y + (todoBox.height / 2);
 
-            const dropAreaX = inProgressBox.x + (inProgressBox.width/1.25);
+            const dropAreaX = inProgressBox.x + (inProgressBox.width / 1.25);
 
             await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
 
@@ -371,7 +372,7 @@ describe('Home page', () => {
 
             let listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
-            
+
             expect(listCreateButtonVisibility).toEqual("none");
             expect(createListContainerVisibility).not.toEqual("none");
 
@@ -397,20 +398,20 @@ describe('Home page', () => {
             await navigateToBoard("h1");
 
             const board = await page.$('.board');
-            
+
             await page.click('[data-add-button="list"]');
             const createInputField = await board.$('[data-create-item-input="list"]');
             await createInputField.type('Test List');
-            
+
             const createButton = await board.$('[data-create-item-confirm="list"]');
             const createButtonText = await createButton.evaluate(element => element.value);
             expect(createButtonText).toEqual('Add List');
-            
+
             await page.click('[data-create-item-confirm="list"');
             await page.waitForTimeout(700);
 
             const expectedList = [
-                {title: "Test List", cards: []},
+                { title: "Test List", cards: [] },
             ];
 
             await checkBoard(expectedList);
@@ -468,7 +469,7 @@ describe('Home page', () => {
 
             let addCardButtonVisibility = await addCardButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             addCardContainerVisibility = await addCardContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
-            
+
             expect(addCardButtonVisibility).toEqual("none");
             expect(addCardContainerVisibility).not.toEqual("none");
 
@@ -496,11 +497,11 @@ describe('Home page', () => {
             await navigateToBoard("h2");
 
             const firstList = await page.$('[data-item-type="list"]');
-            
+
             await page.click('[data-add-button="card"]');
             const createInputField = await firstList.$('[data-create-item-input="card"]');
             await createInputField.type('Test Card');
-            
+
             const createButton = await firstList.$('[data-create-item-confirm="card"]');
             const createButtonText = await createButton.evaluate(element => element.value);
             expect(createButtonText).toEqual('Add Card');
@@ -509,12 +510,102 @@ describe('Home page', () => {
             await page.waitForTimeout(700);
 
             const expectedList = [
-                {title: "Todo", cards: ["Test Card"]},
+                { title: "Todo", cards: ["Test Card"] },
             ];
 
             await checkBoard(expectedList);
         });
     })
+
+    describe("Populate", () => {
+        it("takes empty boardState", async () => {
+            const boardState = [];
+
+            await populate(db, boardState);
+            await navigateToBoard('h1');
+
+            await checkBoard([]);
+        })
+
+        it("takes a boardState with a single empty list", async () => {
+            const boardState = [
+                {title: "Test", cards: []}
+            ];
+
+            await populate(db, boardState);
+            await navigateToBoard('h2');
+
+            await checkBoard(boardState);
+        })
+    })
+
+
+    const populate = async (db, boardState) => {
+        try {
+
+            const state = {
+                title: "Dummy",
+                lists: [boardState]
+            };
+            // const cardsCollection = db.collection('cards');
+
+            // let expectedLists = [
+            //     { title: "Todo", cards: ["Goodbye", "Hello"] },
+            //     { title: "In progress", cards: [] },
+            //     { title: "Done", cards: [] }
+            // ];
+
+            // const cardsJson = boardState.map((card) => {
+
+            //     return { title: card.title, description: card.description || null }
+            // });
+
+            // const cards = await cardsCollection.insertMany(cardsJson);
+
+            const boards = db.collection('boards');
+            await boards.insertOne(state);
+
+            // const hello = {
+            //     title: "Hello",
+            //     description: "Goodbye"
+            // };
+
+            // const goodbye = {
+            //     title: "Goodbye",
+            //     description: "Hello"
+            // };
+
+            // const card = await cards.insertMany([hello, goodbye]);
+
+            // const todo = {
+            //     title: "Todo",
+            //     cards: Object.keys(card.insertedIds).map(key => card.insertedIds[key])
+            // }
+
+            // const inProgress = {
+            //     title: "In progress",
+            //     cards: []
+            // }
+
+            // const done = {
+            //     title: "Done",
+            //     cards: []
+            // }
+
+            // const lists = db.collection('lists');
+            // const list = await lists.insertMany([todo, inProgress, done]);
+
+            // const dummy = {
+            //     title: "Dummy",
+            //     lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
+            // }
+
+            // const boards = db.collection('boards');
+            // await boards.insertOne(dummy);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const navigateToBoard = async (selector) => {
         await page.goto('http://localhost:3000');
