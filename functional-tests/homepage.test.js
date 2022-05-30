@@ -563,6 +563,30 @@ describe('Home page', () => {
 
             await checkBoard(boardState);
         })
+
+        it("takes boardState with single list populated with multiple cards", async () => {
+            const boardState = [
+                { title: "Test", cards: ["Test A", "Test B", "Test C"] },
+            ];
+
+            await populate(db, boardState);
+            await navigateToBoard('h2');
+
+            await checkBoard(boardState);
+        })
+
+        it("takes boardState with multiple lists populated with multiple cards", async () => {
+            const boardState = [
+                { title: "Test", cards: ["Test A", "Test B", "Test C"] },
+                { title: "Test 2", cards: ["Test A", "Test B", "Test C"] },
+                { title: "Test 3", cards: ["Test A", "Test B", "Test C"] },
+            ];
+
+            await populate(db, boardState);
+            await navigateToBoard('h2');
+
+            await checkBoard(boardState);
+        })
     })
 
 
@@ -594,64 +618,17 @@ describe('Home page', () => {
                 title: "Dummy",
                 lists: Object.keys(lists.insertedIds).map(key => lists.insertedIds[key]),
             };
-            // const cardsCollection = db.collection('cards');
-
-            // let expectedLists = [
-            //     { title: "Todo", cards: ["Goodbye", "Hello"] },
-            //     { title: "In progress", cards: [] },
-            //     { title: "Done", cards: [] }
-            // ];
-
-            // const cardsJson = boardState.map((card) => {
-
-            //     return { title: card.title, description: card.description || null }
-            // });
-
-            // const cards = await cardsCollection.insertMany(cardsJson);
-
+           
             const boards = db.collection('boards');
             await boards.insertOne(state);
 
-            // const hello = {
-            //     title: "Hello",
-            //     description: "Goodbye"
-            // };
-
-            // const goodbye = {
-            //     title: "Goodbye",
-            //     description: "Hello"
-            // };
-
-            // const card = await cards.insertMany([hello, goodbye]);
-
-            // const todo = {
-            //     title: "Todo",
-            //     cards: Object.keys(card.insertedIds).map(key => card.insertedIds[key])
-            // }
-
-            // const inProgress = {
-            //     title: "In progress",
-            //     cards: []
-            // }
-
-            // const done = {
-            //     title: "Done",
-            //     cards: []
-            // }
-
-            // const lists = db.collection('lists');
-            // const list = await lists.insertMany([todo, inProgress, done]);
-
-            // const dummy = {
-            //     title: "Dummy",
-            //     lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
-            // }
-
-            // const boards = db.collection('boards');
-            // await boards.insertOne(dummy);
         } catch (err) {
             console.log(err);
         }
+
+        const selector = boardState.length > 0 ? 'h2' : 'h1';
+        await navigateToBoard(selector);
+        await checkBoard(boardState);
     };
 
     const navigateToBoard = async (selector) => {
