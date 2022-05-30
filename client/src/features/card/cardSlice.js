@@ -17,7 +17,7 @@ export const cardSlice = createSlice({
             })
             .addCase(createCard.fulfilled, (state, action) => {
                 const card = action.payload;
-                state.byId[card._id] = card;
+                state.byId[card.id] = card;
                 if (!state.allIds[card.listId]) {
                     state.allIds[card.listId] = [];
                 }
@@ -25,8 +25,6 @@ export const cardSlice = createSlice({
                 if (!state.allIds[card.listId].includes(card.id)) {
                     state.allIds[card.listId].push(card.id);
                 }
-
-                console.log(action.payload);
             })
     }
 });
