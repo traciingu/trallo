@@ -440,6 +440,30 @@ describe('Home page', () => {
 
             await checkBoard(expectedList);
         });
+
+        it("updates a list title", async () => {
+            await navigateToBoard('[data-item-type="list"]');
+
+            const listEditButton = await page.$('[data-edit-item-button="list"]');
+            const listEditButtonText = await listEditButton.evaluate(element => element.value);
+            expect(listEditButtonText).toEqual("Edit");
+
+            await page.click('[data-edit-item-button="list"]');
+            await page.waitForSelector('[data-edit-item-input="list"]');
+
+            const listEditInput = await page.$('[data-edit-item-input="list"]');
+            let listEditInputText = await listEditInput.evaluate(element => element.value);
+            expect(listEditInputText).toEqual("Todo");
+
+            await page.click('[data-edit-item-input="list"]');
+            for (let i = 0; i < listEditButtonText.length; i++) {
+                await page.keyboard.press('Backspace');
+            }
+
+            await listEditInput.type("TEST");
+            listEditInputText = await listEditInput.evaluate(element => element.value);
+            expect(listEditInputText).toEqual("TEST");
+        });
     })
 
     describe("Populate", () => {
