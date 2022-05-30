@@ -524,12 +524,14 @@ describe('Home page', () => {
             await populate(db, boardState);
             await navigateToBoard('h1');
 
+            await page.waitForTimeout(700);
+
             await checkBoard([]);
         })
 
         it("takes a boardState with a single empty list", async () => {
             const boardState = [
-                {title: "Test", cards: []}
+                { title: "Test", cards: [] }
             ];
 
             await populate(db, boardState);
@@ -543,9 +545,16 @@ describe('Home page', () => {
     const populate = async (db, boardState) => {
         try {
 
+            const listsCollection = db.collection('lists');
+            let lists = { insertedIds: {} };
+            if (boardState.length > 0) {
+                const boardStateCopy = boardState.map(list => { return {...list}});
+                console.log(boardStateCopy)
+                lists = await listsCollection.insertMany(boardStateCopy);
+            }
             const state = {
                 title: "Dummy",
-                lists: [boardState]
+                lists: Object.keys(lists.insertedIds).map(key => lists.insertedIds[key]),
             };
             // const cardsCollection = db.collection('cards');
 
