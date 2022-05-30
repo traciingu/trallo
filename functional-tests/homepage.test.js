@@ -55,40 +55,13 @@ describe('Home page', () => {
     describe("Starting Db with one card", () => {
         beforeEach(async () => {
             try {
-                const cards = db.collection('cards');
+                const boardState = [
+                    { title: 'Todo', cards: ["Hello"] },
+                    { title: 'In progress', cards: [] },
+                    { title: 'Done', cards: [] },
+                ];
 
-                const hello = {
-                    title: "Hello",
-                    description: "Goodbye"
-                };
-
-                const card = await cards.insertOne(hello);
-
-                const todo = {
-                    title: "Todo",
-                    cards: [card.insertedId]
-                }
-
-                const inProgress = {
-                    title: "In progress",
-                    cards: []
-                }
-
-                const done = {
-                    title: "Done",
-                    cards: []
-                }
-
-                const lists = db.collection('lists');
-                const list = await lists.insertMany([todo, inProgress, done]);
-
-                const dummy = {
-                    title: "Dummy",
-                    lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
-                }
-
-                const boards = db.collection('boards');
-                await boards.insertOne(dummy);
+                await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
