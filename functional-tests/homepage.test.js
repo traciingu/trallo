@@ -186,45 +186,13 @@ describe('Home page', () => {
     describe("Starting Db with two cards", () => {
         beforeEach(async () => {
             try {
-                const cards = db.collection('cards');
+                const boardState = [
+                    { title: 'Todo', cards: ["Hello", "Goodbye"] },
+                    { title: 'In progress', cards: [] },
+                    { title: 'Done', cards: [] },
+                ];
 
-                const hello = {
-                    title: "Hello",
-                    description: "Goodbye"
-                };
-
-                const goodbye = {
-                    title: "Goodbye",
-                    description: "Hello"
-                };
-
-                const card = await cards.insertMany([hello, goodbye]);
-
-                const todo = {
-                    title: "Todo",
-                    cards: Object.keys(card.insertedIds).map(key => card.insertedIds[key])
-                }
-
-                const inProgress = {
-                    title: "In progress",
-                    cards: []
-                }
-
-                const done = {
-                    title: "Done",
-                    cards: []
-                }
-
-                const lists = db.collection('lists');
-                const list = await lists.insertMany([todo, inProgress, done]);
-
-                const dummy = {
-                    title: "Dummy",
-                    lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
-                }
-
-                const boards = db.collection('boards');
-                await boards.insertOne(dummy);
+                await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
@@ -337,14 +305,8 @@ describe('Home page', () => {
     describe("Starting with empty board", () => {
         beforeEach(async () => {
             try {
-                const dummy = {
-                    title: "Dummy",
-                    lists: []
-                }
-
-                const boards = db.collection('boards');
-                await boards.insertOne(dummy);
-
+                const boardState = [];
+                await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
@@ -427,21 +389,11 @@ describe('Home page', () => {
     describe("Starting with one empty list", () => {
         beforeEach(async () => {
             try {
-                const todo = {
-                    title: "Todo",
-                    cards: []
-                }
+                const boardState = [
+                    { title: "Todo", cards: [] }
+                ];
 
-                const lists = db.collection('lists');
-                const list = await lists.insertMany([todo]);
-
-                const dummy = {
-                    title: "Dummy",
-                    lists: Object.keys(list.insertedIds).map(key => list.insertedIds[key])
-                }
-
-                const boards = db.collection('boards');
-                await boards.insertOne(dummy);
+                await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
@@ -524,8 +476,6 @@ describe('Home page', () => {
             await populate(db, boardState);
             await navigateToBoard('h1');
 
-            await page.waitForTimeout(700);
-
             await checkBoard([]);
         })
 
@@ -575,6 +525,19 @@ describe('Home page', () => {
             await checkBoard(boardState);
         })
 
+        it("takes boardState with multiples list. With only one list containing multiple cards", async () => {
+            const boardState = [
+                { title: "Test", cards: ["Test A", "Test B", "Test C"] },
+                { title: "Test", cards: [] },
+                { title: "Test", cards: [] },
+            ];
+
+            await populate(db, boardState);
+            await navigateToBoard('h2');
+
+            await checkBoard(boardState);
+        })
+
         it("takes boardState with multiple lists populated with multiple cards", async () => {
             const boardState = [
                 { title: "Test", cards: ["Test A", "Test B", "Test C"] },
@@ -589,36 +552,36 @@ describe('Home page', () => {
         })
     })
 
-
     const populate = async (db, boardState) => {
         try {
             const cardsCollection = db.collection('cards');
             const listsCollection = db.collection('lists');
             let lists = { insertedIds: {} };
             if (boardState.length > 0) {
+                let listStateCopy = [];
                 for (let i = 0; i < boardState.length; i += 1) {
                     let cards = { insertedIds: {} };
                     if (boardState[i].cards.length > 0) {
                         const cardsJson = boardState[i].cards.map(card => {
-                            return {title: card, description: null};
+                            return { title: card, description: null };
                         });
                         cards = await cardsCollection.insertMany(cardsJson);
                     }
-                    
-                    const listStateCopy = boardState.map(list => { return {
-                        ...list,
-                         cards: Object.keys(cards.insertedIds).map(key => cards.insertedIds[key]
-                        )
-                    }});
 
-                    lists = await listsCollection.insertMany(listStateCopy);
+                    listStateCopy.push({
+                        ...boardState[i],
+                        cards: Object.keys(cards.insertedIds).map(key => cards.insertedIds[key])
+                    });
                 }
+
+                lists = await listsCollection.insertMany(listStateCopy);
             }
+
             const state = {
                 title: "Dummy",
                 lists: Object.keys(lists.insertedIds).map(key => lists.insertedIds[key]),
             };
-           
+
             const boards = db.collection('boards');
             await boards.insertOne(state);
 
