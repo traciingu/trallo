@@ -539,6 +539,19 @@ describe('Home page', () => {
 
             await checkBoard(boardState);
         })
+
+        it("takes boardState with multiple empty lists", async () => {
+            const boardState = [
+                { title: "Test", cards: [] },
+                { title: "Test 2", cards: [] },
+                { title: "Test 3", cards: [] },
+            ];
+
+            await populate(db, boardState);
+            await navigateToBoard('h2');
+
+            await checkBoard(boardState);
+        });
     })
 
 
