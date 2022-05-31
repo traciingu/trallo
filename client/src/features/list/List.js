@@ -7,7 +7,7 @@ import { updateList } from "./listSlice";
 
 
 const List = ({ createCard, id, index, title, updateList }) => {
-    const { Droppable, Draggable, Card } = useContext(di);
+    const { Droppable, Draggable, CardContainer } = useContext(di);
     const [canCreateCard, setCanCreateCard] = useState(false);
     const [canEditList, setCanEditList] = useState(false);
     const [listTitleInputText, setListTitleInputText] = useState(title);
@@ -65,7 +65,7 @@ const List = ({ createCard, id, index, title, updateList }) => {
                             ref={providedDroppable.innerRef}
                         >
                             <div    >
-                                <Card listId={id} />
+                                <CardContainer listId={id} />
                                 {providedDroppable.placeholder}
                             </div>
                         </div>)}

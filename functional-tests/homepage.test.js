@@ -53,14 +53,14 @@ describe('Home page', () => {
     });
 
     describe("Starting Db with one card", () => {
-        beforeEach(async () => {
-            try {
-                const boardState = [
-                    { title: 'Todo', cards: ["Hello"] },
-                    { title: 'In progress', cards: [] },
-                    { title: 'Done', cards: [] },
-                ];
+        const boardState = [
+            { title: 'Todo', cards: ["Hello"] },
+            { title: 'In progress', cards: [] },
+            { title: 'Done', cards: [] },
+        ];
 
+        beforeEach(async () => {
+            try {      
                 await populate(db, boardState);
             } catch (err) {
                 console.log(err);
@@ -84,7 +84,8 @@ describe('Home page', () => {
             // Click and drag 'Hello' card from 'Todo' to 'In Progress'
             // Refresh the browser
             // 'Hello' card now inside the 'In progress' list
-            const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
+            const helloCardText = boardState[0].cards[0];
+            const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             const inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
 
             const helloBox = await helloCard.boundingBox();
@@ -154,17 +155,35 @@ describe('Home page', () => {
 
 
         });
+
+        it('updates a card title', async () => {
+            await navigateToBoard("h2");
+
+            const cardEditButton = await page.$('[data-edit-item-button="card"]');
+            const cardEditButtonText = await cardEditButton.evaluate(element => element.value);
+            expect(cardEditButtonText).toEqual('Edit');
+
+            await page.click('[data-edit-item-button="card"]');
+            await page.waitForSelector('[data-edit-item-input="card"]');
+
+            const cardTitleText = boardState[0].cards[0];
+            const cardTitle = await page.$(`[data-card-title="${cardTitleText}"]`);
+            let cardTitleVisibility = await cardTitle.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(cardTitleVisibility).toEqual("none");
+
+
+        });
     });
 
     describe("Starting Db with two cards", () => {
-        beforeEach(async () => {
-            try {
-                const boardState = [
-                    { title: 'Todo', cards: ["Hello", "Goodbye"] },
-                    { title: 'In progress', cards: [] },
-                    { title: 'Done', cards: [] },
-                ];
+        const boardState = [
+            { title: 'Todo', cards: ["Hello", "Goodbye"] },
+            { title: 'In progress', cards: [] },
+            { title: 'Done', cards: [] },
+        ];
 
+        beforeEach(async () => {
+            try {               
                 await populate(db, boardState);
             } catch (err) {
                 console.log(err);
@@ -175,12 +194,14 @@ describe('Home page', () => {
 
             await navigateToBoard("h2");
 
-            const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
+            const helloCardText = boardState[0].cards[0];
+            const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             const helloBox = await helloCard.boundingBox();
             const helloX = helloBox.x + helloBox.width / 2;
             const helloY = helloBox.y + helloBox.height / 2;
 
-            const goodbyeCard = (await page.$x('//div[text()="Goodbye"]'))[0];
+            const goodbyeCardText = boardState[0].cards[1];
+            const goodbyeCard = await page.$(`[data-card-title="${goodbyeCardText}"]`);
             const goodbyeBox = await goodbyeCard.boundingBox();
             const goodbyeX = goodbyeBox.x + goodbyeBox.width / 2;
             const goodbyeY = goodbyeBox.y + goodbyeBox.height / 2;
@@ -221,7 +242,8 @@ describe('Home page', () => {
 
             await checkBoard(expectedLists);
 
-            const helloCard = (await page.$x('//div[text()="Hello"]'))[0];
+            const helloCardText = boardState[0].cards[0];
+            const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             let inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
 
             const helloBox = await helloCard.boundingBox();

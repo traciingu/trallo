@@ -3,7 +3,7 @@ import { reorderLists, reorderCards } from './helpers/helper';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Board from './features/board/Board';
 import ListContainer from './features/list/ListContainer';
-import Card from './features/card/Card';
+import CardContainer from './features/card/CardContainer';
 
 export default React.createContext({
     // loadBoard,
@@ -14,5 +14,5 @@ export default React.createContext({
     Draggable,
     Board,
     ListContainer,
-    Card
+    CardContainer
 });

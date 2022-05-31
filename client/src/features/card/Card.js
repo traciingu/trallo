@@ -1,47 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import di from '../../injection_container';
-import { connect } from "react-redux";
 
-const Card = ({ cards, listId, cardsOrdering }) => {
+
+const Card = ({ id, index, title }) => {
     const { Draggable } = useContext(di);
+    const [ canEditCardTitle, setCanEditCardTitle ] = useState(false);
+    const handleEditButtonClick = (e) => {
+        setCanEditCardTitle(!canEditCardTitle);
+    };
 
-    const cardStyle = (draggableStyle) => ({
-        padding: "10px",
-        backgroundColor: "white",
-        ...draggableStyle
-    });
-
-    return (
-        <>
-            {cards && cardsOrdering[listId]?.map((cardId, index) => {
-                return (<Draggable draggableId={cards[cardId].id} index={index} key={cards[cardId].id}>
-                    {(provided) => (
-                        <div
-                            {...provided.dragHandleProps}
-                            {...provided.draggableProps}
-                            ref={provided.innerRef}
-                            style={cardStyle(provided.draggableProps.style)}
-                            className="card"
-                        >
-                            {cards[cardId].title}
-                        </div>
-                    )}
-                </Draggable>
-                )
-            }
-            )
-            }
-
-
-        </>
-    );
+    return (<Draggable draggableId={id} index={index} key={id}>
+        {(provided) => (
+            <div
+                {...provided.dragHandleProps}
+                {...provided.draggableProps}
+                ref={provided.innerRef}
+                className="card"
+            >
+                <h3 data-card-title={title} className={canEditCardTitle ? "hide" : "" }>
+                  {title}
+                </h3>
+                <input type="text" data-edit-item-input="card" className={canEditCardTitle ? "" : "hide" } />
+                <input type="button" data-edit-item-button="card" value="Edit" onClick={handleEditButtonClick}/>
+            </div>
+        )}
+    </Draggable>
+    )
 };
 
-const mapStateToProps = state => {
-    return {
-        cards: state.cards.byId,
-        cardsOrdering: state.cards.allIds
-    }
-};
-
-export default connect(mapStateToProps)(Card);
+export default Card;
