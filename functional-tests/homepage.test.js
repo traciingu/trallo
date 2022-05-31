@@ -171,6 +171,18 @@ describe('Home page', () => {
             let cardTitleVisibility = await cardTitle.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(cardTitleVisibility).toEqual("none");
 
+            const cardEditInput = await page.$('[data-edit-item-input="card"]');
+            let cardEditInputText = await cardEditInput.evaluate(element => element.value);
+            expect(cardEditInputText).toEqual(cardTitleText);
+
+            await page.click('[data-edit-item-input="card"]');
+            for (let i = 0; i < cardEditInputText.length; i++) {
+                await page.keyboard.press('Backspace');
+            }
+
+            await cardEditInput.type("TEST");
+            cardEditInputText = await cardEditInput.evaluate(element => element.value);
+            expect(cardEditInputText).toEqual("TEST");
 
         });
     });
