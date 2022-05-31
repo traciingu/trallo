@@ -8,7 +8,7 @@ import { updateList } from "./listSlice";
 
 const List = ({ createCard, id, index, title, updateList }) => {
     const { Droppable, Draggable, Card } = useContext(di);
-    const [canEdit, setCanEdit] = useState(false);
+    const [canCreateCard, setCanCreateCard] = useState(false);
     const [canEditList, setCanEditList] = useState(false);
     const [listTitleInputText, setListTitleInputText] = useState(title);
 
@@ -22,15 +22,15 @@ const List = ({ createCard, id, index, title, updateList }) => {
         setListTitleInputText(e.target.value);
     };
 
-    const handleClick = (e) => {
-        setCanEdit(!canEdit);
+    const handleCreateCardButtonClick = (e) => {
+        setCanCreateCard(!canCreateCard);
     };
 
     const handleEditListButtonClick = (e) => {
         setCanEditList(!canEditList);
     }
 
-    const handleSubmit = (e) => {
+    const handleCreateCardSubmit = (e) => {
         e.preventDefault();
         createCard({
             listId: e.target.dataset.listId,
@@ -71,10 +71,10 @@ const List = ({ createCard, id, index, title, updateList }) => {
                         </div>)}
                 </Droppable>
                 <CreateCardContainer>
-                    <input type="button" data-add-button="card" value="Add card" onClick={handleClick} className={canEdit ? "hide" : ""} />
-                    <CreateCardForm data-create-item-container="card" className={canEdit ? "" : "hide"} data-list-id={id} onSubmit={handleSubmit} >
+                    <input type="button" data-add-button="card" value="Add card" onClick={handleCreateCardButtonClick} className={canCreateCard ? "hide" : ""} />
+                    <CreateCardForm data-create-item-container="card" className={canCreateCard ? "" : "hide"} data-list-id={id} onSubmit={handleCreateCardSubmit} >
                         <input type="text" data-create-item-input="card" />
-                        <input type="button" data-create-item-cancel="card" value="Cancel" onClick={handleClick} />
+                        <input type="button" data-create-item-cancel="card" value="Cancel" onClick={handleCreateCardButtonClick} />
                         <input type="submit" data-create-item-confirm="card" value="Add Card" />
                     </ CreateCardForm>
                 </CreateCardContainer>
@@ -89,7 +89,5 @@ const mapDispatchToProps = dispatch => {
         updateList: (info) => { dispatch(updateList(info)); }
     }
 }
-
-
 
 export default connect(null, mapDispatchToProps)(List);
