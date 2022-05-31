@@ -60,7 +60,7 @@ describe('Home page', () => {
         ];
 
         beforeEach(async () => {
-            try {      
+            try {
                 await populate(db, boardState);
             } catch (err) {
                 console.log(err);
@@ -164,7 +164,7 @@ describe('Home page', () => {
             expect(cardEditButtonText).toEqual('Edit');
 
             await page.click('[data-edit-item-button="card"]');
-            await page.waitForSelector('[data-edit-item-input="card"]');
+            await page.waitForSelector('[data-edit-item-form="card"]');
 
             const cardTitleText = boardState[0].cards[0];
             const cardTitle = await page.$(`[data-card-title="${cardTitleText}"]`);
@@ -184,6 +184,23 @@ describe('Home page', () => {
             cardEditInputText = await cardEditInput.evaluate(element => element.value);
             expect(cardEditInputText).toEqual("TEST");
 
+            await page.keyboard.press('Enter');
+            await page.waitForSelector('[data-edit-item-form="card"]', { hidden: true });
+            await page.waitForSelector('[data-card-title="TEST"]');
+
+            const cardEditForm = await page.$('[data-edit-item-form="card"]');
+            const cardEditFormVisibility = await cardEditForm.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            cardTitleVisibility = await cardTitle.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(cardEditFormVisibility).toEqual("none");
+            expect(cardTitleVisibility).not.toEqual("none");
+
+            const expectedLists = [
+                { title: 'Todo', cards: ["TEST"] },
+                { title: 'In progress', cards: [] },
+                { title: 'Done', cards: [] },
+            ];
+            await checkBoard(expectedLists);
+
         });
     });
 
@@ -195,7 +212,7 @@ describe('Home page', () => {
         ];
 
         beforeEach(async () => {
-            try {               
+            try {
                 await populate(db, boardState);
             } catch (err) {
                 console.log(err);
@@ -502,7 +519,7 @@ describe('Home page', () => {
             await page.waitForSelector('[data-list-title="TEST"]');
 
             const expectedLists = [
-                {title: "TEST", cards: []}
+                { title: "TEST", cards: [] }
             ];
 
             await checkBoard(expectedLists);

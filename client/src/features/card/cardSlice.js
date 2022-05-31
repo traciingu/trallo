@@ -26,6 +26,10 @@ export const cardSlice = createSlice({
                     state.allIds[card.listId].push(card.id);
                 }
             })
+            .addCase(updateCard.fulfilled, (state, action) => {
+                const card = action.payload;
+                state.byId[card.id].title = card.title;
+            })
     }
 });
 
@@ -60,6 +64,11 @@ const pushCardsToStoreOnUpdate = (state, action) => {
         }
     });
 };
+
+export const updateCard = createAsyncThunk("cards/update", async (info) => {
+    const { data } = await api.patch(`/cards/${info.id}`, info);
+    return data;
+})
 
 export const createCard = createAsyncThunk("cards/create", async (info) => {
     const { data } = await api.post("/cards", info);
