@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import di from '../../injection_container';
-import { updateCard } from "./cardSlice";
+import { updateCard, deleteCard } from "./cardSlice";
 import { connect } from "react-redux";
 
 
-const Card = ({ id, index, title, updateCard }) => {
+const Card = ({ id, index, title, updateCard, deleteCard }) => {
     const { Draggable } = useContext(di);
     const [canEditCardTitle, setCanEditCardTitle] = useState(false);
     const [cardTitleInputText, setCardTitleInputText] = useState(title);
@@ -19,9 +19,14 @@ const Card = ({ id, index, title, updateCard }) => {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        updateCard({title: e.target[0].value, id });
+        updateCard({ title: e.target[0].value, id });
         setCanEditCardTitle(!canEditCardTitle);
+
     };
+
+    const handleDeleteButtonClick = (e) => {
+        deleteCard({ id });
+    }
 
     return (<Draggable draggableId={id} index={index} key={id}>
         {(provided) => (
@@ -30,12 +35,14 @@ const Card = ({ id, index, title, updateCard }) => {
                 {...provided.draggableProps}
                 ref={provided.innerRef}
                 className="card"
+
             >
                 <h3 data-card-title={title} className={canEditCardTitle ? "hide" : ""}>
                     {title}
                 </h3>
                 <form className={canEditCardTitle ? "" : "hide"} data-edit-item-form="card" onSubmit={handleFormSubmit}>
-                    <input type="text" data-edit-item-input="card"  value={cardTitleInputText} onChange={handleInputChange} />
+                    <input type="text" data-edit-item-input="card" value={cardTitleInputText} onChange={handleInputChange} />
+                    <input type="button" data-delete-item="card" value="Delete" onClick={handleDeleteButtonClick} />
                 </form>
                 <input type="button" data-edit-item-button="card" value="Edit" onClick={handleEditButtonClick} />
             </div>
@@ -46,7 +53,8 @@ const Card = ({ id, index, title, updateCard }) => {
 
 const mdToProps = dispatch => {
     return {
-        updateCard: info => { dispatch(updateCard(info))},
+        updateCard: info => { dispatch(updateCard(info)) },
+        deleteCard: info => { dispatch(deleteCard(info)) },
     };
 };
 

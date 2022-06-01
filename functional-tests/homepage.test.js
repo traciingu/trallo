@@ -202,6 +202,29 @@ describe('Home page', () => {
             await checkBoard(expectedLists);
 
         });
+
+        it('deletes a card', async () => {
+            await navigateToBoard('h2');
+
+            await page.click('[data-edit-item-button="card"]');
+            await page.waitForSelector('[data-delete-item="card"]');
+
+            const cardDeleteButton = await page.$('[data-delete-item="card"]');
+            const cardDeleteButtonText = await cardDeleteButton.evaluate(element => element.value);
+            expect(cardDeleteButtonText).toEqual("Delete");
+
+            await page.click('[data-delete-item="card"]');
+            await page.waitForTimeout(700);
+
+            const expectedLists = [
+                { title: 'Todo', cards: [] },
+                { title: 'In progress', cards: [] },
+                { title: 'Done', cards: [] },
+            ];
+
+            await checkBoard(expectedLists);
+
+        });
     });
 
     describe("Starting Db with two cards", () => {

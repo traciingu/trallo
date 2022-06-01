@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { loadBoard } from '../board/boardSlice';
 import { updateList } from '../list/listSlice';
 import { api } from '../../api';
+import { produce } from 'immer';
 
 export const cardSlice = createSlice({
     name: 'cards',
@@ -29,6 +30,27 @@ export const cardSlice = createSlice({
             .addCase(updateCard.fulfilled, (state, action) => {
                 const card = action.payload;
                 state.byId[card.id].title = card.title;
+            })
+            .addCase(deleteCard.fulfilled, (state, action) => {
+                const card = action.payload;
+                const newState = produce(state.byId, state => {
+                    delete state[card.id];
+                });
+                state.byId = newState;
+                const newAllIds = produce(state.allIds, state => {
+                    const listKeys = Object.keys(state);
+                    
+                    let listId;
+                    listKeys.forEach((key) => {
+                        if (state[key].includes(card.id)) {
+                            listId = key;
+                        }
+                    });
+                    const spliceIndex = state[listId].indexOf(card.id);
+                    state[listId].splice(spliceIndex, 1);
+                });
+                state.allIds = newAllIds;
+                console.log(state.allIds);                
             })
     }
 });
@@ -65,12 +87,19 @@ const pushCardsToStoreOnUpdate = (state, action) => {
     });
 };
 
-export const updateCard = createAsyncThunk("cards/update", async (info) => {
-    const { data } = await api.patch(`/cards/${info.id}`, info);
-    return data;
-})
+
 
 export const createCard = createAsyncThunk("cards/create", async (info) => {
     const { data } = await api.post("/cards", info);
     return data;
 });
+
+export const updateCard = createAsyncThunk("cards/update", async (info) => {
+    const { data } = await api.patch(`/cards/${info.id}`, info);
+    return data;
+})
+
+export const deleteCard = createAsyncThunk("cards/delete", async (info) => {
+    const { data } = await api.delete(`/cards/${info.id}`, info);
+    return data
+}); 
