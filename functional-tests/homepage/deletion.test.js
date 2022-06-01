@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { installMouseHelper, navigateToBoard, populate, checkBoard, getCoordinates, dragAndDrop } = require('../helpers');
+const { installMouseHelper, navigateToBoard, populate, checkBoard } = require('../helpers');
 
 describe('Deletion', () => {
     let connection;

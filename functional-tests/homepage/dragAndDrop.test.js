@@ -138,4 +138,117 @@ describe('Drag and drop', () => {
             await checkBoard(expectedLists);
         });
     });
+
+    describe("Starting Db with two cards", () => {
+        const boardState = [
+            { title: 'Todo', cards: ["Hello", "Goodbye"] },
+            { title: 'In progress', cards: [] },
+            { title: 'Done', cards: [] },
+        ];
+
+        beforeEach(async () => {
+            try {
+                await populate(db, boardState);
+            } catch (err) {
+                console.log(err);
+            }
+        })
+
+        it('can reorder cards within the same list', async () => {
+
+            await navigateToBoard("h2");
+
+            const helloCardText = boardState[0].cards[0];
+            const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
+
+            const goodbyeCardText = boardState[0].cards[1];
+            const goodbyeCard = await page.$(`[data-card-title="${goodbyeCardText}"]`);
+
+            const helloCoors = await getCoordinates(helloCard);
+            const goodbyeCoors = await getCoordinates(goodbyeCard);
+
+            await dragAndDrop(helloCoors, goodbyeCoors);
+
+            await page.waitForTimeout(1000);
+
+            let expectedLists = [
+                { title: "Todo", cards: ["Goodbye", "Hello"] },
+                { title: "In progress", cards: [] },
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
+
+            await page.reload();
+            await page.waitForSelector("h2");
+            await page.waitForTimeout(1000);
+
+            expectedLists = [
+                { title: "Todo", cards: ["Goodbye", "Hello"] },
+                { title: "In progress", cards: [] },
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
+        });
+
+        it('moves one card to a different list then reorder a list containing a card', async () => {
+            await navigateToBoard("h2");
+
+            let expectedLists = [
+                { title: "Todo", cards: ["Hello", "Goodbye"] },
+                { title: "In progress", cards: [] },
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
+
+            const helloCardText = boardState[0].cards[0];
+            const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
+            let inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
+
+            const helloCoors = await getCoordinates(helloCard);
+            let inProgressCoors = await getCoordinates(inProgressList);
+
+            await dragAndDrop(helloCoors, inProgressCoors);
+
+            await page.waitForTimeout(1000);
+
+            expectedLists = [
+                { title: "Todo", cards: ["Goodbye"] },
+                { title: "In progress", cards: ["Hello"] },
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
+
+            const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
+            inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
+
+            const todoCoors = await getCoordinates(
+                todoList,
+                (x) => { return x / 2 },
+                (y) => { return y / 2 }
+            );
+            inProgressCoors = await getCoordinates(inProgressList);
+
+            await dragAndDrop(todoCoors, inProgressCoors);
+
+            await page.waitForTimeout(700);
+
+            expectedLists = [
+                { title: "In progress", cards: ["Hello"] },
+                { title: "Todo", cards: ["Goodbye"] },
+                { title: "Done", cards: [] }
+            ];
+
+            await checkBoard(expectedLists);
+
+            await page.reload();
+            await page.waitForSelector("h2");
+
+            await checkBoard(expectedLists);
+
+        })
+    });
 });
