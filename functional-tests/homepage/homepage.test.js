@@ -1,8 +1,5 @@
-const { installMouseHelper } = require('./helpers/install-mouse-helper');
-
+const { installMouseHelper } = require('../helpers/install-mouse-helper');
 const { MongoClient } = require('mongodb');
-const board = require('../server/db/models/board');
-
 
 // TODO Write FT for reordering lists
 describe('Home page', () => {
@@ -67,88 +64,6 @@ describe('Home page', () => {
             }
         })
 
-        it('user can view board and move cards from list to list', async () => {
-
-            await navigateToBoard("h2");
-
-            await expect(page.title()).resolves.toMatch('Trallo');
-
-            let expectedLists = [
-                { title: "Todo", cards: ["Hello"] },
-                { title: "In progress", cards: [] },
-                { title: "Done", cards: [] }
-            ];
-
-            await checkBoard(expectedLists);
-
-            // Click and drag 'Hello' card from 'Todo' to 'In Progress'
-            // Refresh the browser
-            // 'Hello' card now inside the 'In progress' list
-            const helloCardText = boardState[0].cards[0];
-            const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
-            const inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
-
-            const helloCoors = await getCoordinates(helloCard);
-            const inProgressCoors = await getCoordinates(inProgressList);
-
-            await dragAndDrop(helloCoors, inProgressCoors);
-
-            await page.waitForTimeout(700);
-            await page.reload();
-            await page.waitForSelector("h2");
-
-            expectedLists = [
-                { title: "Todo", cards: [] },
-                { title: "In progress", cards: ["Hello"] },
-                { title: "Done", cards: [] }
-            ];
-
-            await checkBoard(expectedLists);
-
-        });
-
-        it('reorders the Todo list to be after the In Progress list', async () => {
-
-            await navigateToBoard("h2");
-
-            let expectedLists = [
-                { title: "Todo", cards: ["Hello"] },
-                { title: "In progress", cards: [] },
-                { title: "Done", cards: [] }
-            ];
-
-            await checkBoard(expectedLists);
-
-            const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
-            const inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
-
-            const todoCoors = await getCoordinates(
-                todoList,
-                (x) => { return x / 2 },
-                (y) => { return y / 2 }
-            );
-            const inProgressCoors = await getCoordinates(inProgressList, (x) => { return x / 1.25 });
-
-            await dragAndDrop(todoCoors, inProgressCoors);
-
-            await page.waitForTimeout(700);
-
-            expectedLists = [
-                { title: "In progress", cards: [] },
-                { title: "Todo", cards: ["Hello"] },
-                { title: "Done", cards: [] }
-            ];
-
-            await checkBoard(expectedLists);
-
-            await page.reload();
-            await page.waitForSelector("h2");
-
-            await checkBoard(expectedLists);
-
-
-        });
-
         it('updates a card title', async () => {
             await navigateToBoard("h2");
 
@@ -196,28 +111,28 @@ describe('Home page', () => {
 
         });
 
-        it('deletes a card', async () => {
-            await navigateToBoard('h2');
+        // it('deletes a card', async () => {
+        //     await navigateToBoard('h2');
 
-            await page.click('[data-edit-item-button="card"]');
-            await page.waitForSelector('[data-delete-item="card"]');
+        //     await page.click('[data-edit-item-button="card"]');
+        //     await page.waitForSelector('[data-delete-item="card"]');
 
-            const cardDeleteButton = await page.$('[data-delete-item="card"]');
-            const cardDeleteButtonText = await cardDeleteButton.evaluate(element => element.value);
-            expect(cardDeleteButtonText).toEqual("Delete");
+        //     const cardDeleteButton = await page.$('[data-delete-item="card"]');
+        //     const cardDeleteButtonText = await cardDeleteButton.evaluate(element => element.value);
+        //     expect(cardDeleteButtonText).toEqual("Delete");
 
-            await page.click('[data-delete-item="card"]');
-            await page.waitForTimeout(700);
+        //     await page.click('[data-delete-item="card"]');
+        //     await page.waitForTimeout(700);
 
-            const expectedLists = [
-                { title: 'Todo', cards: [] },
-                { title: 'In progress', cards: [] },
-                { title: 'Done', cards: [] },
-            ];
+        //     const expectedLists = [
+        //         { title: 'Todo', cards: [] },
+        //         { title: 'In progress', cards: [] },
+        //         { title: 'Done', cards: [] },
+        //     ];
 
-            await checkBoard(expectedLists);
+        //     await checkBoard(expectedLists);
 
-        });
+        // });
     });
 
     describe("Starting Db with two cards", () => {
@@ -615,92 +530,6 @@ describe('Home page', () => {
             await checkBoard(boardState);
         })
     })
-
-    const populate = async (db, boardState) => {
-        try {
-            const cardsCollection = db.collection('cards');
-            const listsCollection = db.collection('lists');
-            let lists = { insertedIds: {} };
-            if (boardState.length > 0) {
-                let listStateCopy = [];
-                for (let i = 0; i < boardState.length; i += 1) {
-                    let cards = { insertedIds: {} };
-                    if (boardState[i].cards.length > 0) {
-                        const cardsJson = boardState[i].cards.map(card => {
-                            return { title: card, description: null };
-                        });
-                        cards = await cardsCollection.insertMany(cardsJson);
-                    }
-
-                    listStateCopy.push({
-                        ...boardState[i],
-                        cards: Object.keys(cards.insertedIds).map(key => cards.insertedIds[key])
-                    });
-                }
-
-                lists = await listsCollection.insertMany(listStateCopy);
-            }
-
-            const state = {
-                title: "Dummy",
-                lists: Object.keys(lists.insertedIds).map(key => lists.insertedIds[key]),
-            };
-
-            const boards = db.collection('boards');
-            await boards.insertOne(state);
-
-        } catch (err) {
-            console.log(err);
-        }
-
-        const selector = boardState.length > 0 ? 'h2' : 'h1';
-        await navigateToBoard(selector);
-        await checkBoard(boardState);
-    };
-
-    const navigateToBoard = async (selector) => {
-        await page.goto('http://localhost:3000');
-        await page.waitForSelector(selector);
-    };
-
-    const getCoordinates = async (
-        elementHandle,
-        widthModifier = (x) => { return x },
-        heightModifier = (y) => { return y }
-    ) => {
-        const elementBox = await elementHandle.boundingBox();
-        const elementBoxX = elementBox.x + widthModifier(elementBox.width);
-        const elementBoxY = elementBox.y + heightModifier(elementBox.height);
-
-        return { x: elementBoxX, y: elementBoxY };
-    }
-
-    const dragAndDrop = async (start, end) => {
-        await page.mouse.move(start.x, start.y, { steps: 5 });
-        await page.mouse.down();
-        await page.mouse.move(end.x, end.y, { steps: 5 });
-        await page.mouse.up();
-    };
-
-    const checkBoard = async (expectedLists) => {
-        const actualLists = [];
-        const lists = await page.$$('.list');
-
-        for (let i = 0; i < lists.length; i++) {
-            const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
-            const cards = await lists[i].$$('.card');
-            const newCards = [];
-            for (let j = 0; j < cards.length; j++) {
-                const cardText = await cards[j].evaluate((card) => card.textContent);
-                newCards.push(cardText);
-            }
-
-            actualLists.push({ title, cards: newCards });
-        }
-
-        expect(expectedLists).toEqual(actualLists);
-
-    };
 
 });
 
