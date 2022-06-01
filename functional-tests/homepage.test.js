@@ -88,16 +88,10 @@ describe('Home page', () => {
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             const inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
 
-            const helloBox = await helloCard.boundingBox();
-            const inProgressBox = await inProgressList.boundingBox();
+            const helloCoors = await getCoordinates(helloCard);
+            const inProgressCoors = await getCoordinates(inProgressList);
 
-
-            const helloX = helloBox.x + helloBox.width / 2;
-            const helloY = helloBox.y + helloBox.height / 2;
-            const inProgressX = inProgressBox.x + inProgressBox.width;
-            const inProgressY = inProgressBox.y + inProgressBox.height;
-
-            await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
+            await dragAndDrop(helloCoors, inProgressCoors);
 
             await page.waitForTimeout(700);
             await page.reload();
@@ -128,15 +122,14 @@ describe('Home page', () => {
             const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
             const inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
 
-            const todoBox = await todoList.boundingBox();
-            const inProgressBox = await inProgressList.boundingBox();
+            const todoCoors = await getCoordinates(
+                todoList,
+                (x) => { return x / 2 },
+                (y) => { return y / 2 }
+            );
+            const inProgressCoors = await getCoordinates(inProgressList, (x) => { return x / 1.25 });
 
-            const todoX = todoBox.x + (todoBox.width / 2);
-            const todoY = todoBox.y + (todoBox.height / 2);
-
-            const dropAreaX = inProgressBox.x + (inProgressBox.width / 1.25);
-
-            await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
+            await dragAndDrop(todoCoors, inProgressCoors);
 
             await page.waitForTimeout(700);
 
@@ -248,17 +241,14 @@ describe('Home page', () => {
 
             const helloCardText = boardState[0].cards[0];
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
-            const helloBox = await helloCard.boundingBox();
-            const helloX = helloBox.x + helloBox.width / 2;
-            const helloY = helloBox.y + helloBox.height / 2;
 
             const goodbyeCardText = boardState[0].cards[1];
             const goodbyeCard = await page.$(`[data-card-title="${goodbyeCardText}"]`);
-            const goodbyeBox = await goodbyeCard.boundingBox();
-            const goodbyeX = goodbyeBox.x + goodbyeBox.width / 2;
-            const goodbyeY = goodbyeBox.y + goodbyeBox.height / 2;
 
-            await dragAndDrop({ x: helloX, y: helloY }, { x: goodbyeX, y: goodbyeY });
+            const helloCoors = await getCoordinates(helloCard);
+            const goodbyeCoors = await getCoordinates(goodbyeCard);
+
+            await dragAndDrop(helloCoors, goodbyeCoors);
 
             await page.waitForTimeout(1000);
 
@@ -298,15 +288,10 @@ describe('Home page', () => {
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             let inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
 
-            const helloBox = await helloCard.boundingBox();
-            let inProgressBox = await inProgressList.boundingBox();
+            const helloCoors = await getCoordinates(helloCard);
+            let inProgressCoors = await getCoordinates(inProgressList);
 
-            const helloX = helloBox.x + helloBox.width / 2;
-            const helloY = helloBox.y + helloBox.height / 2;
-            const inProgressX = inProgressBox.x + inProgressBox.width;
-            const inProgressY = inProgressBox.y + inProgressBox.height;
-
-            await dragAndDrop({ x: helloX, y: helloY }, { x: inProgressX, y: inProgressY });
+            await dragAndDrop(helloCoors, inProgressCoors);
 
             await page.waitForTimeout(1000);
 
@@ -321,15 +306,14 @@ describe('Home page', () => {
             const todoList = (await page.$x('//h2[text()="Todo"]'))[0];
             inProgressList = (await page.$x('//h2[text()="In progress"]'))[0];
 
-            const todoBox = await todoList.boundingBox();
-            inProgressBox = await inProgressList.boundingBox();
+            const todoCoors = await getCoordinates(
+                todoList,
+                (x) => { return x / 2 },
+                (y) => { return y / 2 }
+            );
+            inProgressCoors = await getCoordinates(inProgressList);
 
-            const todoX = todoBox.x + (todoBox.width / 2);
-            const todoY = todoBox.y + (todoBox.height / 2);
-
-            const dropAreaX = inProgressBox.x + (inProgressBox.width / 1.25);
-
-            await dragAndDrop({ x: todoX, y: todoY }, { x: dropAreaX, y: todoY });
+            await dragAndDrop(todoCoors, inProgressCoors);
 
             await page.waitForTimeout(700);
 
@@ -677,6 +661,18 @@ describe('Home page', () => {
     const navigateToBoard = async (selector) => {
         await page.goto('http://localhost:3000');
         await page.waitForSelector(selector);
+    };
+
+    const getCoordinates = async (
+        elementHandle,
+        widthModifier = (x) => { return x },
+        heightModifier = (y) => { return y }
+    ) => {
+        const elementBox = await elementHandle.boundingBox();
+        const elementBoxX = elementBox.x + widthModifier(elementBox.width);
+        const elementBoxY = elementBox.y + heightModifier(elementBox.height);
+
+        return { x: elementBoxX, y: elementBoxY };
     }
 
     const dragAndDrop = async (start, end) => {

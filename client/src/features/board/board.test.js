@@ -67,7 +67,7 @@ describe("onDragHandler", () => {
 
     mockReorderAndPersistCards = jest.fn(curryReorderAndPersistCards(mockReorderBetweenLists, mockReorderCards, mockUpdateList, mockMoveCardInSameList, cardOrdering));
 
-    onDragHandler = curryOnDragHandler(mockReorderLists, listOrdering, mockUpdateBoard, mockReorderAndPersistCards, mockReorderAndPersistLists);
+    onDragHandler = curryOnDragHandler(mockReorderAndPersistCards, mockReorderAndPersistLists);
 
   })
 

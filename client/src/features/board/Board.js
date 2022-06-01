@@ -9,7 +9,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
   const { reorderLists, reorderCards, DragDropContext, Droppable, ListContainer } = useContext(di);
   const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
   const reorderAndPersistLists = curryReorderAndPersistLists(reorderLists, updateBoard, listOrdering);
-  const onDragEnd = curryOnDragHandler(reorderLists, listOrdering, updateBoard, reorderAndPersistCards, reorderAndPersistLists);
+  const onDragEnd = curryOnDragHandler(reorderAndPersistCards, reorderAndPersistLists);
 
   return (
     <div className="board">
@@ -42,7 +42,7 @@ export const reorderBetweenLists = (cardOrdering, reorderCards, updateList, drag
   updateList({ id: source.droppableId, card: result[0] });
 };
 
-export const curryOnDragHandler = (reorderLists, listOrdering, updateBoard, reorderAndPersistCards, reorderAndPersistLists) => (result) => {
+export const curryOnDragHandler = (reorderAndPersistCards, reorderAndPersistLists) => (result) => {
   const { destination, source, draggableId, type } = result;
 
   if (!destination) {

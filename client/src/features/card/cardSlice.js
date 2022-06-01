@@ -50,7 +50,6 @@ export const cardSlice = createSlice({
                     state[listId].splice(spliceIndex, 1);
                 });
                 state.allIds = newAllIds;
-                console.log(state.allIds);                
             })
     }
 });
