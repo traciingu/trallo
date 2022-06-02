@@ -11,10 +11,34 @@ export const cardSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
-                pushCardsToStoreOnLoad(state, action);
+                const cards = action.payload.cards;
+                cards.forEach(card => {
+                    state.byId[card._id] = card;
+                    if (!state.allIds[card.listId]) {
+                        state.allIds[card.listId] = [];
+                    }
+
+                    if (!state.allIds[card.listId].includes(card.id)) {
+                        state.allIds[card.listId].push(card.id);
+                    }
+                });
             })
             .addCase(updateList.fulfilled, (state, action) => {
-                pushCardsToStoreOnUpdate(state, action);
+                const lists = action.payload.lists;
+                lists.forEach(list => {
+                    let cardOrdering = [];
+                    if (list.cards.length === 0) {
+                        state.allIds[list.id] = cardOrdering;
+                    } else {
+                        list.cards.forEach((cardId) => {
+                            if (!state.allIds[list.id]) {
+                                state.allIds[list.id] = [];
+                            }
+                            cardOrdering.push(cardId);
+                            state.allIds[list.id] = cardOrdering;
+                        })
+                    }
+                });
             })
             .addCase(createCard.fulfilled, (state, action) => {
                 const card = action.payload;
@@ -39,7 +63,7 @@ export const cardSlice = createSlice({
                 state.byId = newState;
                 const newAllIds = produce(state.allIds, state => {
                     const listKeys = Object.keys(state);
-                    
+
                     let listId;
                     listKeys.forEach((key) => {
                         if (state[key].includes(card.id)) {
@@ -54,40 +78,6 @@ export const cardSlice = createSlice({
     }
 });
 
-const pushCardsToStoreOnLoad = (state, action) => {
-    const cards = action.payload.cards;
-    cards.forEach(card => {
-        state.byId[card._id] = card;
-        if (!state.allIds[card.listId]) {
-            state.allIds[card.listId] = [];
-        }
-
-        if (!state.allIds[card.listId].includes(card.id)) {
-            state.allIds[card.listId].push(card.id);
-        }
-    })
-};
-
-const pushCardsToStoreOnUpdate = (state, action) => {
-    const lists = action.payload.lists;
-    lists.forEach(list => {
-        let cardOrdering = [];
-        if (list.cards.length === 0) {
-            state.allIds[list.id] = cardOrdering;
-        } else {
-            list.cards.forEach((cardId) => {
-                if (!state.allIds[list.id]) {
-                    state.allIds[list.id] = [];
-                }
-                cardOrdering.push(cardId);
-                state.allIds[list.id] = cardOrdering;
-            })
-        }
-    });
-};
-
-
-
 export const createCard = createAsyncThunk("cards/create", async (info) => {
     const { data } = await api.post("/cards", info);
     return data;
@@ -99,6 +89,6 @@ export const updateCard = createAsyncThunk("cards/update", async (info) => {
 })
 
 export const deleteCard = createAsyncThunk("cards/delete", async (info) => {
-    const { data } = await api.delete(`/cards/${info.id}`, info);
+    const { data } = await api.delete(`/cards/${info.id}`);
     return data
 }); 

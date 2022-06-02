@@ -10,19 +10,30 @@ export const listSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
-                pushListToStore(state, action);
+                const lists = action.payload.lists;
+                lists.forEach(list => {
+                    state.byId[list.id] = list;
+                    if (!state.allIds.includes(list.id)) {
+                        state.allIds.push(list.id);
+                    }
+                });
             })
             .addCase(updateBoard.fulfilled, (state, action) => {
-                updateListToStore(state, action);
+                const listsOrdering = action.payload.lists;
+                state.allIds = listsOrdering;
             })
             .addCase(createList.fulfilled, (state, action) => {
-                pushNewListToStore(state, action)
+                const list = action.payload;
+                state.byId[list.id] = list;
+                if (!state.allIds.includes(list.id)) {
+                    state.allIds.push(list.id);
+                }
             })
             .addCase(updateList.fulfilled, (state, action) => {
                 const lists = action.payload.lists;
                 lists.forEach(list => {
                     state.byId[list.id].title = list.title;
-                });           
+                });
             })
             .addCase(deleteList.fulfilled, (state, action) => {
                 const list = action.payload;
@@ -35,29 +46,6 @@ export const listSlice = createSlice({
             })
     }
 });
-
-const pushNewListToStore = (state, action) => {
-    const list = action.payload;
-    state.byId[list.id] = list;
-    if (!state.allIds.includes(list.id)) {
-        state.allIds.push(list.id);
-    }
-};
-
-const pushListToStore = (state, action) => {
-    const lists = action.payload.lists;
-    lists.forEach(list => {
-        state.byId[list.id] = list;
-        if (!state.allIds.includes(list.id)) {
-            state.allIds.push(list.id);
-        }
-    });
-};
-
-const updateListToStore = (state, action) => {
-    const listsOrdering = action.payload.lists;
-    state.allIds = listsOrdering;
-};
 
 export const updateList = createAsyncThunk('lists/update', async (info) => {
     const { data } = await api.patch(`/lists/${info.id}`, info);
