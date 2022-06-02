@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { List, Board } = require('../../db/models');
+const { List, Board, Card } = require('../../db/models');
 
 router.get('/:id', async (req, res, next) => {
     try {
@@ -47,6 +47,8 @@ router.patch('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
+        const list = await List.findById(req.params.id);
+        await Card.deleteMany({id: list.cards});
         res.json(await List.findByIdAndDelete(req.params.id));
     } catch (err) {
         next(err);
