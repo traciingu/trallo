@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { loadBoard, updateBoard } from '../board/boardSlice';
 import { api } from '../../api';
+import { produce } from "immer";
 
 export const listSlice = createSlice({
     name: 'lists',
@@ -22,6 +23,15 @@ export const listSlice = createSlice({
                 lists.forEach(list => {
                     state.byId[list.id].title = list.title;
                 });           
+            })
+            .addCase(deleteList.fulfilled, (state, action) => {
+                const list = action.payload;
+                const spliceIndex = state.allIds.indexOf(list.id);
+                state.allIds.splice(spliceIndex, 1);
+                const newById = produce(state.byId, (state) => {
+                    delete state[list.id];
+                });
+                state.byId = newById;
             })
     }
 });
@@ -56,5 +66,10 @@ export const updateList = createAsyncThunk('lists/update', async (info) => {
 
 export const createList = createAsyncThunk('lists/create', async (info) => {
     const { data } = await api.post(`/lists/`, info);
+    return data;
+});
+
+export const deleteList = createAsyncThunk('lists/delete', async (info) => {
+    const { data } = await api.delete(`/lists/${info.id}`);
     return data;
 });

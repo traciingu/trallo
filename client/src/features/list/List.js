@@ -3,10 +3,10 @@ import di from '../../injection_container';
 import { connect } from "react-redux";
 import { createCard } from "../card/cardSlice";
 import { CreateCardForm, CreateCardContainer } from "./listStyles";
-import { updateList } from "./listSlice";
+import { updateList, deleteList } from "./listSlice";
 
 
-const List = ({ createCard, id, index, title, updateList }) => {
+const List = ({ createCard, id, index, title, updateList, deleteList }) => {
     const { Droppable, Draggable, CardContainer } = useContext(di);
     const [canCreateCard, setCanCreateCard] = useState(false);
     const [canEditList, setCanEditList] = useState(false);
@@ -28,7 +28,7 @@ const List = ({ createCard, id, index, title, updateList }) => {
 
     const handleEditListButtonClick = (e) => {
         setCanEditList(!canEditList);
-    }
+    };
 
     const handleCreateCardSubmit = (e) => {
         e.preventDefault();
@@ -36,7 +36,11 @@ const List = ({ createCard, id, index, title, updateList }) => {
             listId: e.target.dataset.listId,
             title: e.target[0].value,
         });
-    }
+    };
+
+    const handleDeleteListButtonClick = (e) => {
+        deleteList({id});
+    };
 
     return <Draggable draggableId={`${id}`} index={index} key={id}>
         {provided => (
@@ -48,7 +52,7 @@ const List = ({ createCard, id, index, title, updateList }) => {
             >
                 <form className={canEditList ? "" : "hide"} onSubmit={handleListEditSubmit}>
                     <input type="text" data-edit-item-input="list"  onChange={handleChange} value={listTitleInputText} />
-                    <input type="button" data-delete-item="list" value="Delete" />
+                    <input type="button" data-delete-item="list" value="Delete" onClick={handleDeleteListButtonClick} />
                 </form>
                 <h2 className={canEditList ? "hide" : ""}
                 data-list-title={title}   
@@ -87,7 +91,8 @@ const List = ({ createCard, id, index, title, updateList }) => {
 const mapDispatchToProps = dispatch => {
     return {
         createCard: (info) => { dispatch(createCard(info)); },
-        updateList: (info) => { dispatch(updateList(info)); }
+        updateList: (info) => { dispatch(updateList(info)); },
+        deleteList: (info) => { dispatch(deleteList(info)); }
     }
 }
 
