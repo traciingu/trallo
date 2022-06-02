@@ -3,6 +3,7 @@ import { useEffect, useContext } from 'react';
 import { getBoard, loadBoard } from '../features/board/boardSlice';
 import di from '../injection_container';
 import { connect } from 'react-redux';
+import { Modal, AppContainer } from './appStyles';
 // import Board from '../features/board/Board';
 
 
@@ -19,11 +20,12 @@ function App({ getBoard, loadBoard, boardId }) {
     }
   }, [loadBoard, boardId]);
 
-  
+
   return (
-    <div className="App">
+    <AppContainer className="App" >
       <Board />
-    </div>
+      <Modal data-modal-type="card" className='hide' />
+    </AppContainer >
   );
 }
 

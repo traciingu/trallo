@@ -35,7 +35,7 @@ const Card = ({ id, index, title, updateCard, deleteCard }) => {
                 {...provided.draggableProps}
                 ref={provided.innerRef}
                 className="card"
-
+                data-item-type="card"
             >
                 <h3 data-card-title={title} className={canEditCardTitle ? "hide" : ""}>
                     {title}

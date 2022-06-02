@@ -6,9 +6,7 @@ export const ListContainerStyling = styled.div`
   align-items: flex-start;
   margin-top: 3em;
 
-  .hide {
-      display: none;
-  }
+  
 
   .list {
     max-width: 270px;

@@ -2,17 +2,13 @@ import styled from "styled-components";
 
 export const CreateCardForm = styled.form``;
 
-export const CreateCardContainer = styled.div`.hide {display: none}`
+export const CreateCardContainer = styled.div``
 
 export const ListContainerStyling = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
   margin-top: 3em;
-
-  .hide {
-      display: none;
-  }
 
   .list {
     max-width: 270px;
