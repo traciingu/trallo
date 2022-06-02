@@ -14,7 +14,7 @@ const checkBoard = async (expectedLists) => {
         actualLists.push({ title, cards: newCards });
     }
 
-    expect(expectedLists).toEqual(actualLists);
+    expect(actualLists).toEqual(expectedLists);
 
 };
 

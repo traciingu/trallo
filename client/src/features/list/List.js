@@ -48,6 +48,7 @@ const List = ({ createCard, id, index, title, updateList }) => {
             >
                 <form className={canEditList ? "" : "hide"} onSubmit={handleListEditSubmit}>
                     <input type="text" data-edit-item-input="list"  onChange={handleChange} value={listTitleInputText} />
+                    <input type="button" data-delete-item="list" value="Delete" />
                 </form>
                 <h2 className={canEditList ? "hide" : ""}
                 data-list-title={title}   

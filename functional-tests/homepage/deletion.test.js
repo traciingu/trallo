@@ -28,7 +28,7 @@ describe('Deletion', () => {
 
     afterAll(async () => {
         await connection.close();
-    })
+    });
 
     afterEach(async () => {
         try {
@@ -82,6 +82,27 @@ describe('Deletion', () => {
 
             await checkBoard(expectedLists);
 
+        });
+
+        it('deletes a list', async () => {
+            await navigateToBoard('h2');
+
+            await page.click('[data-edit-item-button="list"]');
+            await page.waitForSelector('[data-delete-item="list"]');
+
+            const listDeleteButton = await page.$('[data-delete-item="list"]');
+            const listDeleteButtonText = await listDeleteButton.evaluate(element => element.value);
+            expect(listDeleteButtonText).toEqual("Delete");
+
+            await page.click('[data-delete-item="list"]');
+            await page.waitForTimeout(700);
+
+            const expectedLists = [
+                { title: 'In progress', cards: [] },
+                { title: 'Done', cards: [] },
+            ];
+
+            await checkBoard(expectedLists);
         });
     });
 });
