@@ -62,9 +62,9 @@ describe('Card modal', () => {
         it('displays card modal when card is clicked', async () => {
             await navigateToBoard('[data-item-type="card"]');
 
-            await page.waitForSelector('[data-modal-type="card"]', {hidden: true});
-            // await page.click('[data-item-type="card"]');
-
+            await page.waitForSelector('[data-modal-type="card"]', {visible: false});
+            await page.click('[data-item-type="card"]');
+            await page.waitForSelector('[data-modal-type="card"]', {visible: true});
             
         });
     });

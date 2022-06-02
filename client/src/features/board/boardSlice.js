@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { api } from '../../api';
 
 export const boardSlice = createSlice({
@@ -14,6 +14,9 @@ export const boardSlice = createSlice({
             .addCase(getBoard.fulfilled, (state, action) => {
                 const board = action.payload.board;
                 state.id = board[0].id;
+            })
+            .addCase(setModalDisplay, (state, action) => {
+                state.modalDisplay = action.payload;
             })
     }
 });
@@ -38,6 +41,8 @@ export const updateBoard = createAsyncThunk('board/update', async (info) => {
     console.log(result);
     return result.data;
 });
+
+export const setModalDisplay = createAction('board/setModalDisplay');
 
 const cloneListsWithCardIdOnly = (lists, cards) => {
     return lists.map(list => {
@@ -64,3 +69,4 @@ const cloneCards = (lists) => {
 
     return cards;
 };
+

@@ -2,9 +2,10 @@ import React, { useContext, useState } from "react";
 import di from '../../injection_container';
 import { updateCard, deleteCard } from "./cardSlice";
 import { connect } from "react-redux";
+import { setModalDisplay } from "../board/boardSlice";
 
 
-const Card = ({ id, index, title, updateCard, deleteCard }) => {
+const Card = ({ id, index, title, updateCard, deleteCard, setModalDisplay, modalDisplay }) => {
     const { Draggable } = useContext(di);
     const [canEditCardTitle, setCanEditCardTitle] = useState(false);
     const [cardTitleInputText, setCardTitleInputText] = useState(title);
@@ -28,6 +29,10 @@ const Card = ({ id, index, title, updateCard, deleteCard }) => {
         deleteCard({ id });
     }
 
+    const handleCardClick = (e) => {
+        setModalDisplay(!modalDisplay);
+    }
+
     return (<Draggable draggableId={id} index={index} key={id}>
         {(provided) => (
             <div
@@ -36,6 +41,7 @@ const Card = ({ id, index, title, updateCard, deleteCard }) => {
                 ref={provided.innerRef}
                 className="card"
                 data-item-type="card"
+                onClick={handleCardClick}
             >
                 <h3 data-card-title={title} className={canEditCardTitle ? "hide" : ""}>
                     {title}
@@ -55,6 +61,13 @@ const mdToProps = dispatch => {
     return {
         updateCard: info => { dispatch(updateCard(info)) },
         deleteCard: info => { dispatch(deleteCard(info)) },
+        setModalDisplay: info => { dispatch(setModalDisplay(info)) },
+    };
+};
+
+const msToProps = state => {
+    return {
+        modalDisplay: state.board.modalDisplay,
     };
 };
 
