@@ -3,7 +3,7 @@ import { api } from '../../api';
 
 export const boardSlice = createSlice({
     name: 'board',
-    initialState: {},
+    initialState: { modal: {isDisplayed: false, title: ""}},
     reducers: {},
     extraReducers: builder => {
         builder
@@ -16,7 +16,9 @@ export const boardSlice = createSlice({
                 state.id = board[0].id;
             })
             .addCase(setModalDisplay, (state, action) => {
-                state.modalDisplay = action.payload;
+                state.modal = {};
+                state.modal.isDisplayed = action.payload.isDisplayed;
+                state.modal.title = action.payload.title;
             })
     }
 });

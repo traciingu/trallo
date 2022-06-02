@@ -1,17 +1,16 @@
 import './App.css';
 import { useEffect, useContext } from 'react';
-import { getBoard, loadBoard, setModalDisplay } from '../features/board/boardSlice';
+import { getBoard, loadBoard } from '../features/board/boardSlice';
 import di from '../injection_container';
 import { connect } from 'react-redux';
 import { Modal, AppContainer } from './appStyles';
 
 
-function App({ getBoard, loadBoard, setModalDisplay, boardId, modalDisplay }) {
+function App({ getBoard, loadBoard, boardId, modal }) {
   const { Board } = useContext(di);
 
   useEffect(() => {
     getBoard();
-    setModalDisplay(false);
   }, []);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ function App({ getBoard, loadBoard, setModalDisplay, boardId, modalDisplay }) {
   return (
     <AppContainer className="App" >
       <Board />
-      <Modal data-modal-type="card" className={modalDisplay ? '' : 'hide'}> I AM A MODAL</Modal>
+      <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'}>{modal.title || ""}</Modal>
     </AppContainer >
   );
 }
@@ -32,16 +31,14 @@ function App({ getBoard, loadBoard, setModalDisplay, boardId, modalDisplay }) {
 const mapStateToProps = state => {
   return {
     boardId: state.board.id,
-    modalDisplay: state.board.modalDisplay,
+    modal: state.board.modal,
   }
 }
 
 const mdToProps = dispatch => {
-  // const { loadBoard } = di;
   return {
     getBoard: () => { dispatch(getBoard()) },
     loadBoard: (id) => { dispatch(loadBoard(id)) },
-    setModalDisplay: (info) => { dispatch(setModalDisplay(info)) },
   }
 };
 
