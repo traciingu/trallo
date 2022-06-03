@@ -104,9 +104,7 @@ describe('Card modal', () => {
                     }
             
                     actualLists.push({ title, cards: newCards });
-                }
-            
-                console.log(actualLists);
+                }  
                 expect(actualLists).toEqual(expectedBoardState);
         
             } catch (err) {
