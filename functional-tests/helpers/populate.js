@@ -38,7 +38,7 @@ const populate = async (db, boardState) => {
         console.log(err);
     }
 
-    const selector = boardState.length > 0 ? 'h2' : 'h1';
+    const selector = boardState.length > 0 ? '[data-item-type="list"]' : '[data-item-type="board"]';
     await navigateToBoard(selector);
     await checkBoard(boardState);
 };

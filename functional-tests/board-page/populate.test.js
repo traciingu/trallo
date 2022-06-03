@@ -61,7 +61,7 @@ describe('Populate', () => {
         ];
 
         await populate(db, boardState);
-        await navigateToBoard('h2');
+        await navigateToBoard('[data-item-type="list"]');
 
         await checkBoard(boardState);
     })
@@ -74,7 +74,7 @@ describe('Populate', () => {
         ];
 
         await populate(db, boardState);
-        await navigateToBoard('h2');
+        await navigateToBoard('[data-item-type="list"]');
 
         await checkBoard(boardState);
     })
@@ -85,7 +85,7 @@ describe('Populate', () => {
         ];
 
         await populate(db, boardState);
-        await navigateToBoard('h2');
+        await navigateToBoard('[data-item-type="list"]');
 
         await checkBoard(boardState);
     })
@@ -96,7 +96,7 @@ describe('Populate', () => {
         ];
 
         await populate(db, boardState);
-        await navigateToBoard('h2');
+        await navigateToBoard('[data-item-type="list"]');
 
         await checkBoard(boardState);
     })
@@ -109,7 +109,7 @@ describe('Populate', () => {
         ];
 
         await populate(db, boardState);
-        await navigateToBoard('h2');
+        await navigateToBoard('[data-item-type="list"]');
 
         await checkBoard(boardState);
     })
@@ -122,7 +122,7 @@ describe('Populate', () => {
         ];
 
         await populate(db, boardState);
-        await navigateToBoard('h2');
+        await navigateToBoard('[data-item-type="list"]');
 
         await checkBoard(boardState);
     });

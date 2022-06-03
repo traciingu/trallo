@@ -63,7 +63,7 @@ describe('Drag and drop', () => {
 
         it('user can view board and move cards from list to list', async () => {
 
-            await navigateToBoard("h2");
+            await navigateToBoard('[data-item-type="list"]');
 
             await expect(page.title()).resolves.toMatch('Trallo');
 
@@ -86,7 +86,7 @@ describe('Drag and drop', () => {
 
             await page.waitForTimeout(700);
             await page.reload();
-            await page.waitForSelector("h2");
+            await page.waitForSelector('[data-item-type="list"]');
 
             expectedLists = [
                 { title: "Todo", cards: [] },
@@ -100,7 +100,7 @@ describe('Drag and drop', () => {
 
         it('reorders the Todo list to be after the In Progress list', async () => {
 
-            await navigateToBoard("h2");
+            await navigateToBoard('[data-item-type="list"]');
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello"] },
@@ -133,7 +133,7 @@ describe('Drag and drop', () => {
             await checkBoard(expectedLists);
 
             await page.reload();
-            await page.waitForSelector("h2");
+            await page.waitForSelector('[data-item-type="list"]');
 
             await checkBoard(expectedLists);
         });
@@ -156,7 +156,7 @@ describe('Drag and drop', () => {
 
         it('can reorder cards within the same list', async () => {
 
-            await navigateToBoard("h2");
+            await navigateToBoard('[data-item-type="list"]');
 
             const helloCardText = boardState[0].cards[0];
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
@@ -193,7 +193,7 @@ describe('Drag and drop', () => {
         });
 
         it('moves one card to a different list then reorder a list containing a card', async () => {
-            await navigateToBoard("h2");
+            await navigateToBoard('[data-item-type="list"]');
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello", "Goodbye"] },
@@ -245,7 +245,7 @@ describe('Drag and drop', () => {
             await checkBoard(expectedLists);
 
             await page.reload();
-            await page.waitForSelector("h2");
+            await page.waitForSelector('[data-item-type="list"]');
 
             await checkBoard(expectedLists);
 

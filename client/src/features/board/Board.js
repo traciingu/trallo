@@ -12,7 +12,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
   const onDragEnd = curryOnDragHandler(reorderAndPersistCards, reorderAndPersistLists);
 
   return (
-    <div className="board">
+    <div className="board" data-item-type="board">
       <h1>{title}</h1>
       <DragDropContext
         onDragEnd={onDragEnd}

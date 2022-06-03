@@ -23,7 +23,12 @@ function App({ getBoard, loadBoard, boardId, modal }) {
   return (
     <AppContainer className="App" >
       <Board />
-      <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'}>{modal.title || ""}</Modal>
+      <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'}>
+        <h2 data-modal-property="title">
+          {modal.title || ""}
+        </h2>
+        <p data-modal-property="description">{modal.description}</p>
+      </Modal>
     </AppContainer >
   );
 }

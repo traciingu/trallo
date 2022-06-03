@@ -62,7 +62,7 @@ describe('Update', () => {
         });
 
         it('updates a card title', async () => {
-            await navigateToBoard("h2");
+            await navigateToBoard('[data-item-type="list"]');
 
             const cardEditButton = await page.$('[data-edit-item-button="card"]');
             const cardEditButtonText = await cardEditButton.evaluate(element => element.value);

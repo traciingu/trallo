@@ -1,6 +1,6 @@
 const checkBoard = async (expectedLists) => {
     const actualLists = [];
-    const lists = await page.$$('.list');
+    const lists = await page.$$('[data-item-type="list"]');
 
     for (let i = 0; i < lists.length; i++) {
         const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];

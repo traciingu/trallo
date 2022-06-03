@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { setModalDisplay } from "../board/boardSlice";
 
 
-const Card = ({ id, index, title, updateCard, deleteCard, setModalDisplay, modal }) => {
+const Card = ({ id, index, title, description, updateCard, deleteCard, setModalDisplay, modal }) => {
     const { Draggable } = useContext(di);
     const [canEditCardTitle, setCanEditCardTitle] = useState(false);
     const [cardTitleInputText, setCardTitleInputText] = useState(title);
@@ -32,7 +32,7 @@ const Card = ({ id, index, title, updateCard, deleteCard, setModalDisplay, modal
     const handleCardClick = (e) => {
         setModalDisplay({
             isDisplayed: !modal.isDisplayed,
-            title,
+            title, description
         });
     }
 

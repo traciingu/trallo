@@ -58,7 +58,7 @@ describe('Creation', () => {
         });
 
         it('creates a new list', async () => {
-            await navigateToBoard("h1");
+            await navigateToBoard('[data-item-type="board"]');
 
             const board = await page.$('.board');
 
@@ -80,13 +80,13 @@ describe('Creation', () => {
             await checkBoard(expectedList);
 
             await page.reload();
-            await page.waitForSelector("h2");
+            await page.waitForSelector('[data-item-type="list"]');
 
             await checkBoard(expectedList);
         });
 
         it("can open and close create list form", async () => {
-            await navigateToBoard("h1");
+            await navigateToBoard('[data-item-type="board"]');
 
             let expectedLists = [];
             await checkBoard(expectedLists);
@@ -144,7 +144,7 @@ describe('Creation', () => {
         });
 
         it("create and persist a new card", async () => {
-            await navigateToBoard("h2");
+            await navigateToBoard('[data-item-type="list"]');
 
             const firstList = await page.$('[data-item-type="list"]');
 

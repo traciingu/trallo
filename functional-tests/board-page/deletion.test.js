@@ -62,7 +62,7 @@ describe('Deletion', () => {
         });
 
         it('deletes a card', async () => {
-            await navigateToBoard('h2');
+            await navigateToBoard('[data-item-type="list"]');
 
             await page.click('[data-edit-item-button="card"]');
             await page.waitForSelector('[data-delete-item="card"]');
@@ -85,7 +85,7 @@ describe('Deletion', () => {
         });
 
         it('deletes a list', async () => {
-            await navigateToBoard('h2');
+            await navigateToBoard('[data-item-type="list"]');
 
             await page.click('[data-edit-item-button="list"]');
             await page.waitForSelector('[data-delete-item="list"]');

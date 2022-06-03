@@ -6,7 +6,7 @@ const CardContainer = ({ cards, listId, cardsOrdering }) => {
     return (
         <>
             {cards && cardsOrdering[listId]?.map((cardId, index) => {
-                return <Card id={cards[cardId].id} index={index} title={cards[cardId].title} key={cards[cardId].id} />;
+                return <Card id={cards[cardId].id} index={index} title={cards[cardId].title} description={cards[cardId].description} key={cards[cardId].id} />;
             })}
         </>
     );
