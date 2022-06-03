@@ -44,9 +44,10 @@ const Card = ({ id, index, title, description, updateCard, deleteCard, setModalD
                 ref={provided.innerRef}
                 className="card"
                 data-item-type="card"
+                data-card-title={title}
                 onClick={handleCardClick}
             >
-                <h3 data-card-title={title} className={canEditCardTitle ? "hide" : ""}>
+                <h3 data-card-property="title" className={canEditCardTitle ? "hide" : ""}>
                     {title}
                 </h3>
                 <form className={canEditCardTitle ? "" : "hide"} data-edit-item-form="card" onSubmit={handleFormSubmit}>

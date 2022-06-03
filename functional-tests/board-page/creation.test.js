@@ -71,7 +71,7 @@ describe('Creation', () => {
             expect(createButtonText).toEqual('Add List');
 
             await page.click('[data-create-item-confirm="list"');
-            await page.waitForTimeout(700);
+            await page.waitForSelector('[data-item-type="list"]');
 
             const expectedList = [
                 { title: "Test List", cards: [] },
@@ -103,7 +103,7 @@ describe('Creation', () => {
             expect(createListContainerVisibility).toEqual("none");
 
             await page.click('[data-add-button="list"]');
-            await page.waitForTimeout(700);
+            await page.waitForSelector('[data-create-item-container="list"]', { visible: true });
 
             let listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
@@ -122,7 +122,7 @@ describe('Creation', () => {
             expect(cancelButtonText).toEqual('Cancel');
 
             await page.click('[data-create-item-cancel="list"]');
-            await page.waitForTimeout(700);
+            await page.waitForSelector('[data-create-item-container="list"]', { visible: false });
             listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(createListContainerVisibility).toEqual('none');
@@ -147,17 +147,18 @@ describe('Creation', () => {
             await navigateToBoard('[data-item-type="list"]');
 
             const firstList = await page.$('[data-item-type="list"]');
+            const newCardTitle = 'Test Card';
 
             await page.click('[data-add-button="card"]');
             const createInputField = await firstList.$('[data-create-item-input="card"]');
-            await createInputField.type('Test Card');
+            await createInputField.type(newCardTitle);
 
             const createButton = await firstList.$('[data-create-item-confirm="card"]');
             const createButtonText = await createButton.evaluate(element => element.value);
             expect(createButtonText).toEqual('Add Card');
 
-            await page.click('[data-create-item-confirm="card"');
-            await page.waitForTimeout(700);
+            await page.click('[data-create-item-confirm="card"]');
+            await page.waitForSelector('[data-item-type="card"]');
 
             const expectedList = [
                 { title: "Todo", cards: ["Test Card"] },
@@ -184,7 +185,7 @@ describe('Creation', () => {
             expect(addCardContainerVisibility).toEqual("none");
 
             await page.click('[data-add-button="card"]');
-            await page.waitForTimeout(700);
+            await page.waitForSelector('[data-create-item-container="card"][data-create-item-container-visibility=true]');
 
             let addCardButtonVisibility = await addCardButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             addCardContainerVisibility = await addCardContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
@@ -203,7 +204,7 @@ describe('Creation', () => {
             expect(cancelButtonText).toEqual('Cancel');
 
             await page.click('[data-create-item-cancel="card"]');
-            await page.waitForTimeout(700);
+            await page.waitForSelector('[data-create-item-container="card"][data-create-item-container-visibility=false]');
 
             addCardButtonVisibility = await addCardButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             addCardContainerVisibility = await addCardContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));

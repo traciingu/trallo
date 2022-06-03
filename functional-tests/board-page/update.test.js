@@ -72,7 +72,8 @@ describe('Update', () => {
             await page.waitForSelector('[data-edit-item-form="card"]');
 
             const cardTitleText = boardState[0].cards[0];
-            const cardTitle = await page.$(`[data-card-title="${cardTitleText}"]`);
+            const updatedCard = await page.$(`[data-card-title="${cardTitleText}"]`);
+            const cardTitle = await updatedCard.$('[data-card-property="title"]');
             let cardTitleVisibility = await cardTitle.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(cardTitleVisibility).toEqual("none");
 

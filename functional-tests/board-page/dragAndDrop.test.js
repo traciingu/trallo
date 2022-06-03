@@ -79,14 +79,16 @@ describe('Drag and drop', () => {
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             const inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
 
-            const helloCoors = await getCoordinates(helloCard);
+            const helloCoors = await getCoordinates(helloCard, (x) => { return x / 2 }, (y) => { return y / 2 });
             const inProgressCoors = await getCoordinates(inProgressList);
 
             await dragAndDrop(helloCoors, inProgressCoors);
 
-            await page.waitForTimeout(700);
-            await page.reload();
-            await page.waitForSelector('[data-item-type="list"]');
+            await page.waitForFunction(() => {
+                const destinationList = document.querySelector('[data-item-type="list"][data-list-title="In progress"]');
+                const movedCard = destinationList.querySelector('[data-item-type="card"][data-card-title="Hello"]');
+                return movedCard;
+            });
 
             expectedLists = [
                 { title: "Todo", cards: [] },
@@ -94,6 +96,10 @@ describe('Drag and drop', () => {
                 { title: "Done", cards: [] }
             ];
 
+            await checkBoard(expectedLists);
+
+            await page.reload();
+            await page.waitForSelector('[data-item-type="list"]');
             await checkBoard(expectedLists);
 
         });
@@ -122,7 +128,10 @@ describe('Drag and drop', () => {
 
             await dragAndDrop(todoCoors, inProgressCoors);
 
-            await page.waitForTimeout(700);
+            await page.waitForFunction(() => {
+                const destinationList = document.querySelector('[data-list-property="title"]');
+                return destinationList.innerText.localeCompare("In progress") === 0;
+            });
 
             expectedLists = [
                 { title: "In progress", cards: [] },
@@ -164,12 +173,17 @@ describe('Drag and drop', () => {
             const goodbyeCardText = boardState[0].cards[1];
             const goodbyeCard = await page.$(`[data-card-title="${goodbyeCardText}"]`);
 
-            const helloCoors = await getCoordinates(helloCard);
-            const goodbyeCoors = await getCoordinates(goodbyeCard);
+            const helloCoors = await getCoordinates(helloCard, (x) => { return x / 2 }, (y) => { return y / 2 });
+            const goodbyeCoors = await getCoordinates(goodbyeCard, (x) => { return x / 2 }, (y) => { return y / 2 });
 
             await dragAndDrop(helloCoors, goodbyeCoors);
 
-            await page.waitForTimeout(1000);
+            await page.waitForFunction(() => {
+                const destinationList = document.querySelector('[data-item-type="list"][data-list-title="Todo"]');
+                const firstChild = destinationList.querySelector('[data-card-property="title"]');
+                return firstChild.innerText.localeCompare("Goodbye") === 0;
+            });
+
 
             let expectedLists = [
                 { title: "Todo", cards: ["Goodbye", "Hello"] },
@@ -180,8 +194,7 @@ describe('Drag and drop', () => {
             await checkBoard(expectedLists);
 
             await page.reload();
-            await page.waitForSelector("h2");
-            await page.waitForTimeout(1000);
+            await page.waitForSelector('[data-item-type="list"]');
 
             expectedLists = [
                 { title: "Todo", cards: ["Goodbye", "Hello"] },
@@ -207,12 +220,16 @@ describe('Drag and drop', () => {
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
             let inProgressList = (await page.$x('//h2[text()="In progress"]//following-sibling::div'))[0];
 
-            const helloCoors = await getCoordinates(helloCard);
-            let inProgressCoors = await getCoordinates(inProgressList);
+            const helloCoors = await getCoordinates(helloCard, (x) => { return x / 2 }, (y) => { return y / 2 });
+            let inProgressCoors = await getCoordinates(inProgressList, (x) => { return x / 2 }, (y) => { return y / 2 });
 
             await dragAndDrop(helloCoors, inProgressCoors);
 
-            await page.waitForTimeout(1000);
+            await page.waitForFunction(() => {
+                const destinationList = document.querySelector('[data-item-type="list"][data-list-title="In progress"]');
+                const movedCard = destinationList.querySelector('[data-item-type="card"][data-card-title="Hello"]');
+                return movedCard;
+            });
 
             expectedLists = [
                 { title: "Todo", cards: ["Goodbye"] },
@@ -234,7 +251,10 @@ describe('Drag and drop', () => {
 
             await dragAndDrop(todoCoors, inProgressCoors);
 
-            await page.waitForTimeout(700);
+            await page.waitForFunction(() => {
+                const destinationList = document.querySelector('[data-list-property="title"]');
+                return destinationList.innerText.localeCompare("In progress") === 0;
+            });
 
             expectedLists = [
                 { title: "In progress", cards: ["Hello"] },

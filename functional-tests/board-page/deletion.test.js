@@ -72,7 +72,7 @@ describe('Deletion', () => {
             expect(cardDeleteButtonText).toEqual("Delete");
 
             await page.click('[data-delete-item="card"]');
-            await page.waitForTimeout(700);
+            await page.waitForFunction(() => !document.querySelector('[data-item-type="card"]'));
 
             const expectedLists = [
                 { title: 'Todo', cards: [] },
@@ -95,7 +95,7 @@ describe('Deletion', () => {
             expect(listDeleteButtonText).toEqual("Delete");
 
             await page.click('[data-delete-item="list"]');
-            await page.waitForTimeout(700);
+            await page.waitForFunction(() => !document.querySelector('[data-list-title="Todo"]'));
 
             const expectedLists = [
                 { title: 'In progress', cards: [] },

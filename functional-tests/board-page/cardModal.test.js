@@ -46,36 +46,6 @@ describe('Card modal', () => {
         }
     });
 
-    describe("Starting Db with one card", () => {
-        const boardState = [
-            { title: 'Todo', cards: ["Hello"] },
-        ];
-
-        beforeEach(async () => {
-            try {
-                await populate(db, boardState);
-            } catch (err) {
-                console.log(err);
-            }
-        });
-
-        it('displays card modal when card is clicked', async () => {
-            await navigateToBoard('[data-item-type="card"]');
-
-            await page.waitForSelector('[data-modal-type="card"]', {visible: false});
-            
-            const expectedCardTitle = boardState[0].cards[0];
-
-            await page.click('[data-item-type="card"]');
-            await page.waitForSelector('[data-modal-type="card"]', {visible: true});
-
-            const modal = await page.$('[data-modal-type="card"]');
-            const modalTitle = await modal.evaluate(element => element.textContent);
- 
-            expect(modalTitle).toEqual(expectedCardTitle);           
-        });
-    });
-
     describe("Starts with a card that has a description", () => {
         const boardState = [
             { title: 'Todo', cards: [{title: "Hello", description: "Goodbye"}] },
@@ -144,7 +114,7 @@ describe('Card modal', () => {
             }
         });
 
-        it('', async () => {
+        it('opens the card modal', async () => {
             await navigateToBoard('[data-item-type="card"]');
 
             await page.waitForSelector('[data-modal-type="card"]', {visible: false});

@@ -14,7 +14,7 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
 
     const handleListEditSubmit = (e) => {
         e.preventDefault();
-        updateList({id, title: e.target[0].value});
+        updateList({ id, title: e.target[0].value });
         setCanEditList(!canEditList);
     };
 
@@ -39,7 +39,7 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
     };
 
     const handleDeleteListButtonClick = (e) => {
-        deleteList({id});
+        deleteList({ id });
     };
 
     return <Draggable draggableId={`${id}`} index={index} key={id}>
@@ -49,13 +49,14 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
                 ref={provided.innerRef}
                 className="list"
                 data-item-type="list"
+                data-list-title={title}
             >
                 <form className={canEditList ? "" : "hide"} onSubmit={handleListEditSubmit}>
-                    <input type="text" data-edit-item-input="list"  onChange={handleChange} value={listTitleInputText} />
+                    <input type="text" data-edit-item-input="list" onChange={handleChange} value={listTitleInputText} />
                     <input type="button" data-delete-item="list" value="Delete" onClick={handleDeleteListButtonClick} />
                 </form>
                 <h2 className={canEditList ? "hide" : ""}
-                data-list-title={title}   
+                    data-list-property="title"
                     {...provided.dragHandleProps}
                 >
                     {title}
@@ -77,7 +78,13 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
                 </Droppable>
                 <CreateCardContainer>
                     <input type="button" data-add-button="card" value="Add card" onClick={handleCreateCardButtonClick} className={canCreateCard ? "hide" : ""} />
-                    <CreateCardForm data-create-item-container="card" className={canCreateCard ? "" : "hide"} data-list-id={id} onSubmit={handleCreateCardSubmit} >
+                    <CreateCardForm
+                        data-create-item-container="card"
+                        className={canCreateCard ? "" : "hide"}
+                        data-list-id={id}
+                        onSubmit={handleCreateCardSubmit}
+                        data-create-item-container-visibility={canCreateCard}
+                    >
                         <input type="text" data-create-item-input="card" />
                         <input type="button" data-create-item-cancel="card" value="Cancel" onClick={handleCreateCardButtonClick} />
                         <input type="submit" data-create-item-confirm="card" value="Add Card" />
