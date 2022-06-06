@@ -1,4 +1,3 @@
-import './App.css';
 import { useEffect, useContext } from 'react';
 import { getBoard, loadBoard } from '../features/board/boardSlice';
 import di from '../injection_container';

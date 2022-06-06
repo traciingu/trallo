@@ -12,19 +12,14 @@ export const ListContainerStyling = styled.div`
 
   .list {
     max-width: 270px;
-    min-width: 150px;
+    min-width: 200px;
     padding: 1em;
-    background-color: rgba(200, 100, 100, .5);
+    background-color: #e7e7e9;
+    border-radius: 5px;
+    box-shadow: 0px 2px 3px #cfcfd2;
     
     h2 {
       margin-top: 0;
     }
   }
-
-  .card {
-    border-style: solid;
-    border-color: green;
-  }
   `;
-
-const listWidth = "270px";

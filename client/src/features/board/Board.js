@@ -4,6 +4,7 @@ import { updateList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
 import { moveCardInSameList } from '../../helpers/helper';
+import { BoardContainerStyling } from './boardStyles';
 
 function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, ListContainer } = useContext(di);
@@ -12,7 +13,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
   const onDragEnd = curryOnDragHandler(reorderAndPersistCards, reorderAndPersistLists);
 
   return (
-    <div className="board" data-item-type="board">
+    <BoardContainerStyling className="board" data-item-type="board">
       <h1>{title}</h1>
       <DragDropContext
         onDragEnd={onDragEnd}
@@ -29,7 +30,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
           )}
         </Droppable>
       </DragDropContext>
-    </div>
+    </BoardContainerStyling>
   );
 }
 
