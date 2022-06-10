@@ -23,7 +23,7 @@ function App({ getBoard, loadBoard, boardId, modal, setModalDisplay }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setModalDisplay({...modal, title: e.target[0].value});
+    setModalDisplay({ ...modal, title: e.target[0].value });
     setCanEdit(false);
   };
 
@@ -41,17 +41,13 @@ function App({ getBoard, loadBoard, boardId, modal, setModalDisplay }) {
   return (
     <AppContainer className="App" >
       <Board />
-      <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'}>
-        {
-          canEdit ?
-            <form onSubmit={handleSubmit}>
-              <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
-            </form>
-            :
-            <h2 data-modal-property="title" onClick={handleClick}>
-              {modal.title || ""}
-            </h2>
-        }
+      <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'} >
+        <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title"   >
+          <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
+        </form>
+        <h2 data-modal-property="title" onClick={handleClick} className={canEdit ? 'hide' : ''}>
+          {modal.title || ""}
+        </h2>
         <p data-modal-property="description">{modal.description}</p>
       </Modal>
     </AppContainer >
@@ -69,7 +65,7 @@ const mdToProps = dispatch => {
   return {
     getBoard: () => { dispatch(getBoard()) },
     loadBoard: (id) => { dispatch(loadBoard(id)) },
-    setModalDisplay: (info) => { dispatch(setModalDisplay(info))},
+    setModalDisplay: (info) => { dispatch(setModalDisplay(info)) },
   }
 };
 
