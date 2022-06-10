@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { getBoard, loadBoard } from '../features/board/boardSlice';
 import di from '../injection_container';
 import { connect } from 'react-redux';
@@ -7,6 +7,19 @@ import { Modal, AppContainer } from './appStyles';
 
 function App({ getBoard, loadBoard, boardId, modal }) {
   const { Board } = useContext(di);
+
+  const [canEdit, setCanEdit] = useState(false);
+
+  const [modalEditCardTitle, setModalEditCardTitle] = useState(modal.title);
+
+  const handleClick = () => {
+    setCanEdit(true);
+    setModalEditCardTitle(modal.title);
+  }
+
+  const handleChange = (e) => {
+    setModalEditCardTitle(e.target.value);
+  }
 
   useEffect(() => {
     getBoard();
@@ -23,9 +36,14 @@ function App({ getBoard, loadBoard, boardId, modal }) {
     <AppContainer className="App" >
       <Board />
       <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'}>
-        <h2 data-modal-property="title">
-          {modal.title || ""}
-        </h2>
+        {
+          canEdit ?
+            <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
+            :
+            <h2 data-modal-property="title" onClick={handleClick}>
+              {modal.title || ""}
+            </h2>
+        }
         <p data-modal-property="description">{modal.description}</p>
       </Modal>
     </AppContainer >

@@ -56,60 +56,7 @@ describe('Card modal', () => {
         ];
         
         beforeEach(async () => {
-            try {
-                const cardsCollection = db.collection('cards');
-                const listsCollection = db.collection('lists');
-                let lists = { insertedIds: {} };
-                if (boardState.length > 0) {
-                    let listStateCopy = [];
-                    for (let i = 0; i < boardState.length; i += 1) {
-                        let cards = { insertedIds: {} };
-                        if (boardState[i].cards.length > 0) {
-                            const cardsJson = boardState[i].cards.map(card => {
-                                return { title: card.title, description: card.description };
-                            });
-                            cards = await cardsCollection.insertMany(cardsJson);
-                        }
-        
-                        listStateCopy.push({
-                            ...boardState[i],
-                            cards: Object.keys(cards.insertedIds).map(key => cards.insertedIds[key])
-                        });
-                    }
-        
-                    lists = await listsCollection.insertMany(listStateCopy);
-                }
-        
-                const state = {
-                    title: "Dummy",
-                    lists: Object.keys(lists.insertedIds).map(key => lists.insertedIds[key]),
-                };
-        
-                const boards = db.collection('boards');
-                await boards.insertOne(state);
-
-                // >>>>>>>>>>>>>>>>> MODIFIED CHECK BOARD
-                await navigateToBoard('[data-item-type="list"]');
-                const actualLists = [];
-                lists = [];
-                lists = await page.$$('[data-item-type="list"]');
-            
-                for (let i = 0; i < lists.length; i++) {
-                    const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
-                    const cards = await lists[i].$$('.card');
-                    const newCards = [];
-                    for (let j = 0; j < cards.length; j++) {
-                        const cardText = await cards[j].evaluate((card) => card.textContent);
-                        newCards.push(cardText);
-                    }
-            
-                    actualLists.push({ title, cards: newCards });
-                }  
-                expect(actualLists).toEqual(expectedBoardState);
-        
-            } catch (err) {
-                console.log(err);
-            }
+            await cardModalPopulate(db, boardState, expectedBoardState);
         });
 
         it('opens the card modal', async () => {
@@ -134,4 +81,105 @@ describe('Card modal', () => {
             expect(descriptionText).toEqual(expectedCardDescription);
         });
     });
+
+    describe('Starts with 1 empty list', () => {
+        const boardState = [
+            { title: 'Todo', cards: [] },
+        ];
+
+        const expectedBoardState =  [
+            { title: 'Todo', cards: [] },
+        ];
+        
+        beforeEach(async () => {
+            await cardModalPopulate(db, boardState, expectedBoardState);
+        });
+
+        it('creates a card, and edits the title in the modal', async () => {
+            await navigateToBoard('[data-item-type="list"]');
+            await page.click('[data-add-button="card"]');
+            const firstList = await page.$('[data-item-type="list"]');
+            const newCardTitle = "test card";
+            const createInputField = await firstList.$('[data-create-item-input="card"]');
+            await createInputField.type(newCardTitle);
+            await page.click('[data-create-item-confirm="card"]');
+            await page.waitForSelector('[data-item-type="card"]');
+            const firstCard = await page.$('[data-item-type="card"]');
+            await page.click('[data-item-type="card"]');
+            await page.waitForSelector('[data-modal-type="card"]', {visible: true});
+            await page.click('[data-modal-property="title"]');
+            await page.waitForSelector('[data-modal-edit-property="title"]');
+            const modalEditTitleInput = await page.$('[data-modal-edit-property="title"]');
+            const modalEditTitleInputValue = await modalEditTitleInput.evaluate(element => element.value);
+            expect(modalEditTitleInputValue).toEqual(newCardTitle);
+            await page.click('[data-modal-edit-property="title"]');
+
+            for (let i = 0; i < modalEditTitleInputValue.length; i++) {
+                await page.keyboard.press('Backspace');
+            }
+
+            const updatedCardTitle = "another card title";
+            await modalEditTitleInput.type(updatedCardTitle);
+            
+            await page.waitForTimeout(700);
+
+        });
+    });
 });
+
+const cardModalPopulate = async (db, boardState, expectedBoardState) => {
+    try {
+        const cardsCollection = db.collection('cards');
+        const listsCollection = db.collection('lists');
+        let lists = { insertedIds: {} };
+        if (boardState.length > 0) {
+            let listStateCopy = [];
+            for (let i = 0; i < boardState.length; i += 1) {
+                let cards = { insertedIds: {} };
+                if (boardState[i].cards.length > 0) {
+                    const cardsJson = boardState[i].cards.map(card => {
+                        return { title: card.title, description: card.description };
+                    });
+                    cards = await cardsCollection.insertMany(cardsJson);
+                }
+
+                listStateCopy.push({
+                    ...boardState[i],
+                    cards: Object.keys(cards.insertedIds).map(key => cards.insertedIds[key])
+                });
+            }
+
+            lists = await listsCollection.insertMany(listStateCopy);
+        }
+
+        const state = {
+            title: "Dummy",
+            lists: Object.keys(lists.insertedIds).map(key => lists.insertedIds[key]),
+        };
+
+        const boards = db.collection('boards');
+        await boards.insertOne(state);
+
+        // >>>>>>>>>>>>>>>>> MODIFIED CHECK BOARD
+        await navigateToBoard('[data-item-type="list"]');
+        const actualLists = [];
+        lists = [];
+        lists = await page.$$('[data-item-type="list"]');
+    
+        for (let i = 0; i < lists.length; i++) {
+            const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
+            const cards = await lists[i].$$('.card');
+            const newCards = [];
+            for (let j = 0; j < cards.length; j++) {
+                const cardText = await cards[j].evaluate((card) => card.textContent);
+                newCards.push(cardText);
+            }
+    
+            actualLists.push({ title, cards: newCards });
+        }  
+        expect(actualLists).toEqual(expectedBoardState);
+
+    } catch (err) {
+        console.log(err);
+    }
+}
