@@ -48,13 +48,13 @@ describe('Card modal', () => {
 
     describe("Starts with a card that has a description", () => {
         const boardState = [
-            { title: 'Todo', cards: [{title: "Hello", description: "Goodbye"}] },
+            { title: 'Todo', cards: [{ title: "Hello", description: "Goodbye" }] },
         ];
 
-        const expectedBoardState =  [
+        const expectedBoardState = [
             { title: 'Todo', cards: ["Hello"] },
         ];
-        
+
         beforeEach(async () => {
             await cardModalPopulate(db, boardState, expectedBoardState);
         });
@@ -62,13 +62,13 @@ describe('Card modal', () => {
         it('opens the card modal', async () => {
             await navigateToBoard('[data-item-type="card"]');
 
-            await page.waitForSelector('[data-modal-type="card"]', {visible: false});
-            
+            await page.waitForSelector('[data-modal-type="card"]', { visible: false });
+
             const expectedCardTitle = boardState[0].cards[0].title;
             const expectedCardDescription = boardState[0].cards[0].description;
 
             await page.click('[data-item-type="card"]');
-            await page.waitForSelector('[data-modal-type="card"]', {visible: true});
+            await page.waitForSelector('[data-modal-type="card"]', { visible: true });
 
             const modal = await page.$('[data-modal-type="card"]');
             const modalTitle = await modal.$('[data-modal-property="title"]');
@@ -76,7 +76,7 @@ describe('Card modal', () => {
 
             const modalDescription = await modal.$('[data-modal-property="description"]');
             const descriptionText = await modalDescription.evaluate(element => element.textContent);
- 
+
             expect(titleText).toEqual(expectedCardTitle);
             expect(descriptionText).toEqual(expectedCardDescription);
         });
@@ -87,10 +87,10 @@ describe('Card modal', () => {
             { title: 'Todo', cards: [] },
         ];
 
-        const expectedBoardState =  [
+        const expectedBoardState = [
             { title: 'Todo', cards: [] },
         ];
-        
+
         beforeEach(async () => {
             await cardModalPopulate(db, boardState, expectedBoardState);
         });
@@ -98,19 +98,22 @@ describe('Card modal', () => {
         it('creates a card, and edits the title in the modal', async () => {
             await navigateToBoard('[data-item-type="list"]');
             await page.click('[data-add-button="card"]');
+
             const firstList = await page.$('[data-item-type="list"]');
             const newCardTitle = "test card";
             const createInputField = await firstList.$('[data-create-item-input="card"]');
+
             await createInputField.type(newCardTitle);
             await page.click('[data-create-item-confirm="card"]');
             await page.waitForSelector('[data-item-type="card"]');
-            const firstCard = await page.$('[data-item-type="card"]');
             await page.click('[data-item-type="card"]');
-            await page.waitForSelector('[data-modal-type="card"]', {visible: true});
+            await page.waitForSelector('[data-modal-type="card"]', { visible: true });
             await page.click('[data-modal-property="title"]');
             await page.waitForSelector('[data-modal-edit-property="title"]');
+
             const modalEditTitleInput = await page.$('[data-modal-edit-property="title"]');
             const modalEditTitleInputValue = await modalEditTitleInput.evaluate(element => element.value);
+
             expect(modalEditTitleInputValue).toEqual(newCardTitle);
             await page.click('[data-modal-edit-property="title"]');
 
@@ -120,7 +123,7 @@ describe('Card modal', () => {
 
             const updatedCardTitle = "another card title";
             await modalEditTitleInput.type(updatedCardTitle);
-            
+
             await page.waitForTimeout(700);
 
         });
@@ -165,7 +168,7 @@ const cardModalPopulate = async (db, boardState, expectedBoardState) => {
         const actualLists = [];
         lists = [];
         lists = await page.$$('[data-item-type="list"]');
-    
+
         for (let i = 0; i < lists.length; i++) {
             const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
             const cards = await lists[i].$$('.card');
@@ -174,9 +177,9 @@ const cardModalPopulate = async (db, boardState, expectedBoardState) => {
                 const cardText = await cards[j].evaluate((card) => card.textContent);
                 newCards.push(cardText);
             }
-    
+
             actualLists.push({ title, cards: newCards });
-        }  
+        }
         expect(actualLists).toEqual(expectedBoardState);
 
     } catch (err) {
