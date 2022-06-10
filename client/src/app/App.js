@@ -1,11 +1,11 @@
 import { useEffect, useContext, useState } from 'react';
-import { getBoard, loadBoard } from '../features/board/boardSlice';
+import { getBoard, loadBoard, setModalDisplay } from '../features/board/boardSlice';
 import di from '../injection_container';
 import { connect } from 'react-redux';
 import { Modal, AppContainer } from './appStyles';
 
 
-function App({ getBoard, loadBoard, boardId, modal }) {
+function App({ getBoard, loadBoard, boardId, modal, setModalDisplay }) {
   const { Board } = useContext(di);
 
   const [canEdit, setCanEdit] = useState(false);
@@ -20,6 +20,12 @@ function App({ getBoard, loadBoard, boardId, modal }) {
   const handleChange = (e) => {
     setModalEditCardTitle(e.target.value);
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setModalDisplay({...modal, title: e.target[0].value});
+    setCanEdit(false);
+  };
 
   useEffect(() => {
     getBoard();
@@ -38,7 +44,9 @@ function App({ getBoard, loadBoard, boardId, modal }) {
       <Modal data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'}>
         {
           canEdit ?
-            <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
+            <form onSubmit={handleSubmit}>
+              <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
+            </form>
             :
             <h2 data-modal-property="title" onClick={handleClick}>
               {modal.title || ""}
@@ -61,6 +69,7 @@ const mdToProps = dispatch => {
   return {
     getBoard: () => { dispatch(getBoard()) },
     loadBoard: (id) => { dispatch(loadBoard(id)) },
+    setModalDisplay: (info) => { dispatch(setModalDisplay(info))},
   }
 };
 

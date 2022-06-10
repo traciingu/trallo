@@ -112,7 +112,7 @@ describe('Card modal', () => {
             await page.waitForSelector('[data-modal-edit-property="title"]');
 
             const modalEditTitleInput = await page.$('[data-modal-edit-property="title"]');
-            const modalEditTitleInputValue = await modalEditTitleInput.evaluate(element => element.value);
+            let modalEditTitleInputValue = await modalEditTitleInput.evaluate(element => element.value);
 
             expect(modalEditTitleInputValue).toEqual(newCardTitle);
             await page.click('[data-modal-edit-property="title"]');
@@ -124,7 +124,18 @@ describe('Card modal', () => {
             const updatedCardTitle = "another card title";
             await modalEditTitleInput.type(updatedCardTitle);
 
-            await page.waitForTimeout(700);
+            modalEditTitleInputValue = await modalEditTitleInput.evaluate(element => element.value);
+
+            expect(modalEditTitleInputValue).toEqual(updatedCardTitle);
+
+            await page.keyboard.press("Enter");
+
+            await page.waitForSelector('[data-modal-property="title"]');
+
+            const modalTitle = await page.$('[data-modal-property="title"]');
+            const modalTitleText = await modalTitle.evaluate(element => element.innerText);
+
+            expect(modalTitleText).toEqual(updatedCardTitle);
 
         });
     });
