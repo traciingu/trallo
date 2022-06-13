@@ -8,7 +8,7 @@ import { AppContainer } from './appStyles';
 
 function App({ getBoard, loadBoard, boardId }) {
   const { Board } = useContext(di);
-  
+
   useEffect(() => {
     getBoard();
   }, []);
@@ -26,8 +26,7 @@ function App({ getBoard, loadBoard, boardId }) {
           <Route index element={<Board />} />
         </Route>
       </Routes>
-      {/* <Board/> */}
-    </AppContainer >
+    </AppContainer>
   );
 }
 
