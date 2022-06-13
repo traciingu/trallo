@@ -16,8 +16,21 @@ h3 {
     display: none;
 }
 
+input[type="button"], input[type="submit"] {
+    background-color: inherit;
+    border: none;
+    border-radius: 2px;
+    padding: .5em;
+    margin: .25em 0;
+    transition: background-color .1s;
+
+    :hover {
+        background-color: #d9d9de;
+    }
+}
+
 `;
 
-export const Modal = styled.div`
+export const ModalContainerStyling = styled.div`
 
 `;
