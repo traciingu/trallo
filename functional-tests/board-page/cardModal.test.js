@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { installMouseHelper, navigateToBoard, populate, checkBoard } = require('../helpers');
+const { installMouseHelper, navigateToBoard, backspace, populate, checkBoard } = require('../helpers');
 
 describe('Card modal', () => {
     let connection;
@@ -132,9 +132,7 @@ describe('Card modal', () => {
             expect(modalEditTitleInputValue).toEqual(newCardTitle);
             await page.click('[data-modal-edit-property="title"]');
 
-            for (let i = 0; i < modalEditTitleInputValue.length; i++) {
-                await page.keyboard.press('Backspace');
-            }
+            await backspace(modalEditTitleInputValue);
 
             const updatedCardTitle = "another card title";
             await modalEditTitleInput.type(updatedCardTitle);
@@ -219,4 +217,4 @@ const cardModalPopulate = async (db, boardState, expectedBoardState) => {
     } catch (err) {
         console.log(err);
     }
-}
+};

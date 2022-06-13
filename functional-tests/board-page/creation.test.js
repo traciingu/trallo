@@ -83,7 +83,7 @@ describe('Creation', () => {
             await page.waitForSelector('[data-item-type="list"]');
 
             await checkBoard(expectedList);
-        });
+        }, 10000);
 
         it("can open and close create list form", async () => {
             await navigateToBoard('[data-item-type="board"]');

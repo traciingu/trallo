@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { installMouseHelper, navigateToBoard, populate, checkBoard } = require('../helpers');
+const { installMouseHelper, navigateToBoard, populate, checkBoard, backspace } = require('../helpers');
 
 describe('Update', () => {
     let connection;
@@ -82,9 +82,8 @@ describe('Update', () => {
             expect(cardEditInputText).toEqual(cardTitleText);
 
             await page.click('[data-edit-item-input="card"]');
-            for (let i = 0; i < cardEditInputText.length; i++) {
-                await page.keyboard.press('Backspace');
-            }
+
+            await backspace(cardEditInputText);
 
             await cardEditInput.type("TEST");
             cardEditInputText = await cardEditInput.evaluate(element => element.value);
@@ -138,9 +137,8 @@ describe('Update', () => {
             expect(listEditInputText).toEqual("Todo");
 
             await page.click('[data-edit-item-input="list"]');
-            for (let i = 0; i < listEditButtonText.length; i++) {
-                await page.keyboard.press('Backspace');
-            }
+
+            await backspace(listEditButtonText);
 
             await listEditInput.type("TEST");
             listEditInputText = await listEditInput.evaluate(element => element.value);

@@ -4,6 +4,7 @@ const populate = require('./populate');
 const checkBoard = require('./checkBoard');
 const getCoordinates = require('./getCoordinates');
 const dragAndDrop = require('./dragAndDrop');
+const backspace = require('./backspace');
 
 module.exports = {
     installMouseHelper,
@@ -11,6 +12,6 @@ module.exports = {
     populate,
     checkBoard,
     getCoordinates,
-    dragAndDrop
+    dragAndDrop,
+    backspace
 };
-
