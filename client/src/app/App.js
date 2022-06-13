@@ -21,12 +21,12 @@ function App({ getBoard, loadBoard, boardId }) {
 
   return (
     <AppContainer className="App" >
-      {/* <Routes>
+      <Routes>
         <Route path="/" >
           <Route index element={<Board />} />
         </Route>
-      </Routes> */}
-      <Board/>
+      </Routes>
+      {/* <Board/> */}
     </AppContainer >
   );
 }
