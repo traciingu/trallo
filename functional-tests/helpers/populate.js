@@ -6,13 +6,11 @@ const populate = async (db, boardState) => {
         const cardsCollection = db.collection('cards');
         const listsCollection = db.collection('lists');
         let lists = { insertedIds: {} };
-
         if (boardState.length > 0) {
             let listStateCopy = [];
             for (let i = 0; i < boardState.length; i += 1) {
                 let cards = { insertedIds: {} };
                 if (boardState[i].cards.length > 0) {
-
                     const cardsJson = boardState[i].cards.map(card => {
                         return { title: card, description: null };
                     });
@@ -41,8 +39,8 @@ const populate = async (db, boardState) => {
     }
 
     const selector = boardState.length > 0 ? '[data-item-type="list"]' : '[data-item-type="board"]';
-    // await navigateToBoard(selector);
-    // await checkBoard(boardState);
+    await navigateToBoard(selector);
+    await checkBoard(boardState);
 };
 
 module.exports = populate;
