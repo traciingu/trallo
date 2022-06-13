@@ -46,8 +46,8 @@ describe('Homepage', () => {
         }
     });
 
-    describe('Start with one board', () => {
-        const boardState = [];
+    describe('Start with one board and one card', () => {
+        const boardState = [{title: "Hi", cards: ["Hello"]}];
 
         beforeEach(async () => {
             try {
@@ -58,8 +58,9 @@ describe('Homepage', () => {
         });
 
         it('Has a navbar', async () => {
-            // await page.goto('http://localhost:3000/home');
-            // await page.waitForSelector('[data-component="navbar"]');
+            await page.goto('http://localhost:3000/home');
+            await page.waitForSelector('[data-component="navbar"]');
+            // expect( 2 + 2 ).toEqual(4);
         });
     });
 });
