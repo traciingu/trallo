@@ -1,6 +1,3 @@
-const navigateToBoard = require('./navigateToBoard');
-const checkBoard = require('./checkBoard');
-
 const populate = async (db, boardState) => {
     try {
         const cardsCollection = db.collection('cards');
@@ -32,15 +29,13 @@ const populate = async (db, boardState) => {
         };
 
         const boards = db.collection('boards');
-        await boards.insertOne(state);
+        const newBoard = await boards.insertOne(state);
+
+        return newBoard;
 
     } catch (err) {
         console.log(err);
     }
-
-    const selector = boardState.length > 0 ? '[data-item-type="list"]' : '[data-item-type="board"]';
-    await navigateToBoard(selector);
-    await checkBoard(boardState);
 };
 
 module.exports = populate;

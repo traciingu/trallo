@@ -1,7 +1,7 @@
 const { MongoClient } = require('mongodb');
 const { installMouseHelper, navigateToBoard, populate, checkBoard } = require('../helpers');
 
-describe('Homepage', () => {
+describe('Navbar', () => {
     let connection;
     let db;
 
@@ -48,18 +48,27 @@ describe('Homepage', () => {
 
     describe('Start with one board', () => {
         const boardState = [];
+        let board;
 
         beforeEach(async () => {
             try {
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
         });
 
         it('Has a navbar', async () => {
-            // await page.goto('http://localhost:3000/home');
-            // await page.waitForSelector('[data-component="navbar"]');
+            await page.goto(`http://localhost:3000/b/${board.insertedId}`);
+            await page.waitForSelector('[data-component="navbar"]');
+
+            const navbarHomeButton = await page.$('[data-navbar-button="home"]');
+            const navbarHomeButtonText = await navbarHomeButton.evaluate(element => element.innerText);
+
+            expect(navbarHomeButtonText).toEqual("Home");
+
+            const createButton = await page.$('[data-create-item-button="board"]');
+            await createButton.evaluate(element => element.value);
         });
     });
 });

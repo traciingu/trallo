@@ -4,6 +4,7 @@ import di from '../injection_container';
 import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from './appStyles';
+import Navbar from '../features/navbar/Navbar';
 
 
 function App({ getBoard, loadBoard, boardId }) {
@@ -22,8 +23,11 @@ function App({ getBoard, loadBoard, boardId }) {
   return (
     <AppContainer className="App" >
       <Routes>
-        <Route path="/" >
-          <Route index element={<Board />} />
+        <Route path="/" element={<Navbar />}>
+          <Route path="home" element={<div></div>} />
+          <Route path="b">
+            <Route path=":boardId" element={<Board />} />
+          </Route>
         </Route>
       </Routes>
     </AppContainer>
