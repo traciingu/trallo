@@ -1,17 +1,28 @@
-import React, { useContext } from 'react';
-import { updateBoard } from './boardSlice';
+import React, { useContext, useEffect } from 'react';
+import { loadBoard, updateBoard } from './boardSlice';
 import { updateList } from '../list/listSlice';
 import di from '../../injection_container';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { moveCardInSameList } from '../../helpers/helper';
 import { BoardContainerStyling } from './boardStyles';
 import Modal from '../modal/Modal';
 
-function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boardId }) {
+function Board({ loadBoard, updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, ListContainer } = useContext(di);
   const reorderAndPersistCards = curryReorderAndPersistCards(reorderBetweenLists, reorderCards, updateList, moveCardInSameList, cardOrdering);
   const reorderAndPersistLists = curryReorderAndPersistLists(reorderLists, updateBoard, listOrdering);
   const onDragEnd = curryOnDragHandler(reorderAndPersistCards, reorderAndPersistLists);
+
+  let { boardId } = useParams();
+
+
+  useEffect(() => {
+    console.log(boardId)
+    if (boardId) {
+      loadBoard(boardId);
+    }
+  }, [loadBoard, boardId]);
 
   return (
     <BoardContainerStyling className="board" data-item-type="board">
@@ -25,8 +36,8 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-                <ListContainer />
-                {provided.placeholder}
+              <ListContainer />
+              {provided.placeholder}
             </div>
           )}
         </Droppable>
@@ -34,7 +45,7 @@ function Board({ updateBoard, title, listOrdering, cardOrdering, updateList, boa
       <Modal />
     </BoardContainerStyling>
   );
-}
+};
 
 export const reorderBetweenLists = (cardOrdering, reorderCards, updateList, draggable) => {
 
@@ -94,7 +105,6 @@ const msToProps = state => {
   console.log(state);
   return {
     title: state.board.title,
-    boardId: state.board.id,
     listOrdering: state.lists.allIds,
     cardOrdering: state.cards.allIds
   };
@@ -102,6 +112,7 @@ const msToProps = state => {
 
 const mdToProps = dispatch => {
   return {
+    loadBoard: (id) => { dispatch(loadBoard(id)) },
     updateBoard: (info) => { dispatch(updateBoard(info)) },
     updateList: (info) => { dispatch(updateList(info)) },
   }

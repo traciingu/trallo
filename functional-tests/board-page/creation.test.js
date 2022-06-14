@@ -48,19 +48,20 @@ describe('Creation', () => {
 
     describe("Starting with empty board", () => {
         const boardState = [];
+        let boardDb;
 
         beforeEach(async () => {
             try {
-                await populate(db, boardState);
+                boardDb = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
         });
 
         it('creates a new list', async () => {
-            await navigateToBoard('[data-item-type="board"]');
+            await navigateToBoard('[data-item-type="board"]', boardDb.insertedId);
 
-            const board = await page.$('.board');
+            const board = await page.$('[data-item-type="board"]');
 
             await page.click('[data-add-button="list"]');
             const createInputField = await board.$('[data-create-item-input="list"]');
@@ -70,7 +71,7 @@ describe('Creation', () => {
             const createButtonText = await createButton.evaluate(element => element.value);
             expect(createButtonText).toEqual('Add List');
 
-            await page.click('[data-create-item-confirm="list"');
+            await page.click('[data-create-item-confirm="list"]');
             await page.waitForSelector('[data-item-type="list"]');
 
             const expectedList = [
@@ -86,7 +87,7 @@ describe('Creation', () => {
         }, 10000);
 
         it("can open and close create list form", async () => {
-            await navigateToBoard('[data-item-type="board"]');
+            await navigateToBoard('[data-item-type="board"]', boardDb.insertedId);
 
             let expectedLists = [];
             await checkBoard(expectedLists);
@@ -121,30 +122,33 @@ describe('Creation', () => {
             expect(cancelButtonType).toEqual('button');
             expect(cancelButtonText).toEqual('Cancel');
 
+            await page.waitForTimeout(300); // Test currently doesn't work without t/o. Needs to removed
             await page.click('[data-create-item-cancel="list"]');
-            await page.waitForSelector('[data-create-item-container="list"]', { visible: false });
-            listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            await page.waitForSelector('[data-create-item-container="list"]', {visible: false});
             createListContainerVisibility = await createListContainer.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            listCreateButtonVisibility = await listCreateButton.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(createListContainerVisibility).toEqual('none');
             expect(listCreateButtonVisibility).not.toEqual('none');
         });
     });
 
     describe("Starting with one empty list", () => {
+        let board;
+
         beforeEach(async () => {
             try {
                 const boardState = [
                     { title: "Todo", cards: [] }
                 ];
 
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
         });
 
         it("create and persist a new card", async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             const firstList = await page.$('[data-item-type="list"]');
             const newCardTitle = 'Test Card';
@@ -168,7 +172,7 @@ describe('Creation', () => {
         });
 
         it("can open and close the create card form", async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             const firstList = await page.$('[data-item-type="list"]');
             const addCardButton = await firstList.$('[data-add-button="card"]');

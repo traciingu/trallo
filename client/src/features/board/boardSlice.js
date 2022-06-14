@@ -9,6 +9,7 @@ export const boardSlice = createSlice({
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
                 const board = action.payload.board;
+                state.id = board.id;
                 state.title = board.title;
             })
             .addCase(getBoard.fulfilled, (state, action) => {

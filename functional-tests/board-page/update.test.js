@@ -53,16 +53,18 @@ describe('Update', () => {
             { title: 'Done', cards: [] },
         ];
 
+        let board;
+
         beforeEach(async () => {
             try {
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
         });
 
         it('updates a card title', async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             const cardEditButton = await page.$('[data-edit-item-button="card"]');
             const cardEditButtonText = await cardEditButton.evaluate(element => element.value);
@@ -110,20 +112,22 @@ describe('Update', () => {
     });
 
     describe("Starting with one empty list", () => {
+        let board;
+
         beforeEach(async () => {
             try {
                 const boardState = [
                     { title: "Todo", cards: [] }
                 ];
 
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
         });
 
         it("updates a list title", async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             const listEditButton = await page.$('[data-edit-item-button="list"]');
             const listEditButtonText = await listEditButton.evaluate(element => element.value);

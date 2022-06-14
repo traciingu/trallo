@@ -1,5 +1,5 @@
-const navigateToBoard = async (selector) => {
-    await page.goto('http://localhost:3000');
+const navigateToBoard = async (selector, boardPath) => {
+    await page.goto(`http://localhost:3000/b/${boardPath}`);
     await page.waitForSelector(selector);
 };
 

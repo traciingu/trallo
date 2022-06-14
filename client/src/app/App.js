@@ -1,50 +1,38 @@
 import { useEffect, useContext } from 'react';
-import { getBoard, loadBoard } from '../features/board/boardSlice';
+import { getBoard } from '../features/board/boardSlice';
 import di from '../injection_container';
 import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from './appStyles';
-import Navbar from '../features/navbar/Navbar';
+import PageTemplate from '../features/page-template/PageTemplate';
 
 
-function App({ getBoard, loadBoard, boardId }) {
+function App({ getBoard }) {
   const { Board } = useContext(di);
 
   useEffect(() => {
-    getBoard();
+    // getBoard();
   }, []);
 
-  useEffect(() => {
-    if (boardId) {
-      loadBoard(boardId);
-    }
-  }, [loadBoard, boardId]);
+
 
   return (
     <AppContainer className="App" >
       <Routes>
-        <Route path="/" element={<Navbar />}>
-          <Route path="home" element={<div></div>} />
-          <Route path="b">
-            <Route path=":boardId" element={<Board />} />
-          </Route>
+        <Route path="/" element={<PageTemplate/>}>
+          <Route path="home" element={<div><h1>Home title</h1></div>} />
+          <Route path="b/:boardId" element={<Board />} />
         </Route>
       </Routes>
     </AppContainer>
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    boardId: state.board.id,
-  }
-}
 
 const mdToProps = dispatch => {
   return {
     getBoard: () => { dispatch(getBoard()) },
-    loadBoard: (id) => { dispatch(loadBoard(id)) },
   }
 };
 
-export default connect(mapStateToProps, mdToProps)(App);
+export default connect(null, mdToProps)(App);

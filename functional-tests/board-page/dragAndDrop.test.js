@@ -53,9 +53,11 @@ describe('Drag and drop', () => {
             { title: 'Done', cards: [] },
         ];
 
+         let board;
+
         beforeEach(async () => {
             try {
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
@@ -63,7 +65,7 @@ describe('Drag and drop', () => {
 
         it('user can view board and move cards from list to list', async () => {
 
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             await expect(page.title()).resolves.toMatch('Trallo');
 
@@ -106,7 +108,7 @@ describe('Drag and drop', () => {
 
         it('reorders the Todo list to be after the In Progress list', async () => {
 
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello"] },
@@ -155,9 +157,11 @@ describe('Drag and drop', () => {
             { title: 'Done', cards: [] },
         ];
 
+        let board;
+
         beforeEach(async () => {
             try {
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
@@ -165,7 +169,7 @@ describe('Drag and drop', () => {
 
         it('can reorder cards within the same list', async () => {
 
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             const helloCardText = boardState[0].cards[0];
             const helloCard = await page.$(`[data-card-title="${helloCardText}"]`);
@@ -206,7 +210,7 @@ describe('Drag and drop', () => {
         });
 
         it('moves one card to a different list then reorder a list containing a card', async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             let expectedLists = [
                 { title: "Todo", cards: ["Hello", "Goodbye"] },

@@ -41,10 +41,10 @@ const mapStateToProps = state => {
     }
 };
 
-const mdToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
     return {
         setModalDisplay: (info) => { dispatch(setModalDisplay(info)) },
     }
 };
 
-export default connect(mapStateToProps, mdToProps)(Modal);
+export default connect(mapStateToProps, mapDispatchToProps)(Modal);

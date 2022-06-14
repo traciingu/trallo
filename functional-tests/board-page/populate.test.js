@@ -49,8 +49,8 @@ describe('Populate', () => {
     it("takes empty boardState", async () => {
         const boardState = [];
 
-        await populate(db, boardState);
-        await navigateToBoard('h1');
+        const board = await populate(db, boardState);
+        await navigateToBoard('h1', board.insertedId);
 
         await checkBoard([]);
     })
@@ -60,8 +60,8 @@ describe('Populate', () => {
             { title: "Test", cards: [] }
         ];
 
-        await populate(db, boardState);
-        await navigateToBoard('[data-item-type="list"]');
+        const board = await populate(db, boardState);
+        await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
         await checkBoard(boardState);
     })
@@ -73,8 +73,8 @@ describe('Populate', () => {
             { title: "Test 3", cards: [] },
         ];
 
-        await populate(db, boardState);
-        await navigateToBoard('[data-item-type="list"]');
+        const board = await populate(db, boardState);
+        await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
         await checkBoard(boardState);
     })
@@ -84,8 +84,8 @@ describe('Populate', () => {
             { title: "Test", cards: ["Test card"] },
         ];
 
-        await populate(db, boardState);
-        await navigateToBoard('[data-item-type="list"]');
+        const board = await populate(db, boardState);
+        await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
         await checkBoard(boardState);
     })
@@ -95,8 +95,8 @@ describe('Populate', () => {
             { title: "Test", cards: ["Test A", "Test B", "Test C"] },
         ];
 
-        await populate(db, boardState);
-        await navigateToBoard('[data-item-type="list"]');
+        const board = await populate(db, boardState);
+        await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
         await checkBoard(boardState);
     })
@@ -108,8 +108,8 @@ describe('Populate', () => {
             { title: "Test", cards: [] },
         ];
 
-        await populate(db, boardState);
-        await navigateToBoard('[data-item-type="list"]');
+        const board = await populate(db, boardState);
+        await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
         await checkBoard(boardState);
     })
@@ -121,8 +121,8 @@ describe('Populate', () => {
             { title: "Test 3", cards: ["Test A", "Test B", "Test C"] },
         ];
 
-        await populate(db, boardState);
-        await navigateToBoard('[data-item-type="list"]');
+        const board = await populate(db, boardState);
+        await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
         await checkBoard(boardState);
     });

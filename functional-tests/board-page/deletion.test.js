@@ -53,16 +53,18 @@ describe('Deletion', () => {
             { title: 'Done', cards: [] },
         ];
 
+        let board;
+
         beforeEach(async () => {
             try {
-                await populate(db, boardState);
+                board = await populate(db, boardState);
             } catch (err) {
                 console.log(err);
             }
         });
 
         it('deletes a card', async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             await page.click('[data-edit-item-button="card"]');
             await page.waitForSelector('[data-delete-item="card"]');
@@ -85,7 +87,7 @@ describe('Deletion', () => {
         });
 
         it('deletes a list', async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
 
             await page.click('[data-edit-item-button="list"]');
             await page.waitForSelector('[data-delete-item="list"]');

@@ -51,16 +51,14 @@ describe('Card modal', () => {
             { title: 'Todo', cards: [{ title: "Hello", description: "Goodbye" }] },
         ];
 
-        const expectedBoardState = [
-            { title: 'Todo', cards: ["Hello"] },
-        ];
+        let board;
 
         beforeEach(async () => {
-            await cardModalPopulate(db, boardState, expectedBoardState);
+            board = await cardModalPopulate(db, boardState);
         });
 
         it('opens the card modal', async () => {
-            await navigateToBoard('[data-item-type="card"]');
+            await navigateToBoard('[data-item-type="card"]', board.insertedId);
 
             await page.waitForSelector('[data-modal-type="card"]', { visible: false });
 
@@ -87,16 +85,14 @@ describe('Card modal', () => {
             { title: 'Todo', cards: [] },
         ];
 
-        const expectedBoardState = [
-            { title: 'Todo', cards: [] },
-        ];
+        let board;
 
         beforeEach(async () => {
-            await cardModalPopulate(db, boardState, expectedBoardState);
+            board = await cardModalPopulate(db, boardState);
         });
 
         it('creates a card, and edits the title in the modal', async () => {
-            await navigateToBoard('[data-item-type="list"]');
+            await navigateToBoard('[data-item-type="list"]', board.insertedId);
             await page.click('[data-add-button="card"]');
 
             const firstList = await page.$('[data-item-type="list"]');
@@ -162,7 +158,7 @@ describe('Card modal', () => {
     });
 });
 
-const cardModalPopulate = async (db, boardState, expectedBoardState) => {
+const cardModalPopulate = async (db, boardState) => {
     try {
         const cardsCollection = db.collection('cards');
         const listsCollection = db.collection('lists');
@@ -193,26 +189,9 @@ const cardModalPopulate = async (db, boardState, expectedBoardState) => {
         };
 
         const boards = db.collection('boards');
-        await boards.insertOne(state);
+        const newBoard = await boards.insertOne(state);
 
-        // >>>>>>>>>>>>>>>>> MODIFIED CHECK BOARD
-        await navigateToBoard('[data-item-type="list"]');
-        const actualLists = [];
-        lists = [];
-        lists = await page.$$('[data-item-type="list"]');
-
-        for (let i = 0; i < lists.length; i++) {
-            const title = (await lists[i].$$eval('h2', nodes => nodes.map(n => n.innerText)))[0];
-            const cards = await lists[i].$$('.card');
-            const newCards = [];
-            for (let j = 0; j < cards.length; j++) {
-                const cardText = await cards[j].evaluate((card) => card.textContent);
-                newCards.push(cardText);
-            }
-
-            actualLists.push({ title, cards: newCards });
-        }
-        expect(actualLists).toEqual(expectedBoardState);
+        return newBoard;
 
     } catch (err) {
         console.log(err);
