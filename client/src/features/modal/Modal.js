@@ -23,8 +23,8 @@ const Modal = ({ modal, setModalDisplay }) => {
     };
 
     return (
-        <>
-            <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'} />
+        <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'}>
+            {/* <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'} /> */}
             <ModalContainerStyling data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'} >
                 <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title"   >
                     <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
@@ -34,7 +34,7 @@ const Modal = ({ modal, setModalDisplay }) => {
                 </h2>
                 <p data-modal-property="description">{modal.description}</p>
             </ModalContainerStyling>
-        </>
+        </ModalOverlayStyling>
     );
 }
 
