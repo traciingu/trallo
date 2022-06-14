@@ -11,6 +11,7 @@ const Card = ({ id, index, title, description, updateCard, deleteCard, setModalD
     const [cardTitleInputText, setCardTitleInputText] = useState(title);
 
     const handleEditButtonClick = (e) => {
+        e.stopPropagation();
         setCanEditCardTitle(!canEditCardTitle);
     };
 

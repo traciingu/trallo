@@ -70,5 +70,16 @@ describe('Navbar', () => {
             const createButton = await page.$('[data-create-item-button="board"]');
             await createButton.evaluate(element => element.value);
         });
+
+        it('Navigates to home', async () => {
+            await page.goto(`http://localhost:3000/b/${board.insertedId}`);
+            await page.waitForSelector('[data-component="navbar"]');
+
+            await page.click('[data-navbar-button="home"]');
+            await page.waitForSelector('[data-component="navbar"]');
+
+            const url = await page.url();
+            expect(url).toEqual('http://localhost:3000/home');
+        });
     });
 });
