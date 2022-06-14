@@ -1,4 +1,4 @@
-import { ModalContainerStyling } from '../../app/appStyles';
+import { ModalContainerStyling, ModalOverlayStyling } from './modalStyles';
 import { connect } from 'react-redux';
 import { setModalDisplay } from '../board/boardSlice';
 import { useState } from 'react';
@@ -23,15 +23,18 @@ const Modal = ({ modal, setModalDisplay }) => {
     };
 
     return (
-        <ModalContainerStyling data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'} >
-            <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title"   >
-                <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
-            </form>
-            <h2 data-modal-property="title" onClick={handleClick} className={canEdit ? 'hide' : ''}>
-                {modal.title || ""}
-            </h2>
-            <p data-modal-property="description">{modal.description}</p>
-        </ModalContainerStyling>
+        <>
+            <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'} />
+            <ModalContainerStyling data-modal-type="card" className={modal.isDisplayed ? '' : 'hide'} >
+                <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title"   >
+                    <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
+                </form>
+                <h2 data-modal-property="title" onClick={handleClick} className={canEdit ? 'hide' : ''}>
+                    {modal.title || ""}
+                </h2>
+                <p data-modal-property="description">{modal.description}</p>
+            </ModalContainerStyling>
+        </>
     );
 }
 

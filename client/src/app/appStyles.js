@@ -30,7 +30,3 @@ input[type="button"], input[type="submit"] {
 }
 
 `;
-
-export const ModalContainerStyling = styled.div`
-
-`;
