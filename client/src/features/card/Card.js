@@ -33,6 +33,7 @@ const Card = ({ id, index, title, description, updateCard, deleteCard, setModalD
     const handleCardClick = (e) => {
         setModalDisplay({
             isDisplayed: !modal.isDisplayed,
+            dataAttribute: 'card',
             title, description
         });
     }

@@ -60,8 +60,6 @@ describe('Card modal', () => {
         it('opens the card modal', async () => {
             await navigateToBoard('[data-item-type="card"]', board.insertedId);
 
-            await page.waitForSelector('[data-modal-type="card"]', { visible: false });
-
             const expectedCardTitle = boardState[0].cards[0].title;
             const expectedCardDescription = boardState[0].cards[0].description;
 

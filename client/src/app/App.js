@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from './appStyles';
 import PageTemplate from '../features/page-template/PageTemplate';
+import Homepage from '../features/homepage/Homepage';
 
 
 function App({ getBoard }) {
@@ -20,7 +21,7 @@ function App({ getBoard }) {
     <AppContainer className="App" >
       <Routes>
         <Route path="/" element={<PageTemplate/>}>
-          <Route path="home" element={<div><h1>Home title</h1></div>} />
+          <Route path="home" element={<Homepage/>} />
           <Route path="b/:boardId" element={<Board />} />
         </Route>
       </Routes>

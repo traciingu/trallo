@@ -71,6 +71,7 @@ describe('Creation', () => {
             const createButtonText = await createButton.evaluate(element => element.value);
             expect(createButtonText).toEqual('Add List');
 
+            await page.waitForSelector('[data-create-item-confirm="list"]');
             await page.click('[data-create-item-confirm="list"]');
             await page.waitForSelector('[data-item-type="list"]');
 
