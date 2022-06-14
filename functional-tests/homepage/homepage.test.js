@@ -68,7 +68,7 @@ describe('Homepage', () => {
 
         });
 
-        it('Has empty homepage message and button', async () => {
+        it('Opens and closes the create board modal on an empty homepage', async () => {
             await page.goto(`http://localhost:3000/home`);
             await page.waitForSelector('[data-component="navbar"]');
 
@@ -83,10 +83,15 @@ describe('Homepage', () => {
             expect(createButtonText).toEqual("Create Board");
 
             await page.click('[data-medium-button="homepage-create-board"]');
-            await page.waitForSelector('[data-modal-type="board"]', { visible: true });
+            await page.waitForSelector('[data-modal-type="board"]', { visible: true });            
 
-            
+            await page.click('[data-small-button="close-modal"]');
+            await page.waitForSelector('[data-modal-type="board"]', { hidden: true });
 
+            const createBoardModal = await page.$('[data-modal-type="board"]');
+            const createBoardModalVisibility = await createBoardModal.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+
+            expect(createBoardModalVisibility).toEqual('none');
 
         });
     });

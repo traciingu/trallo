@@ -22,9 +22,14 @@ const Modal = ({ modal, setModalDisplay }) => {
         setCanEdit(false);
     };
 
+    const handleCloseButtonClick = (e) => {
+        setModalDisplay({ ...modal, isDisplayed: false });
+    };
+
     return (
         <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'}>
             <ModalContainerStyling data-modal-type={modal.dataAttribute} className={modal.isDisplayed ? '' : 'hide'} >
+                <input type="button" value="Close" data-small-button="close-modal" onClick={handleCloseButtonClick} />
                 <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title"   >
                     <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
                 </form>

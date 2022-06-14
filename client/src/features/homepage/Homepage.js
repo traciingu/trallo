@@ -12,7 +12,7 @@ const Homepage = ({setModalDisplay, modal}) => {
     return (
         <div>
             <div data-placeholder="empty-homepage">You have no boards</div>
-            <input value="Create Board" data-medium-button="homepage-create-board" onClick={handleOnClick}/>
+            <input type="button" value="Create Board" data-medium-button="homepage-create-board" onClick={handleOnClick}/>
             <Modal />
         </div>
     );
