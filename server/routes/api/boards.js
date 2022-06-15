@@ -32,7 +32,6 @@ router.post('/', async (req, res, next) => {
         const title = req.body.title;
         const background = req.body.background || "#ffffff";
 
-        console.log(title)
         res.json(await new Board({
             title: title,
             background: background

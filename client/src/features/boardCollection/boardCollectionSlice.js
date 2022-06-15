@@ -21,6 +21,5 @@ export const boardCollectionSlice = createSlice({
 
 export const getBoardCollection = createAsyncThunk('boardcollection/get', async () => {
     const { data } = await api('boards');
-    console.log(data);
     return { boards: data };
 });

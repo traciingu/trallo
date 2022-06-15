@@ -128,35 +128,12 @@ describe('Homepage', () => {
 
             expect(newBoardItemText).toEqual(boardTitleText);
 
-            // console.log(newBoardItem)
-            // const boardIdElement = await page.evaluate(() => {
-            //     const dataset = document.querySelector(`[data-board-collection-item-title="${boardTitleText}"]`).dataset;
-            //     return Object.fromEntries(Object.entries(dataset));
-            // });
-            // const boardId = await page.$$eval(`[data-board-collection-item-title="${boardTitleText}"]`, (elements) => elements.map(element => element.dataset.boardCollectionItemTitle));
             const boardId = await page.$eval(`[data-board-collection-item-title="${boardTitleText}"]`, element => element.dataset.boardCollectionItemId);
-
-            console.log(boardId);
             await page.click(`[data-board-collection-item-title="${boardTitleText}"]`);
-
             await page.waitForSelector('[data-component="navbar"]');
 
             const url = await page.url();
             expect(url).toEqual(`http://localhost:3000/b/${boardId}`);
         });
     });
-
-    // describe("Starts without board components", () => {
-    //     const boardState = [];
-
-    //     let board;
-
-    //     beforeEach(async () => {
-    //         try {
-    //             board = await populate(db, boardState);
-    //         } catch (err) {
-    //             console.log(err);
-    //         }
-    //     });
-    // });
 });

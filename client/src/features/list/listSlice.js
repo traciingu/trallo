@@ -23,7 +23,6 @@ export const listSlice = createSlice({
                 state.allIds = listsOrdering;
             })
             .addCase(createList.fulfilled, (state, action) => {
-                console.log(action.payload)
                 const list = action.payload;
                 state.byId[list.id] = list;
                 if (!state.allIds.includes(list.id)) {

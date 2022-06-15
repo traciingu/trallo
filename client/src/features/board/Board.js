@@ -18,7 +18,6 @@ function Board({ loadBoard, updateBoard, title, listOrdering, cardOrdering, upda
 
 
   useEffect(() => {
-    console.log(boardId)
     if (boardId) {
       loadBoard(boardId);
     }
@@ -102,7 +101,6 @@ export const curryReorderAndPersistLists = (reorderLists, updateBoard, listOrder
 }
 
 const msToProps = state => {
-  console.log(state);
   return {
     title: state.board.title,
     listOrdering: state.lists.allIds,

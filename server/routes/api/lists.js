@@ -36,8 +36,6 @@ router.patch('/:id', async (req, res, next) => {
             updatedInfo = { ...updatedInfo, cards: [...req.body.card] };
         }
 
-        console.log(updatedInfo)
-
         await List.findByIdAndUpdate(req.params.id, { $set: updatedInfo }, { new: true });
         res.json(await List.find({}));
     } catch (err) {
