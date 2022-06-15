@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import CreateModal from "../modal/CreateModal";
 import { connect } from "react-redux";
 import { setModalDisplay } from "../board/boardSlice";
 import { getBoardCollection } from "../boardCollection/boardCollectionSlice";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 
 const Homepage = ({ setModalDisplay, modal, getBoardCollection, boards }) => {
@@ -20,7 +21,15 @@ const Homepage = ({ setModalDisplay, modal, getBoardCollection, boards }) => {
             <div data-placeholder="empty-homepage">You have no boards</div>
             <input type="button" value="Create Board" data-medium-button="homepage-create-board" onClick={handleOnClick} />
             <div data-collection="board">
-                {boards.map(board => <div data-board-collection-item-title={board.title}>{board.title}</div>)}
+                {boards.map(board =>
+                    <Link
+                        data-board-collection-item-title={board.title}
+                        data-board-collection-item-id={board.id}
+                        to={`/b/${board.id}`}
+                    >
+                        {board.title}
+                    </Link>
+                )}
             </div>
             <CreateModal />
         </div>
