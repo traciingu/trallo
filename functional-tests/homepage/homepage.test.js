@@ -94,6 +94,20 @@ describe('Homepage', () => {
             expect(createBoardModalVisibility).toEqual('none');
 
         });
+
+        it('creates a new board', async () => {
+            await page.goto(`http://localhost:3000/home`);
+            await page.waitForSelector('[data-component="navbar"]');
+
+            await page.click('[data-medium-button="homepage-create-board"]');
+            await page.waitForSelector('[data-modal-type="board"]', { visible: true });
+
+            const modalTitleInput = await page.$('[data-modal-input-form="title"]');
+            const modalTitleInputVisibility = await modalTitleInput.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(modalTitleInputVisibility).not.toEqual('none');
+
+            await modalTitleInput.type('test board');
+        });
     });
 
     // describe("Starts without board components", () => {
