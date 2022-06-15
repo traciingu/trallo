@@ -34,6 +34,7 @@ const Card = ({ id, index, title, description, updateCard, deleteCard, setModalD
         setModalDisplay({
             isDisplayed: !modal.isDisplayed,
             dataAttribute: 'card',
+            mode: 'edit',
             title, description
         });
     }

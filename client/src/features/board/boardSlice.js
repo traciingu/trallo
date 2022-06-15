@@ -22,6 +22,8 @@ export const boardSlice = createSlice({
                 state.modal.title = action.payload.title;
                 state.modal.description = action.payload.description;
                 state.modal.dataAttribute = action.payload.dataAttribute;
+                state.modal.mode = action.payload.mode;
+
             })
     }
 });

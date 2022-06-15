@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { setModalDisplay } from '../board/boardSlice';
 import { useState } from 'react';
 
-const Modal = ({ modal, setModalDisplay }) => {
+const EditModal = ({ modal, setModalDisplay }) => {
     const [canEdit, setCanEdit] = useState(false);
     const [modalEditCardTitle, setModalEditCardTitle] = useState(modal.title);
 
@@ -30,7 +30,7 @@ const Modal = ({ modal, setModalDisplay }) => {
         <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'}>
             <ModalContainerStyling data-modal-type={modal.dataAttribute} className={modal.isDisplayed ? '' : 'hide'} >
                 <input type="button" value="Close" data-small-button="close-modal" onClick={handleCloseButtonClick} />
-                <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title"   >
+                <form onSubmit={handleSubmit} className={canEdit ? '' : 'hide'} data-modal-input-form="title">
                     <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />
                 </form>
                 <h2 data-modal-property="title" onClick={handleClick} className={canEdit ? 'hide' : ''}>
@@ -54,4 +54,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Modal);
+export default connect(mapStateToProps, mapDispatchToProps)(EditModal);

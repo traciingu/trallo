@@ -101,12 +101,25 @@ describe('Homepage', () => {
 
             await page.click('[data-medium-button="homepage-create-board"]');
             await page.waitForSelector('[data-modal-type="board"]', { visible: true });
+            const modal = await page.$('[data-modal-type="board"]');
+            let modalVisibility = await modal.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(modalVisibility).not.toEqual('none');
 
-            const modalTitleInput = await page.$('[data-modal-input-form="title"]');
-            const modalTitleInputVisibility = await modalTitleInput.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
-            expect(modalTitleInputVisibility).not.toEqual('none');
 
+            const modalForm = await page.$('[data-modal-input-form="title"]');
+            const modalFormVisibility = await modalForm.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(modalFormVisibility).not.toEqual('none');
+
+            const modalTitleInput = await page.$('[data-modal-edit-property="title"]');
+            await page.click('[data-modal-edit-property="title"]');
             await modalTitleInput.type('test board');
+            await page.keyboard.press('Enter');
+
+            await page.waitForSelector('[data-modal-type="board"]', { hidden: true });
+
+            modalVisibility = await modal.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
+            expect(modalVisibility).toEqual('none');
+
         });
     });
 

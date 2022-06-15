@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { moveCardInSameList } from '../../helpers/helper';
 import { BoardContainerStyling } from './boardStyles';
-import Modal from '../modal/Modal';
+import EditModal from '../modal/EditModal';
 
 function Board({ loadBoard, updateBoard, title, listOrdering, cardOrdering, updateList }) {
   const { reorderLists, reorderCards, DragDropContext, Droppable, ListContainer } = useContext(di);
@@ -42,7 +42,7 @@ function Board({ loadBoard, updateBoard, title, listOrdering, cardOrdering, upda
           )}
         </Droppable>
       </DragDropContext>
-      <Modal />
+      <EditModal />
     </BoardContainerStyling>
   );
 };
