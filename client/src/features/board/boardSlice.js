@@ -3,7 +3,7 @@ import { api } from '../../api';
 
 export const boardSlice = createSlice({
     name: 'board',
-    initialState: { modal: {isDisplayed: false, title: "", description: ""}},
+    initialState: { modal: { isDisplayed: false, title: "", description: "" } },
     reducers: {},
     extraReducers: builder => {
         builder
@@ -23,14 +23,18 @@ export const boardSlice = createSlice({
                 state.modal.description = action.payload.description;
                 state.modal.dataAttribute = action.payload.dataAttribute;
                 state.modal.mode = action.payload.mode;
-
             })
     }
 });
 
+export const createBoard = createAsyncThunk('board/create', async (board) => {
+    const { data } = await api.post('boards', { title: board.title });
+    return { board: data };
+});
+
 export const getBoard = createAsyncThunk('board/get', async () => {
     const { data } = await api('boards');
-    return {board: data};
+    return { board: data };
 });
 
 export const loadBoard = createAsyncThunk('board/load', async (id) => {

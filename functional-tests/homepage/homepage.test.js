@@ -110,15 +110,23 @@ describe('Homepage', () => {
             const modalFormVisibility = await modalForm.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(modalFormVisibility).not.toEqual('none');
 
+            const boardTitleText = 'test board';
             const modalTitleInput = await page.$('[data-modal-edit-property="title"]');
             await page.click('[data-modal-edit-property="title"]');
-            await modalTitleInput.type('test board');
+            await modalTitleInput.type(boardTitleText);
             await page.keyboard.press('Enter');
 
             await page.waitForSelector('[data-modal-type="board"]', { hidden: true });
 
             modalVisibility = await modal.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
             expect(modalVisibility).toEqual('none');
+
+            const boardCollection = await page.$('[data-collection="board"]');
+            await page.waitForSelector(`[data-board-collection-item-title="${boardTitleText}"]`);
+            const newBoardItem = await boardCollection.$(`[data-board-collection-item-title="${boardTitleText}"]`);
+            const newBoardItemText = await newBoardItem.evaluate(element => element.innerText);            
+
+            expect(newBoardItemText).toEqual(boardTitleText);
 
         });
     });

@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { ModalContainerStyling, ModalOverlayStyling } from './modalStyles';
 import { connect } from 'react-redux';
 import { setModalDisplay } from '../board/boardSlice';
-import { useState } from 'react';
+import { createBoard } from '../board/boardSlice';
 
-const CreateModal = ({ modal, setModalDisplay }) => {
+
+const CreateModal = ({ modal, setModalDisplay, createBoard }) => {
     const [modalEditCardTitle, setModalEditCardTitle] = useState(modal.title);
 
     const handleChange = (e) => {
@@ -13,6 +15,7 @@ const CreateModal = ({ modal, setModalDisplay }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setModalDisplay({ ...modal, title: e.target[0].value, isDisplayed: false });
+        createBoard({title: e.target[0].value});
     };
 
     const handleCloseButtonClick = (e) => {
@@ -40,6 +43,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setModalDisplay: (info) => { dispatch(setModalDisplay(info)) },
+        createBoard: (info) => { dispatch(createBoard(info)) }
     }
 };
 
