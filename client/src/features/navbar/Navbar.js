@@ -1,15 +1,27 @@
 import { Link } from 'react-router-dom';
 import { NavbarContainerStyling } from './navbarStyles';
+import { connect } from 'react-redux';
+import { setModalDisplay } from '../board/boardSlice';
 
-const Navbar = () => {
+const Navbar = ({ setModalDisplay }) => {
+    const handleClick = (e) => {
+        setModalDisplay({ isDisplayed: true, title: '', description: '', dataAttribute: 'board', mode: 'create' });
+    };
+
     return (
         <NavbarContainerStyling data-component="navbar">
             <ul>
                 <li><Link to="/home" data-navbar-button="home">Home</Link></li>
-                <li><input type="button" value="A" data-create-item-button="board" /></li>
+                <li><input type="button" value="Create Board" data-create-item-button="board" onClick={handleClick} /></li>
             </ul>
         </NavbarContainerStyling>
     )
 };
 
-export default Navbar;
+const mdToProps = (dispatch) => {
+    return {
+        setModalDisplay: (info) => { dispatch(setModalDisplay(info)) },
+    }
+}
+
+export default connect(null, mdToProps)(Navbar);
