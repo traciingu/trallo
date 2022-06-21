@@ -12,9 +12,9 @@ export const boardSlice = createSlice({
                 state.id = board.id;
                 state.title = board.title;
             })
-            .addCase(getBoard.fulfilled, (state, action) => {
-                const board = action.payload.board;
-                state.id = board[0].id;
+            .addCase(updateBoard.fulfilled, (state, action) => {
+                const title = action.payload.title;
+                state.title = title;
             })
             .addCase(setModalDisplay, (state, action) => {
                 state.modal = {};
@@ -50,6 +50,11 @@ export const loadBoard = createAsyncThunk('board/load', async (id) => {
 export const updateBoard = createAsyncThunk('board/update', async (info) => {
     const result = await api.patch(`/boards/${info.id}`, info);
     return result.data;
+});
+
+export const deleteBoard = createAsyncThunk('board/delete', async (info) => {
+    const { data } = await api.delete(`/boards/${info.id}`);
+    return data;
 });
 
 export const setModalDisplay = createAction('board/setModalDisplay');
