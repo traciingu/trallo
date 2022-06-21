@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const { installMouseHelper, navigateToBoard, backspace, populate, checkBoard } = require('../helpers');
+const { installMouseHelper, navigateToBoard, populate, checkBoard } = require('../helpers');
 
 describe('Card modal', () => {
     let connection;
@@ -62,15 +62,16 @@ describe('Card modal', () => {
 
             const expectedCardTitle = boardState[0].cards[0].title;
             const expectedCardDescription = boardState[0].cards[0].description;
+            const boardDiv = await page.$('[data-item-type="board"]');
 
             await page.click('[data-item-type="card"]');
-            await page.waitForSelector('[data-modal-type="card"]', { visible: true });
+            await boardDiv.waitForSelector('[data-modal-type="card"]', { visible: true });
 
-            const modal = await page.$('[data-modal-type="card"]');
-            const modalTitle = await modal.$('[data-modal-property="title"]');
+            const cardModal = await boardDiv.$('[data-modal-type="card"]');
+            const modalTitle = await cardModal.$('[data-modal-property="title"]');
             const titleText = await modalTitle.evaluate(element => element.textContent);
 
-            const modalDescription = await modal.$('[data-modal-property="description"]');
+            const modalDescription = await cardModal.$('[data-modal-property="description"]');
             const descriptionText = await modalDescription.evaluate(element => element.textContent);
 
             expect(titleText).toEqual(expectedCardTitle);
@@ -101,11 +102,13 @@ describe('Card modal', () => {
             await page.click('[data-create-item-confirm="card"]');
             await page.waitForSelector('[data-item-type="card"]');
             await page.click('[data-item-type="card"]');
-            await page.waitForSelector('[data-modal-type="card"]', { visible: true });
+            await page.waitForTimeout(2000);
+            const boardDiv = await page.$('[data-item-type="board"]');
+            const cardModal = await boardDiv.$('[data-modal-type="card"]');
 
-            let modalTitle = await page.$('[data-modal-property="title"]');
+            let modalTitle = await cardModal.$('[data-modal-property="title"]');
             let modalTitleVisibility = await modalTitle.evaluate(element => getComputedStyle(element).getPropertyValue('display'));            
-            let modalEditTitleForm = await page.$('[data-modal-input-form="title"]');
+            let modalEditTitleForm = await cardModal.$('[data-modal-input-form="title"]');
             let modalEditTitleFormVisibility = await modalEditTitleForm.evaluate(element => getComputedStyle(element).getPropertyValue('display'));
 
             expect(modalTitleVisibility).not.toEqual('none');
@@ -120,13 +123,15 @@ describe('Card modal', () => {
             expect(modalTitleVisibility).toEqual('none');
             expect(modalEditTitleFormVisibility).not.toEqual('none');
 
-            modalEditTitleInput = await page.$('[data-modal-edit-property="title"]');
+            modalEditTitleInput = await cardModal.$('[data-modal-edit-property="title"]');
             let modalEditTitleInputValue = await modalEditTitleInput.evaluate(element => element.value);
 
             expect(modalEditTitleInputValue).toEqual(newCardTitle);
-            await page.click('[data-modal-edit-property="title"]');
+            await cardModal.click('[data-modal-edit-property="title"]');
 
-            await backspace(modalEditTitleInputValue);
+            for (let i = 0; i < modalEditTitleInputValue.length; i++) {
+                await modalEditTitleInput.press('Backspace');
+            }
 
             const updatedCardTitle = "another card title";
             await modalEditTitleInput.type(updatedCardTitle);
@@ -135,9 +140,9 @@ describe('Card modal', () => {
 
             expect(modalEditTitleInputValue).toEqual(updatedCardTitle);
 
-            await page.keyboard.press("Enter");
+            await modalEditTitleInput.press("Enter");
 
-            await page.waitForSelector('[data-modal-property="title"]');
+            await cardModal.waitForSelector('[data-modal-property="title"]');
             await page.waitForTimeout(700)
 
             modalTitleVisibility = await modalTitle.evaluate(element => getComputedStyle(element).getPropertyValue('display'));            
@@ -147,7 +152,7 @@ describe('Card modal', () => {
             expect(modalEditTitleFormVisibility).toEqual('none');
 
 
-            modalTitle = await page.$('[data-modal-property="title"]');
+            modalTitle = await cardModal.$('[data-modal-property="title"]');
             const modalTitleText = await modalTitle.evaluate(element => element.innerText);
 
             expect(modalTitleText).toEqual(updatedCardTitle);
