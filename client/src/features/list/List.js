@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import di from '../../injection_container';
+import di from '../../injectionContainer';
 import { connect } from "react-redux";
 import { createCard } from "../card/cardSlice";
 import { CreateCardForm, CreateCardContainer } from "./listStyles";

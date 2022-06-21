@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { getBoard } from '../features/board/boardSlice';
-import di from '../injection_container';
+import di from '../injectionContainer';
 import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from './appStyles';

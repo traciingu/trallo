@@ -2,7 +2,7 @@ import { DraggableInfo, DraggableLocation } from "../dataClasses";
 
 export const reorderLists = (listOrdering, draggable) => {
     const orderingCpy = [...listOrdering];
-    const {source, destination, id} = draggable;
+    const { source, destination, id } = draggable;
     const startLocation = new DraggableLocation(source.droppableId, source.index);
     const dropLocation = new DraggableLocation(destination.droppableId, destination.index);
     const draggableInfo = new DraggableInfo(startLocation, dropLocation, id);
@@ -91,3 +91,56 @@ export function moveCardInSameList(cardOrdering, draggableInfo) {
     return result;
 };
 
+export const reorderBetweenLists = (cardOrdering, reorderCards, updateList, draggable) => {
+
+    const { destination, source } = draggable;
+    const result = reorderCards(cardOrdering, draggable);
+
+    updateList({ id: destination.droppableId, card: result[1] });
+    updateList({ id: source.droppableId, card: result[0] });
+};
+
+export const curryOnDragHandler = (reorderAndPersistCards, reorderAndPersistLists) => (result) => {
+    const { destination, source, draggableId, type } = result;
+
+    if (!destination) {
+        return;
+    }
+
+    if (destination.droppableId === source.droppableId &&
+        destination.index === source.index) {
+        return;
+    }
+
+    if (type.localeCompare("lists") === 0) {
+
+        reorderAndPersistLists(destination, source, draggableId);
+
+    }
+
+    if (type.localeCompare("cards") === 0) {
+        try {
+            reorderAndPersistCards(source, destination, draggableId);
+        } catch (err) {
+            console.log(err)
+        }
+    }
+};
+
+export const curryReorderAndPersistCards = (reorderBetweenLists, reorderCards, updateList, reorderAndPersistCardsInSameList, cardOrdering) => {
+    return (source, destination, id) => {
+        if (source.droppableId !== destination.droppableId) {
+            reorderBetweenLists(cardOrdering, reorderCards, updateList, { destination, source, id });
+        } else {
+            const result = reorderCards(cardOrdering, { destination, source, id }, reorderAndPersistCardsInSameList);
+            updateList({ id: destination.droppableId, card: result[1] });
+        }
+    };
+};
+
+export const curryReorderAndPersistLists = (reorderLists, updateBoard, listOrdering) => {
+    return (destination, source, id) => {
+        const result = reorderLists(listOrdering, { destination, source, id });
+        updateBoard({ id: destination.droppableId, lists: result[1] });
+    }
+}

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import di from '../../injection_container';
+import di from '../../injectionContainer';
 import { updateCard, deleteCard } from "./cardSlice";
 import { connect } from "react-redux";
 import { setModalDisplay } from "../board/boardSlice";
