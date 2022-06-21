@@ -12,7 +12,7 @@ export const cardSlice = createSlice({
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
                 state.byId = {};
-                state.allIds = [];
+                state.allIds = {};
                 
                 const cards = action.payload.cards;
                 cards.forEach(card => {
@@ -53,6 +53,7 @@ export const cardSlice = createSlice({
                 if (!state.allIds[card.listId].includes(card.id)) {
                     state.allIds[card.listId].push(card.id);
                 }
+                console.log(card)
             })
             .addCase(updateCard.fulfilled, (state, action) => {
                 const card = action.payload;
@@ -77,6 +78,9 @@ export const cardSlice = createSlice({
                     state[listId].splice(spliceIndex, 1);
                 });
                 state.allIds = newAllIds;
+
+                console.log("new state: ", newState)
+                console.log("new all ids: ", newAllIds)
             })
     }
 });
