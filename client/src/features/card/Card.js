@@ -27,6 +27,7 @@ const Card = ({ id, index, title, description, updateCard, deleteCard, setModalD
     };
 
     const handleDeleteButtonClick = (e) => {
+        e.stopPropagation();
         deleteCard({ id });
     }
 
