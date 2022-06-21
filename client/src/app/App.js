@@ -1,21 +1,13 @@
-import { useEffect, useContext } from 'react';
-import { getBoard } from '../features/board/boardSlice';
+import { useContext } from 'react';
 import di from '../injectionContainer';
-import { connect } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { AppContainer } from './appStyles';
 import PageTemplate from '../features/page-template/PageTemplate';
 import Homepage from '../features/homepage/Homepage';
 
 
-function App({ getBoard }) {
+function App() {
   const { Board } = useContext(di);
-
-  useEffect(() => {
-    // getBoard();
-  }, []);
-
-
 
   return (
     <AppContainer className="App" >
@@ -29,11 +21,4 @@ function App({ getBoard }) {
   );
 }
 
-
-const mdToProps = dispatch => {
-  return {
-    getBoard: () => { dispatch(getBoard()) },
-  }
-};
-
-export default connect(null, mdToProps)(App);
+export default App;

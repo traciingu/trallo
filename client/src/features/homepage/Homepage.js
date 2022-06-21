@@ -1,12 +1,11 @@
 import { useEffect } from "react";
-import CreateModal from "../modal/CreateModal";
 import { connect } from "react-redux";
 import { setModalDisplay } from "../board/boardSlice";
 import { getBoardCollection } from "../boardCollection/boardCollectionSlice";
 import { Link } from "react-router-dom";
 
 
-const Homepage = ({ setModalDisplay, modal, getBoardCollection, boards }) => {
+const Homepage = ({ setModalDisplay, getBoardCollection, boards }) => {
 
     const handleOnClick = (e) => {
         setModalDisplay({ isDisplayed: true, title: '', description: '', dataAttribute: 'board', mode: 'create' });
@@ -42,7 +41,6 @@ const Homepage = ({ setModalDisplay, modal, getBoardCollection, boards }) => {
 
 const msToProps = (state) => {
     return {
-        modal: state.board.modal,
         boards: state.boardCollection.boards
     };
 };
