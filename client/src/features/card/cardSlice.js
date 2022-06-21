@@ -11,6 +11,9 @@ export const cardSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
+                state.byId = {};
+                state.allIds = [];
+                
                 const cards = action.payload.cards;
                 cards.forEach(card => {
                     state.byId[card._id] = card;

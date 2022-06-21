@@ -10,7 +10,10 @@ export const listSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(loadBoard.fulfilled, (state, action) => {
+                state.byId = {};
+                state.allIds = [];
                 const lists = action.payload.lists;
+
                 lists.forEach(list => {
                     state.byId[list.id] = list;
                     if (!state.allIds.includes(list.id)) {
