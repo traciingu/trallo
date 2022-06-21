@@ -12,7 +12,7 @@ const Navbar = ({ setModalDisplay }) => {
     return (
         <NavbarContainerStyling data-component="navbar">
             <ul>
-                <li><NavLink to="/home" data-navbar-button="home">Home</NavLink></li>
+                <li><NavLink to="/" data-navbar-button="home">Home</NavLink></li>
                 <li><input type="button" value="Create Board" data-create-item-button="board" onClick={handleClick} /></li>
             </ul>
             <CreateModal />

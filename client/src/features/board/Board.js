@@ -58,7 +58,7 @@ function Board({ loadBoard, updateBoard, title, listOrdering, cardOrdering, upda
 
   const handleDeleteClick = (e) => {
     deleteBoard({ id: boardId });
-    navigate("/home");
+    navigate("/");
   };
 
   return (

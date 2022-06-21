@@ -13,7 +13,7 @@ function App() {
     <AppContainer className="App" >
       <Routes>
         <Route path="/" element={<PageTemplate/>}>
-          <Route path="home" element={<Homepage/>} />
+          <Route path="/" element={<Homepage/>} />
           <Route path="b/:boardId" element={<Board />} />
         </Route>
       </Routes>
