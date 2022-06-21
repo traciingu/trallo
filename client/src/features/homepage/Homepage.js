@@ -18,18 +18,23 @@ const Homepage = ({ setModalDisplay, modal, getBoardCollection, boards }) => {
 
     return (
         <div>
-            <div data-placeholder="empty-homepage">You have no boards</div>
             <input type="button" value="Create Board" data-medium-button="homepage-create-board" onClick={handleOnClick} />
             <div data-collection="board">
-                {boards.map(board =>
-                    <Link
-                        data-board-collection-item-title={board.title}
-                        data-board-collection-item-id={board.id}
-                        to={`/b/${board.id}`}
-                    >
-                        {board.title}
-                    </Link>
-                )}
+                {
+                    boards.length === 0 ?
+                        <div data-placeholder="empty-homepage">You have no boards</div>
+                        :
+                        boards.map(board =>
+                            <Link
+                                data-board-collection-item-title={board.title}
+                                data-board-collection-item-id={board.id}
+                                to={`/b/${board.id}`}
+                                key={board.id}
+                            >
+                                {board.title}
+                            </Link>
+                        )
+                }
             </div>
         </div>
     );
