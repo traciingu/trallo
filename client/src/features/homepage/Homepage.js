@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { setModalDisplay } from "../board/boardSlice";
 import { getBoardCollection } from "../boardCollection/boardCollectionSlice";
 import { Link } from "react-router-dom";
+import { BoardsCollectionGrid, BoardsCollectionItem } from "./homepageStyling";
 
 
 const Homepage = ({ setModalDisplay, getBoardCollection, boards }) => {
@@ -17,22 +18,28 @@ const Homepage = ({ setModalDisplay, getBoardCollection, boards }) => {
 
     return (
         <div>
-            <input type="button" value="Create Board" data-medium-button="homepage-create-board" onClick={handleOnClick} />
             <div data-collection="board">
                 {
                     boards.length === 0 ?
-                        <div data-placeholder="empty-homepage">You have no boards</div>
+                        <>
+                            <div data-placeholder="empty-homepage">You have no boards</div>
+                            <input type="button" value="Create Board" data-medium-button="homepage-create-board" onClick={handleOnClick} />
+                        </>
                         :
-                        boards.map(board =>
-                            <Link
-                                data-board-collection-item-title={board.title}
-                                data-board-collection-item-id={board.id}
-                                to={`/b/${board.id}`}
-                                key={board.id}
-                            >
-                                {board.title}
-                            </Link>
-                        )
+                        <BoardsCollectionGrid>
+                            {boards.map(board =>
+                                <Link
+                                    data-board-collection-item-title={board.title}
+                                    data-board-collection-item-id={board.id}
+                                    to={`/b/${board.id}`}
+                                    key={board.id}
+                                >
+                                    <BoardsCollectionItem>
+                                        {board.title}
+                                    </BoardsCollectionItem>
+                                </Link>
+                            )}
+                        </BoardsCollectionGrid>
                 }
             </div>
         </div>
