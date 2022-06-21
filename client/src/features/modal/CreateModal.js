@@ -15,7 +15,8 @@ const CreateModal = ({ modal, setModalDisplay, createBoard }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setModalDisplay({ ...modal, title: e.target[0].value, isDisplayed: false });
-        createBoard({title: e.target[0].value});
+        createBoard({ title: e.target[0].value });
+        setModalEditCardTitle('');
     };
 
     const handleCloseButtonClick = (e) => {

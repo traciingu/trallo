@@ -23,7 +23,6 @@ const Card = ({ id, index, title, description, updateCard, deleteCard, setModalD
         e.preventDefault();
         updateCard({ title: e.target[0].value, id });
         setCanEditCardTitle(!canEditCardTitle);
-
     };
 
     const handleDeleteButtonClick = (e) => {

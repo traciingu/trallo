@@ -19,6 +19,7 @@ const EditModal = ({ modal, setModalDisplay }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setModalDisplay({ ...modal, title: e.target[0].value });
+        setModalEditCardTitle('');
         setCanEdit(false);
     };
 

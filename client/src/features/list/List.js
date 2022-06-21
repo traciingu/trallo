@@ -11,6 +11,7 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
     const [canCreateCard, setCanCreateCard] = useState(false);
     const [canEditList, setCanEditList] = useState(false);
     const [listTitleInputText, setListTitleInputText] = useState(title);
+    const [createCardValue, setCreateCardValue] = useState('');
 
     const handleListEditSubmit = (e) => {
         e.preventDefault();
@@ -20,6 +21,10 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
 
     const handleChange = (e) => {
         setListTitleInputText(e.target.value);
+    };
+
+    const handleCreateCardValueChange = (e) => {
+        setCreateCardValue(e.target.value);
     };
 
     const handleCreateCardButtonClick = (e) => {
@@ -36,6 +41,7 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
             listId: e.target.dataset.listId,
             title: e.target[0].value,
         });
+        setCreateCardValue('');
     };
 
     const handleDeleteListButtonClick = (e) => {
@@ -85,7 +91,7 @@ const List = ({ createCard, id, index, title, updateList, deleteList }) => {
                         onSubmit={handleCreateCardSubmit}
                         data-create-item-container-visibility={canCreateCard}
                     >
-                        <input type="text" data-create-item-input="card" />
+                        <input type="text" data-create-item-input="card" value={createCardValue} onChange={handleCreateCardValueChange} />
                         <input type="button" data-create-item-cancel="card" value="Cancel" onClick={handleCreateCardButtonClick} />
                         <input type="submit" data-create-item-confirm="card" value="Add Card" />
                     </ CreateCardForm>
