@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { NavbarContainerStyling } from './navbarStyles';
 import { connect } from 'react-redux';
 import { setModalDisplay } from '../board/boardSlice';
+import CreateModal from '../modal/CreateModal';
 
 const Navbar = ({ setModalDisplay }) => {
     const handleClick = (e) => {
@@ -11,12 +12,14 @@ const Navbar = ({ setModalDisplay }) => {
     return (
         <NavbarContainerStyling data-component="navbar">
             <ul>
-                <li><Link to="/home" data-navbar-button="home">Home</Link></li>
+                <li><NavLink to="/home" data-navbar-button="home">Home</NavLink></li>
                 <li><input type="button" value="Create Board" data-create-item-button="board" onClick={handleClick} /></li>
             </ul>
+            <CreateModal />
         </NavbarContainerStyling>
     )
 };
+
 
 const mdToProps = (dispatch) => {
     return {

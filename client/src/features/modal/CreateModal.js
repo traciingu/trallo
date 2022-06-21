@@ -23,8 +23,8 @@ const CreateModal = ({ modal, setModalDisplay, createBoard }) => {
     };
 
     return (
-        <ModalOverlayStyling className={modal.isDisplayed ? '' : 'hide'}>
-            <ModalContainerStyling data-modal-type={modal.dataAttribute} className={modal.isDisplayed ? '' : 'hide'} >
+        <ModalOverlayStyling className={modal.isDisplayed && modal.mode.localeCompare('create') === 0 ? '' : 'hide'}>
+            <ModalContainerStyling data-modal-type={modal.dataAttribute} className={modal.isDisplayed && modal.mode.localeCompare('create') === 0 ? '' : 'hide'} >
                 <input type="button" value="Close" data-small-button="close-modal" onClick={handleCloseButtonClick} />
                 <form onSubmit={handleSubmit} data-modal-input-form="title">
                     <input type="text" data-modal-edit-property="title" value={modalEditCardTitle} onChange={handleChange} />

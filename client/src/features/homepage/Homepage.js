@@ -31,7 +31,6 @@ const Homepage = ({ setModalDisplay, modal, getBoardCollection, boards }) => {
                     </Link>
                 )}
             </div>
-            <CreateModal />
         </div>
     );
 }
