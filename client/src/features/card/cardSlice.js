@@ -53,7 +53,6 @@ export const cardSlice = createSlice({
                 if (!state.allIds[card.listId].includes(card.id)) {
                     state.allIds[card.listId].push(card.id);
                 }
-                console.log(card)
             })
             .addCase(updateCard.fulfilled, (state, action) => {
                 const card = action.payload;
@@ -65,6 +64,7 @@ export const cardSlice = createSlice({
                     delete state[card.id];
                 });
                 state.byId = newState;
+                
                 const newAllIds = produce(state.allIds, state => {
                     const listKeys = Object.keys(state);
 
@@ -77,10 +77,8 @@ export const cardSlice = createSlice({
                     const spliceIndex = state[listId].indexOf(card.id);
                     state[listId].splice(spliceIndex, 1);
                 });
+                
                 state.allIds = newAllIds;
-
-                console.log("new state: ", newState)
-                console.log("new all ids: ", newAllIds)
             })
     }
 });
