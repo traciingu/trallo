@@ -66,7 +66,16 @@ router.patch('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        res.json(await Board.findByIdAndDelete(req.params.id));
+        const board = await Board.findByIdAndDelete(req.params.id);
+
+        board.lists.map(async listId => {
+            const list = await List.findByIdAndDelete(listId);
+
+            list.cards.map(async cardId => {
+                await Card.findByIdAndDelete(cardId);
+            });
+        });
+        res.send(board);
     } catch (err) {
         next(err);
     }
