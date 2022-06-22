@@ -2,13 +2,15 @@ import styled from "styled-components";
 
 export const CreateCardForm = styled.form``;
 
-export const CreateCardContainer = styled.div``
+export const CreateCardContainer = styled.div``;
 
 export const ListContainerStyling = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
   margin-top: 3em;
+
+  
 
   .list {
     max-width: 270px;
@@ -20,6 +22,10 @@ export const ListContainerStyling = styled.div`
     
     h2 {
       margin-top: 0;
+    }
+
+    input[type="button"], input[type="submit"] {
+      background-color: inherit;
     }
   }
   `;
