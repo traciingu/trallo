@@ -63,7 +63,7 @@ function Board({ loadBoard, updateBoard, title, listOrdering, cardOrdering, upda
 
   return (
     <BoardContainerStyling className="board" data-item-type="board">
-      <input type="button" value="Delete board" onClick={handleDeleteClick} />
+      <input type="button" className="delete-board-button" value="Delete board" onClick={handleDeleteClick} />
       <form className={canEdit ? '' : 'hide'} onSubmit={handleSubmit}>
         <input type="text" value={textEditInput} onChange={handleChange} />
       </form>

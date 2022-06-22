@@ -35,7 +35,9 @@ const Homepage = ({ setModalDisplay, getBoardCollection, boards }) => {
                                     key={board.id}
                                 >
                                     <BoardsCollectionItem>
-                                        {board.title}
+                                        <h1>
+                                            {board.title}
+                                        </h1>
                                     </BoardsCollectionItem>
                                 </Link>
                             )}

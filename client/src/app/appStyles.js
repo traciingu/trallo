@@ -19,9 +19,10 @@ h3 {
 input[type="button"], input[type="submit"] {
     background-color: inherit;
     border: none;
-    border-radius: 2px;
-    padding: .5em;
+    border-radius: 4px;
+    padding: .55em;
     margin: .25em 0;
+    background-color: #f0f0f5;
     transition: background-color .1s;
 
     :hover {
